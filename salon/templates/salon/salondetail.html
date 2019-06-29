@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <p>this is the details of your salon:</p>
+    <p>
+    Area: {{salon_detail.area}}<br>
+    Floor Type{{salon_detail.floor_type}}<br>
+    Locker: {{salon_detail.locker}}<br>
+    Shower: {{salon_detail.shower}}<br>
+    Changing Room: {{salon_detail.changing_room}}<br>
+    this salon is for:
+    {% if salon_detail.is_futsall %}
+    futsal
+    {% endif %}
+    {% if salon_detail.is_volleyball %}
+    volleyball
+    {% endif %}
+    {% if salon_detail.is_basketball %}
+    basketball
+    {% endif %}
+    {% if salon_detail.is_football %}
+    football
+    {% endif %}
+    </p>
+    {% for pic in salon_detail.pictures.all %}
+    <p>Salon image: </p><img src="{{pic.picture.url}}" width="70" height="70"/><br>
+    {% endfor %}
+    <p>update salon from <a href="{% url 'salon:update' slug=user.slug pk=salon_detail.pk %}">here</a></p>
+    <p><a href="{% url 'session:create' pk=salon_detail.pk %}">create</a> Sessions form this salon</p>
+    {% if salon_detail.sessions.all %}
+    <p><a href="{% url 'session:list' pk=salon_detail.pk %}">List</a> of your sessions</p>
+    {% endif %}
+
+
+  </body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    profile image <img src="{{superuser.picture.url}}" width="70" height="70"/>
+    <p>Welcome To Profile Page {{superuser.username}}</p>
+    {% if not user.first_name %}
+    **************** {{superuser.slug}}
+    <p>you have not entered your details <br>
+      please update your datas through
+      <a href="{% url 'accounts:update' slug=user.slug %}"> here </a>
+      to be able to see you complete profile page
+      {% else %}
+      mr {{superuser.first_name}} {{superuser.last_name}}<br>
+      you can update you info
+      <a href="{% url 'accounts:update' slug=user.slug %}">here</a><br>
+            list of <a href="{% url 'masteruser:list' %}">MasterUsers</a>
+      {% endif %}
+
+      <p>signup a masteruser via <a href="{% url 'masteruser:signup' %}">here</a></p>
+
+      <p>list of masteruser <a href="{% url 'masteruser:list' %}">here</a></p>
+      <p>list of banned masteruser <a href="{% url 'masteruser:bannedlist' %}">here</a></p>
+      <p>Send cloud Message <a href="{% url 'accounts:cloudmessage' %}">here</a></p>
+      <p>Send cloud Email <a href="{% url 'accounts:cloudemail' %}">here</a></p>
+      <p>Change Passwrod <a href="{% url 'accounts:passwordchange' slug=user.slug %}">here</a></p>
+    </p>
+  </body>
+</html>

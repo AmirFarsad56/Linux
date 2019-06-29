@@ -1,0 +1,83 @@
+
+defining get_absolute_url to redirect to profile/login page after creating a user
+
+CloudMessageView is not checked because identity is not verified in kavenegar
+
+
+uploading several images ONE BY ONE
+updating the uploaded images
+
+messages (back to front) in signing up (maybe should be deleted)
+
+sportclubs should change their password in first_login
+
+salons is_confirmed field must be set to False when sportclubs updates them
+
+salons must have a pending filed that when a masteruser told them to change your salon other masterusers
+doesn't see that salon in unpublished list
+
+restrict length to be chosen from dropdown menu
+
+url mapping for commonusers to see salon list
+
+later when a sportclub or a salon is banned all booked money should return to their related users
+and inform them with a message or email
+
+
+
+masterusers should update their pictures and password
+
+for setting price in sessions with sportclub their bank account details must be defined
+
+
+fixing redirect for superuser required login page
+
+
+setting the KavenegarAPI and sender number and email sender to secret key later
+
+
+
+def get_success_url(self):
+		slug = self.kwargs['slug']
+		return reverse("accounts:profile", kwargs={'slug': slug})
+
+---------------------------------------------------------------------------------------------
+when masteruser deletes or banes sth he should send an email of why to the owner
+
+everything that a master user done must be result in a reverse to a profile page because
+e.g. we can ban a salon from two ways and they should not endup both in the unconfirmedsalon list
+
+deleting the confirm page for delete and ban and unbaning masterusers via superusers
+
+in front part all delete ban or unbans must be asked for a confirm in a pop up show
+
+prefix for urls for adding the ability to other usages of this website
+
+page for admin profile and settings
+
+time model must be generated daily automatically for 1 year length
+
+
+----------------------------------------------------------------------------------------
+passworrd validators check
+if user is not None:
+		u = models.UserModel.objects.get(username__exact=username)
+		password = data.get('new_password')
+
+		try:
+				validate_password(password,user=u, password_validators=None)
+				u.set_password(password)
+				u.save()
+				return redirect("accounts:success")
+		except:
+				error1 ='کلمه عبور باید بیش از 6 کاراکتر باشد'
+				error2 ='کلمه عبور باید نمیتواند شامل نام کاربری باشد'
+				error3 ='کلمه عبور نمیتواند خیلی ساده باشد'
+				return render(request,'accounts/rp_2.html',{'form':form,'error1':error1,'error2':error2,'error3':error3})
+--------------------------------------------------------------------------------------
+updating datas via Functions
+def func(request, id):
+    object = Model.objects.get(id=id) # or with get_object_or_404
+    form = ModelForm(instance=object)
+
+    return render(request, 'my_template.html', {'form':form})

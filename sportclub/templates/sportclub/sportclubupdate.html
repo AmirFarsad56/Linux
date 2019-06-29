@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+<form enctype="multipart/form-data" method="POST">
+  {% csrf_token %}
+  {{userform.as_p}}
+  {{sportclubform.as_p}}
+  <input type="submit" value="OK">
+</form>
+  </body>
+</html>

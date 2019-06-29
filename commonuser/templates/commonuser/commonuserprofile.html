@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <p>this is the detail view for the commonuser page</p><br>
+    <p>
+    username: {{ commonuser_detail.user.username }}<br>
+    email: {{ commonuser_detail.user.email }}<br>
+    first name: {{ commonuser_detail.user.first_name }}</br>
+    last_name: {{ commonuser_detail.user.last_name }}<br>
+    phone number: {{ commonuser_detail.phone_number }}<br>
+    profile image <img src="{{commonuser_detail.picture.url}}" width="70" height="70"/>
+    </p>
+    <p><a href="{% url 'commonuser:update' commonuser_detail.user.slug %}">Update</a> Your Infos</p>
+    <p>Change Passwrod <a href="{% url 'accounts:passwordchange' slug=user.slug %}">here</a></p>
+
+  </body>
+</html>

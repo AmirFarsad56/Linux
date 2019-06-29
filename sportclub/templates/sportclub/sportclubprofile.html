@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <p>this is the detail page for the sportclub</p><br>
+    <p>
+    Username: {{ sportclub_detail.user.username }}<br>
+    email: {{ sportclub_detail.user.email }}<br>
+    phone number{{ sportclub_detail.phone_number}}<br>
+    address: {{ sportclub_detail.address}}<br>
+    more info: {{ sportclub_detail.info}}<br>
+    slug: {{sportclub_detail.slug}}<br>
+    bank: {{ sportclub_detail.bankaccount_bankname}}<br>
+    sportclub image: <img src="{{sportclub_detail.picture.url}}" width="70" height="70"/><br>
+    Add a Salon
+    <a href="{% url 'salon:createsalon' slug=user.slug %}">
+       here</a>
+       <br>
+    <br>
+    <p>
+      {% if sportclub_detail.salons %}
+    salons:<br>
+    <ul>
+
+
+    {% for salon in sportclub_detail.salons.all %}
+    <li>area: {{salon.area}}<br></li>
+    <li>shower: {{salon.shower}}<br></li>
+    </ul>
+    Update Datas?<br>
+    <a href="{% url 'salon:update' slug=user.slug pk=salon.pk %}"> Yes </a><br>
+    <a href="{% url 'salon:salondetail' pk=salon.pk %}"> Details </a><br>
+    -------------------------------------------<br>
+    {% endfor %}
+    {% endif %}
+    <p><a href="{% url 'sportclub:bankinfochange' slug=user.slug %}">Change</a> Bank Account Infos</p>
+    <p><a href="{% url 'sportclub:update' slug=user.slug %}">Update</a> Your Infos</p>
+    <p>Change Passwrod <a href="{% url 'accounts:passwordchange' slug=user.slug %}">here</a></p>
+    <p>Add your terms and conditions <a href="{% url 'sportclub:termsandconditions' slug=user.slug %}">here</a></p>
+    </p>
+    </p>
+  </body>
+</html>
