@@ -5,6 +5,22 @@ from django.utils.text import slugify
 from django.conf import settings
 from jdatetime import timedelta
 
+
+class SessionCategoryModel(models.Model):
+    salon = models.ForeignKey(SalonModel, on_delete = models.CASCADE,
+                              related_name = 'sessioncategories', blank = False,
+                              null = False)
+    saturdays = models.BooleanField(default = False)
+    sundays = models.BooleanField(default = False)
+    mondays = models.BooleanField(default = False)
+    tuesdays = models.BooleanField(default = False)
+    wednesdays = models.BooleanField(default = False)
+    thursdays = models.BooleanField(default = False)
+    fridays = models.BooleanField(default = False)
+    range_start_day = jmodels.jDateField(null = True, blank = True)
+    range_finish_day = jmodels.jDateField(null = True, blank = True)
+
+
 class SessionModel(models.Model):
     salon = models.ForeignKey(SalonModel, on_delete = models.CASCADE,
                                   related_name = 'sessions',blank = False,
@@ -66,18 +82,3 @@ class LastDataModel(models.Model):
             self.last_friday_2 = self.last_friday
             self.last_friday = None
         super(LastDataModel, self).save(*args, **kwargs)
-
-
-class SessionCategoryModel(models.Model):
-    salon = models.ForeignKey(SalonModel, on_delete = models.CASCADE,
-                              related_name = 'sessioncategories', blank = False,
-                              null = False)
-    saturdays = models.BooleanField(default = False)
-    sundays = models.BooleanField(default = False)
-    mondays = models.BooleanField(default = False)
-    tuesdays = models.BooleanField(default = False)
-    wednesdays = models.BooleanField(default = False)
-    thursdays = models.BooleanField(default = False)
-    fridays = models.BooleanField(default = False)
-    range_start_day = jmodels.jDateField(null = True, blank = True)
-    range_finish_day = jmodels.jDateField(null = True, blank = True)

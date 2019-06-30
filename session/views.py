@@ -11,7 +11,7 @@ from jdatetime import date
 
 #handmade
 from session.forms import DaysForm, TimesForm
-from session.models import SessionModel, LastDataModel, SessionCategoryModel
+from session.models import (SessionModel, LastDataModel, SessionCategoryModel)
 from salon.models import SalonModel
 from sportclub.decorators import sportclub_required
 from session.datetimetools import (AllSaturdays, AllSundays, AllMondays,
@@ -82,7 +82,7 @@ def SessionCreateView(request, pk):
                             minutes = total_minutes - (hours * 60)
                             time = str(hours)+':'+str(minutes)
 
-                            session = SessionModel.objects.create(salon=salon_instance, duration=duration, session_category = session_category, 
+                            session = SessionModel.objects.create(salon=salon_instance, duration=duration, session_category = session_category,
                                                         day = str(days), time = time)
                             session.save()
                         if counter_1 == goal_num:
@@ -112,7 +112,7 @@ def SessionCreateView(request, pk):
                             minutes = total_minutes - (hours * 60)
                             time = str(hours)+':'+str(minutes)
 
-                            session = SessionModel.objects.create(salon=salon_instance, duration=duration, session_category = session_category, 
+                            session = SessionModel.objects.create(salon=salon_instance, duration=duration, session_category = session_category,
                                                         day = str(days), time = time)
                             session.save()
                         if counter_1 == goal_num:
@@ -141,7 +141,7 @@ def SessionCreateView(request, pk):
                             minutes = total_minutes - (hours * 60)
                             time = str(hours)+':'+str(minutes)
 
-                            session = SessionModel.objects.create(salon=salon_instance, duration=duration, session_category = session_category, 
+                            session = SessionModel.objects.create(salon=salon_instance, duration=duration, session_category = session_category,
                                                         day = str(days), time = time)
                             session.save()
                         if counter_1 == goal_num:
@@ -170,7 +170,7 @@ def SessionCreateView(request, pk):
                             minutes = total_minutes - (hours * 60)
                             time = str(hours)+':'+str(minutes)
 
-                            session = SessionModel.objects.create(salon=salon_instance, duration=duration, session_category = session_category, 
+                            session = SessionModel.objects.create(salon=salon_instance, duration=duration, session_category = session_category,
                                                         day = str(days), time = time)
                             session.save()
                         if counter_1 == goal_num:
@@ -199,7 +199,7 @@ def SessionCreateView(request, pk):
                             minutes = total_minutes - (hours * 60)
                             time = str(hours)+':'+str(minutes)
 
-                            session = SessionModel.objects.create(salon=salon_instance, duration=duration, session_category = session_category, 
+                            session = SessionModel.objects.create(salon=salon_instance, duration=duration, session_category = session_category,
                                                         day = str(days), time = time)
                             session.save()
                         if counter_1 == goal_num:
@@ -228,7 +228,7 @@ def SessionCreateView(request, pk):
                             minutes = total_minutes - (hours * 60)
                             time = str(hours)+':'+str(minutes)
 
-                            session = SessionModel.objects.create(salon=salon_instance, duration=duration, session_category = session_category, 
+                            session = SessionModel.objects.create(salon=salon_instance, duration=duration, session_category = session_category,
                                                         day = str(days), time = time)
                             session.save()
                         if counter_1 == goal_num:
@@ -257,7 +257,7 @@ def SessionCreateView(request, pk):
                             minutes = total_minutes - (hours * 60)
                             time = str(hours)+':'+str(minutes)
 
-                            session = SessionModel.objects.create(salon=salon_instance, duration=duration, session_category = session_category, 
+                            session = SessionModel.objects.create(salon=salon_instance, duration=duration, session_category = session_category,
                                                         day = str(days), time = time)
                             session.save()
                         if counter_1 == goal_num:
