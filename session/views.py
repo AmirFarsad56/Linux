@@ -2,15 +2,16 @@ from django.shortcuts import render
 from django.views.generic import CreateView, TemplateView
 from django.shortcuts import get_object_or_404, get_list_or_404
 from jdatetime import date, timedelta
+from jdatetime import datetime as JDATETIMETOOL
+from datetime import datetime as DATETIMETOOL
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 import jdatetime
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
-from jdatetime import date
 
 #handmade
-from session.forms import DaysForm, TimesForm
+from session.forms import DaysForm, TimesForm, PriceForm
 from session.models import (SessionModel, LastDataModel, SessionCategoryModel)
 from salon.models import SalonModel
 from sportclub.decorators import sportclub_required
@@ -62,7 +63,8 @@ def SessionCreateView(request, pk):
             x = int(( TotalMinutes(stop_time) - TotalMinutes(start_time) ) / TotalMinutes(duration))
 
             #Creating the SessionCategory Instance
-            session_category = SessionCategoryModel.objects.create(salon=salon_instance, range_start_day = first_day)
+            session_category = SessionCategoryModel.objects.create(salon=salon_instance,
+                                    range_start_day = first_day, range_end_day = last_day)
 
             if saturdays:
                 session_category.saturdays = True
@@ -298,3 +300,56 @@ def SessionListView(request,pk):
 
 class LengthError(TemplateView):
     template_name = 'session/lengtherror.html'
+
+def SessionCategoriesView(request,pk):
+    salon = get_object_or_404(SalonModel,pk = pk)
+    sessioncategory_instances = get_list_or_404(SessionCategoryModel, salon = salon)
+    return render(request, 'session/categories.html',{'categories':sessioncategory_instances})
+
+
+def SetPriceView(request,pk):
+    if request.method == "POST":
+        checks = request.POST.getlist('checks')
+        days = request.POST.getlist('days')
+        price_form = PriceForm(data = request.POST )
+        if price_form.is_valid():
+            range_start = price_form.cleaned_data['range_start']
+            range_start = jdatetime.date(range_start.year,range_start.month,range_start.day)
+            range_end = price_form.cleaned_data['range_end']
+            range_end = jdatetime.date(range_end.year,range_end.month,range_end.day)
+            price = price_form.cleaned_data['price']
+            sessioncategory_instance = get_object_or_404(SessionCategoryModel,pk = pk)
+            sessions = sessioncategory_instance.sessions.all()
+
+
+            print(days,'elelelelelelellelelelelelelleleleleleleleleell')
+            for session in sessions:
+
+
+                x1 = session.day - range_start
+                x2 = session.day - range_end
+                if int(x1.days) >= 0 and int(x2.days) <= 0 :
+                    if str(session.day.weekday()) in days:
+                        print('yesssssssssssssssssssssssss')
+                        for check in checks:
+                            check_time = DATETIMETOOL.strptime(check,'%H:%M')
+                            check_time = check_time.time()
+                            if session.time.minute - check_time.minute == 0 and session.time.hour - check_time.hour == 0:
+                                session.price = price
+                                session.save()
+                    else:
+                        print('no :>>>>>>>>>>>>>>')
+            #for reverse
+            salon_pk = sessioncategory_instance.salon.pk
+            return HttpResponseRedirect(reverse('session:categories',
+                                                kwargs={'pk':salon_pk}))
+
+    else:
+        price_form = PriceForm()
+        sessioncategory_instance = get_object_or_404(SessionCategoryModel,pk = pk)
+        list = sessioncategory_instance.sessions.all()
+        obj = list[0]
+        session_instances = get_list_or_404(SessionModel,day = obj.day,
+                                            session_category = sessioncategory_instance)
+    return render(request,'session/setprice.html',{'sessions':session_instances,
+                  'session_category':sessioncategory_instance,'form':price_form})

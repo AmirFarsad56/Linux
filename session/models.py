@@ -17,8 +17,8 @@ class SessionCategoryModel(models.Model):
     wednesdays = models.BooleanField(default = False)
     thursdays = models.BooleanField(default = False)
     fridays = models.BooleanField(default = False)
-    range_start_day = jmodels.jDateField(null = True, blank = True)
-    range_finish_day = jmodels.jDateField(null = True, blank = True)
+    range_start_day = jmodels.jDateField(null = False, blank = False)
+    range_end_day = jmodels.jDateField(null = False, blank = False)
 
 
 class SessionModel(models.Model):

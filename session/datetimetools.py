@@ -133,14 +133,20 @@ def TotalMinutes(time):
     total_minutes = (time.hour * 60) + time.minute
     return total_minutes
 
-
+'''
 #string to date
 from jdatetime import datetime as x
-print(x.strptime('1398-6-31','%Y-%m-%d'))
 
+print(x.strptime('3:30 p.m.','%H:%M'))
+
+
+dates = date(1398,10,20)
+print(type(dates))
+print(dates.weekday())
 
 for day in AllThursdays(1):
     if day < jdatetime.datetime.now().date():
         print(day)
     else:
         print('sdasd')
+'''

@@ -16,3 +16,9 @@ class TimesForm(forms.Form):
     start_time = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
     duration = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
     stop_time = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
+
+
+class PriceForm(forms.Form):
+    range_start = forms.DateField(widget=forms.DateInput(format='%Y-%m-%d'))
+    range_end = forms.DateField(widget=forms.DateInput(format='%Y-%m-%d'))
+    price = forms.IntegerField(required = True)
