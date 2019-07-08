@@ -1,4 +1,5 @@
 from django import forms
+from session.models import SessionModel
 
 
 class DaysForm(forms.Form):
@@ -22,3 +23,8 @@ class PriceForm(forms.Form):
     range_start = forms.DateField(widget=forms.DateInput(format='%Y-%m-%d'))
     range_end = forms.DateField(widget=forms.DateInput(format='%Y-%m-%d'))
     price = forms.IntegerField(required = True)
+
+
+class SessionDeleteForm(forms.Form):
+    range_start = forms.DateField(widget=forms.DateInput(format='%Y-%m-%d'))
+    range_end = forms.DateField(widget=forms.DateInput(format='%Y-%m-%d'))

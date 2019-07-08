@@ -8,7 +8,7 @@
     {% for category in categories %}
     {{category.range_start_day}}
     other stuff...
-    <a href="{% url 'session:setprice' pk=category.pk %}">set price</a><br>
+    <a href="{% url 'session:categorizedsessions' pk=category.pk %}">set price</a><br>
     {% endfor %}
   </body>
 </html>

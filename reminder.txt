@@ -1,17 +1,16 @@
-
+url mapping for extra functionalities that maybe added to the site
 defining get_absolute_url to redirect to profile/login page after creating a user
 
 CloudMessageView is not checked because identity is not verified in kavenegar
 
+considering created_at = timezone.now() for models like SessionCategoryModel
 
 uploading several images ONE BY ONE
 updating the uploaded images
 
-messages (back to front) in signing up (maybe should be deleted)
+messages (back to front) in signing up (maybe the best way is to delete it)
 
 sportclubs should change their password in first_login
-
-salons is_confirmed field must be set to False when sportclubs updates them
 
 salons must have a pending filed that when a masteruser told them to change your salon other masterusers
 doesn't see that salon in unpublished list
@@ -51,12 +50,9 @@ deleting the confirm page for delete and ban and unbaning masterusers via superu
 
 in front part all delete ban or unbans must be asked for a confirm in a pop up show
 
-prefix for urls for adding the ability to other usages of this website
-
 page for admin profile and settings
 
-time model must be generated daily automatically for 1 year length
-
+time model must be generated daily automatically for 1 year length (???)
 
 ----------------------------------------------------------------------------------------
 passworrd validators check

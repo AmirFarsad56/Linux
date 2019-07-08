@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
-from django.views.generic import UpdateView, DetailView, ListView, TemplateView
+from django.views.generic import DetailView, ListView, TemplateView
 from django.forms import modelformset_factory
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required

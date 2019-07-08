@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <a href="{% url 'session:setprice' pk=session_category.pk %}">set price for this category</a><br>
+    <a href="{% url 'session:delete' pk=session_category.pk %}">Delete Sessions</a><br>
+<h2>Here is the list of sessions for this category</h2>
+    <h3>priced sessions are:</h3>
+    {% for session in sessions %}
+    {% if session.price %}
+    <p>{{session.day}}: {{session.time}} the price is: {{session.price}} tomans
+       <a href="{% url 'session:update' pk=session.pk %}">Update</a></p>
+    {% endif %}
+    {% endfor %}
+
+    <h3>unpriced sessions are:</h3>
+    {% for session in sessions %}
+    {% if not session.price %}
+    <p>{{session.day}}: {{session.time}}
+    <a href="{% url 'session:update' pk=session.pk %}">Update</a></p>
+    {% endif %}
+    {% endfor %}
+  </body>
+</html>
