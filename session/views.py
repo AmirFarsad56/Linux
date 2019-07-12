@@ -11,7 +11,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 
 #handmade
-from session.forms import DaysForm, TimesForm, PriceForm, SessionDeleteForm
+from session.forms import (DaysForm, TimesForm, PriceForm, SessionDeleteForm, DaysForm_2)
 from session.models import (SessionModel, LastDataModel, SessionCategoryModel)
 from salon.models import SalonModel
 from sportclub.decorators import sportclub_required
@@ -307,7 +307,8 @@ class LengthError(TemplateView):
 def SessionCategoriesView(request,pk):
     salon = get_object_or_404(SalonModel,pk = pk)
     sessioncategory_instances = get_list_or_404(SessionCategoryModel, salon = salon)
-    return render(request, 'session/categories.html',{'categories':sessioncategory_instances})
+    return render(request, 'session/categories.html',
+                {'categories':sessioncategory_instances,'salon':salon})
 
 
 @login_required
@@ -380,6 +381,7 @@ class SessionUpdateView(UpdateView):
 @login_required
 @sportclub_required
 def SessionDeleteView(request,pk):
+    sessioncategory_instance = get_object_or_404(SessionCategoryModel,pk = pk)
     if request.method == "POST":
         checks = request.POST.getlist('checks')
         days = request.POST.getlist('days')
@@ -389,11 +391,29 @@ def SessionDeleteView(request,pk):
             range_start = jdatetime.date(range_start.year,range_start.month,range_start.day)
             range_end = form.cleaned_data['range_end']
             range_end = jdatetime.date(range_end.year,range_end.month,range_end.day)
-            sessioncategory_instance = get_object_or_404(SessionCategoryModel,pk = pk)
             sessions = sessioncategory_instance.sessions.all()
+            ##########
+            session_category_1 = SessionCategoryModel.objects.create(salon=sessioncategory_instance.salon,
+                                    range_start_day = sessioncategory_instance.range_start_day,
+                                    range_end_day = range_start+timedelta(days=-1))
+            session_category_1.save()
+            session_category_2 = SessionCategoryModel.objects.create(salon=sessioncategory_instance.salon,
+                                    range_start_day = range_end+timedelta(days=1),
+                                    range_end_day = sessioncategory_instance.range_end_day)
+            session_category_2.save()
+            session_category_3 = SessionCategoryModel.objects.create(salon=sessioncategory_instance.salon,
+                                    range_start_day = range_start,
+                                    range_end_day = range_end)
+            session_category_3.save()
+            ###########
             for session in sessions:
                 x1 = session.day - range_start
                 x2 = session.day - range_end
+                x3 = session.day - sessioncategory_instance.range_start_day
+                x4 = session.day - sessioncategory_instance.range_end_day
+                if int(x3.days) >= 0 and int(x1.days) < 0 :
+                    session.session_category = session_category_1
+                    session.save()
                 if int(x1.days) >= 0 and int(x2.days) <= 0 :
                     if str(session.day.weekday()) in days:
                         for check in checks:
@@ -401,17 +421,161 @@ def SessionDeleteView(request,pk):
                             check_time = check_time.time()
                             if session.time.minute - check_time.minute == 0 and session.time.hour - check_time.hour == 0:
                                 session.delete()
+                if int(x2.days) > 0 and int(x4.days) <= 0 :
+                    session.session_category = session_category_2
+                    session.save()
             #for reverse
             salon_pk = sessioncategory_instance.salon.pk
+            sessioncategory_instance.delete()
             return HttpResponseRedirect(reverse('session:categories',
                                                 kwargs={'pk':salon_pk}))
 
     else:
         form = SessionDeleteForm()
-        sessioncategory_instance = get_object_or_404(SessionCategoryModel,pk = pk)
         list = sessioncategory_instance.sessions.all()
         obj = list[0]
         session_instances = get_list_or_404(SessionModel,day = obj.day,
                                             session_category = sessioncategory_instance)
     return render(request,'session/setprice.html',{'sessions':session_instances,
                   'session_category':sessioncategory_instance,'form':form})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@login_required
+@sportclub_required
+def SessionCreateView_2(request,pk):
+    salon_instance = get_object_or_404(SalonModel, pk = pk)
+
+    if request.method == 'POST':
+        selected_days = request.POST.getlist('selected_days')
+        days_form_2 = DaysForm_2(data = request.POST )
+        times_form = TimesForm(data = request.POST )
+        if times_form.is_valid() and days_form_2.is_valid():
+
+            first_day = days_form_2.cleaned_data['first_day']
+            first_day = jdatetime.date(first_day.year,first_day.month,first_day.day)
+            #last_day is treating as final day (last_day is sessioning :) )
+            last_day = days_form_2.cleaned_data['last_day']
+            last_day = jdatetime.date(last_day.year,last_day.month,last_day.day)
+
+            start_time = times_form.cleaned_data['start_time']
+            duration = times_form.cleaned_data['duration']
+            stop_time = times_form.cleaned_data['stop_time']
+
+            jstart_time = JDATETIMETOOL.strptime(str(start_time),'%H:%M')
+            jstop_time = JDATETIMETOOL.strptime(str(stop_time),'%H:%M')
+            #Checking interferences in sessions we want to create
+            existing_sessions = salon_instance.sessions.all()
+
+            for existing_session in existing_sessions:
+                x1 = existing_session.day - first_day
+                x2 = existing_session.day - last_day
+                if int(x1.days) >= 0 and int(x2.days) <= 0 :
+                    if str(existing_session.day.weekday()) in selected_days:
+                        existing_duration = JDATETIMETOOL.strptime(existing_session.duration,'%H:%M')
+                        time_var = existing_duration + timedelta(hours = existing_session.time.hour,
+                                                                        minutes = existing_session.time.minute)
+                        try:
+                            if time_var > ceil :
+                                ceil = time_var
+                                interferenced_session_pk =  existing_session.pk
+                        except:
+                            ceil = existing_duration +  timedelta(hours = existing_session.time.hour,
+                                                                            minutes = existing_session.time.minute)
+                            interferenced_session_pk =  existing_session.pk
+                        try:
+                            if JDATETIMETOOL.strptime(str(existing_session.time),'%H:%M') < floor:
+                                floor = existing_session.time
+                                interferenced_session_pk =  existing_session.pk
+
+                        except:
+                            floor = JDATETIMETOOL.strptime(str(existing_session.time),'%H:%M')
+                            interferenced_session_pk =  existing_session.pk
+
+            try:
+                if jstart_time < ceil and jstop_time > floor:
+                    return HttpResponseRedirect(reverse('session:interferenceerror',
+                                                    kwargs={'pk':interferenced_session_pk}))
+            except:
+                pass
+
+            #Creating the SessionCategory Instance
+            session_category = SessionCategoryModel.objects.create(salon=salon_instance,
+                                    range_start_day = first_day, range_end_day = last_day)
+
+            if 0 in selected_days:
+                session_category.saturdays = True
+                session_category.save()
+            if 1 in selected_days:
+                session_category.sundays = True
+                session_category.save()
+            if 2 in selected_days:
+                session_category.mondays = True
+                session_category.save()
+            if 3 in selected_days:
+                session_category.tuesdays = True
+                session_category.save()
+            if 4 in selected_days:
+                session_category.wednesdays = True
+                session_category.save()
+            if 5 in selected_days:
+                session_category.thursdays = True
+                session_category.save()
+            if 6 in selected_days:
+                session_category.fridays = True
+                session_category.save()
+
+
+            #creating sessions
+            x = int(( TotalMinutes(stop_time) - TotalMinutes(start_time) ) / TotalMinutes(duration))
+            day = first_day
+            while True:
+                if str(day.weekday()) in selected_days:
+                    for i in range(x):
+                        total_minutes = TotalMinutes(start_time) + i*TotalMinutes(duration)
+                        hours = int(total_minutes/60)
+                        minutes = total_minutes - (hours * 60)
+                        time = str(hours)+':'+str(minutes)
+
+                        session = SessionModel.objects.create(salon=salon_instance, duration=duration, session_category = session_category,
+                                                    day = day, time = time)
+                        session.save()
+                day = day + timedelta(days = 1)
+                if day > last_day:
+                    break
+
+            return HttpResponseRedirect(reverse('salon:salondetail',
+                                            kwargs={'pk':pk}))
+        else:
+            print(times_form.errors)
+            return HttpResponseRedirect(reverse('salon:salondetail',
+                                            kwargs={'pk':pk}))
+    else:
+        days_form_2 = DaysForm_2
+        times_form = TimesForm()
+        return render(request,'session/sessioncreate_2.html',
+                              {'times_form':times_form,'days_form':days_form_2})
+
+
+def InterferenceErrorView(request,pk):
+    session_instance = get_object_or_404(SessionModel,pk = pk)
+    return render(request,'session/interferenceerror.html',{'session':session_instance})

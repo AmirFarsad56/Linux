@@ -34,7 +34,7 @@
     <p><a href="{% url 'session:create' pk=salon_detail.pk %}">create</a> Sessions form this salon</p>
     {% if salon_detail.sessions.all %}
     <p><a href="{% url 'session:list' pk=salon_detail.pk %}">List</a> of your sessions</p>
-    <p><a href="{% url 'session:categories' pk=salon_detail.pk %}">Set</a> Price For Your Sessions</p>
+    <p><a href="{% url 'session:categories' pk=salon_detail.pk %}">See</a> Catogries for Your Salon</p>
     {% endif %}
 
 

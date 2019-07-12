@@ -5,10 +5,27 @@
     <title></title>
   </head>
   <body>
+    Categories list are:<br><br>
     {% for category in categories %}
-    {{category.range_start_day}}
-    other stuff...
-    <a href="{% url 'session:categorizedsessions' pk=category.pk %}">set price</a><br>
+    {% if category.sessions.all %}
+    from: {{category.range_start_day}}<br>
+    to :{{category.range_end_day}}<br>
+    <a href="{% url 'session:categorizedsessions' pk=category.pk %}">See Sessions</a><br>
+    <a href="{% url 'session:setprice' pk=category.pk %}">set price for this category</a><br>
+    <a href="{% url 'session:delete' pk=category.pk %}">Delete Sessions</a><br><br>
+    <a href="{% url 'session:create_2' salon.pk %}">create new session</a>
+    {% endif %}
+    {% endfor %}
+<br>
+<br>
+    Categories without sessions: <br>
+    {% for category in categories %}
+    {% if not category.sessions.all %}
+    from: {{category.range_start_day}}<br>
+    to: {{category.range_end_day}}<br>
+    <a href="{% url 'session:create_2' salon.pk %}">create new session</a><br>
+    <p>-----------------------------</p><br>
+    {% endif %}
     {% endfor %}
   </body>
 </html>

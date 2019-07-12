@@ -13,6 +13,12 @@ class DaysForm(forms.Form):
     fridays = forms.BooleanField(required = False)
 
 
+class DaysForm_2(forms.Form):
+    first_day = forms.DateField(required=True, widget=forms.DateInput(format='%Y-%m-%d'))
+    last_day = forms.DateField(required=True, widget=forms.DateInput(format='%Y-%m-%d'))
+
+
+
 class TimesForm(forms.Form):
     start_time = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))
     duration = forms.TimeField(widget=forms.TimeInput(format='%H:%M'))

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+
+    <form method="POST">
+      {% csrf_token %}
+      {{days_form.as_p}}
+      <input type="checkbox" name="selected_days" value="0">saturdays<br>
+      <input type="checkbox" name="selected_days" value="1">sundays<br>
+      <input type="checkbox" name="selected_days" value="2">mondays<br>
+      <input type="checkbox" name="selected_days" value="3">tuesdays<br>
+      <input type="checkbox" name="selected_days" value="4">wednesdays<br>
+      <input type="checkbox" name="selected_days" value="5">thursdays<br>
+      <input type="checkbox" name="selected_days" value="6">fridays<br>
+      {{times_form.as_p}}
+      <input type="submit" value="submit">
+    </form>
+
+
+  </body>
+</html>

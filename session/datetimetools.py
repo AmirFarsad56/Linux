@@ -133,6 +133,7 @@ def TotalMinutes(time):
     total_minutes = (time.hour * 60) + time.minute
     return total_minutes
 
+
 '''
 #string to date
 from jdatetime import datetime as x
