@@ -5,9 +5,10 @@
     <title></title>
   </head>
   <body>
-
+ {% if last_data.first_day_2 %}
     <form method="POST">
       {% csrf_token %}
+      create sessions within today and {{last_data.first_day_2}} -1 day
       {{days_form.as_p}}
       <input type="checkbox" name="selected_days" value="0">saturdays<br>
       <input type="checkbox" name="selected_days" value="1">sundays<br>
@@ -19,6 +20,10 @@
       {{times_form.as_p}}
       <input type="submit" value="submit">
     </form>
+    {% else %}
+    <p>first you need to complete the create session from</p>
+    <a href="{% url 'session:create' pk=last_data.salon.pk %}">here</a>
+    {% endif %}
 
 
   </body>

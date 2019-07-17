@@ -3,7 +3,7 @@ from session.models import SessionModel
 
 
 class DaysForm(forms.Form):
-    last_day = forms.DateField(required=False, widget=forms.DateInput(format='%Y-%m-%d'))
+    last_day = forms.CharField(required = False)
     saturdays = forms.BooleanField(required = False)
     sundays = forms.BooleanField(required = False)
     mondays = forms.BooleanField(required = False)
@@ -14,8 +14,8 @@ class DaysForm(forms.Form):
 
 
 class DaysForm_2(forms.Form):
-    first_day = forms.DateField(required=True, widget=forms.DateInput(format='%Y-%m-%d'))
-    last_day = forms.DateField(required=True, widget=forms.DateInput(format='%Y-%m-%d'))
+    first_day = forms.CharField(required = True)
+    last_day = forms.CharField(required = True)
 
 
 
@@ -26,11 +26,11 @@ class TimesForm(forms.Form):
 
 
 class PriceForm(forms.Form):
-    range_start = forms.DateField(widget=forms.DateInput(format='%Y-%m-%d'))
-    range_end = forms.DateField(widget=forms.DateInput(format='%Y-%m-%d'))
+    range_start = forms.CharField()
+    range_end = forms.CharField()
     price = forms.IntegerField(required = True)
 
 
 class SessionDeleteForm(forms.Form):
-    range_start = forms.DateField(widget=forms.DateInput(format='%Y-%m-%d'))
-    range_end = forms.DateField(widget=forms.DateInput(format='%Y-%m-%d'))
+    range_start = forms.CharField()
+    range_end = forms.CharField()

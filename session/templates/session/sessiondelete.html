@@ -5,10 +5,40 @@
     <title></title>
   </head>
   <body>
-      <form method="POST">
-        {% csrf_token %}
-        {{form.as_p}}
-        <input type="submit" value="submit">
-      </form>
+    <p>within {{session_category.range_start_day}} - {{session_category.range_end_day}}
+    </p>
+<form method="POST">
+  {% csrf_token %}
+  from : {{form.range_start}}
+  to : {{form.range_end}}<br>
+  {% if session_category.saturdays %}
+  <input type="checkbox" name="days" value="0">saturdays<br>
+  {% endif %}
+  {% if session_category.sundays %}
+  <input type="checkbox" name="days" value="1">sundays<br>
+  {% endif %}
+  {% if session_category.mondays %}
+  <input type="checkbox" name="days" value="2">mondays<br>
+  {% endif %}
+  {% if session_category.tuesdays %}
+  <input type="checkbox" name="days" value="3">tuesdays<br>
+  {% endif %}
+  {% if session_category.wednesdays %}
+  <input type="checkbox" name="days" value="4">wednesdays<br>
+  {% endif %}
+  {% if session_category.thursdays %}
+  <input type="checkbox" name="days" value="5">thursdays<br>
+  {% endif %}
+  {% if session_category.fridays %}
+  <input type="checkbox" name="days" value="6">fridays<br>
+  {% endif %}
+
+  {% for session in sessions %}
+  <input type="checkbox" name="checks" value="{{session.time|date:"H:i"}}">{{session.time|date:"H:i"}}<br>
+  {% endfor %}
+  <input type="submit" value="submit">
+</form>
+
+
   </body>
 </html>

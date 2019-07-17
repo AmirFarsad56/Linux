@@ -2,13 +2,14 @@ from django.urls import include, path
 from session.views import (SessionCreateView, SessionListView, LengthError,
                            SessionCategoriesView, SetPriceView, CategorizedSessionListView,
                            SessionUpdateView,SessionDeleteView,SessionCreateView_2,
-                           InterferenceErrorView)
+                           InterferenceErrorView, BoundaryErrorView)
 
 app_name ='session'
 urlpatterns = [
     path('create/<int:pk>/', SessionCreateView, name='create'),
     path('list/<int:pk>/', SessionListView, name='list'),
     path('length-error', LengthError.as_view(), name='lengtherror'),
+    path('boundary-error', BoundaryErrorView.as_view(), name='boundaryerror'),
     path('categories/<int:pk>/', SessionCategoriesView, name='categories'),
     path('categorizedsessions/<int:pk>/', CategorizedSessionListView, name='categorizedsessions'),
     path('setprice/<int:pk>/', SetPriceView, name='setprice'),

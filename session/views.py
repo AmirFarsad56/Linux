@@ -36,16 +36,23 @@ def SessionCreateView(request, pk):
                 length = lastdata_instance.last_length
                 first_day = lastdata_instance.first_day
                 last_day = lastdata_instance.last_day
+                print('333333333333333')
+                print(first_day)
 
             else:
                 if lastdata_instance.first_day_2:
                     first_day = lastdata_instance.first_day_2
+                    print('222222222222222')
                 else:
                     first_day = jdatetime.datetime.now().date()
-                last_day = days_form.cleaned_data['last_day']
-                last_day = jdatetime.date(last_day.year,last_day.month,last_day.day)
+                    print('1111111111111111')
+                print(first_day)
+                last_day_str = days_form.cleaned_data['last_day']
+                last_day_list = last_day_str.split('-')
+                last_day = jdatetime.date(int(last_day_list[0]),int(last_day_list[1]),int(last_day_list[2]))
                 length = last_day - first_day
                 length = length.days
+                print(first_day,';;;;;;;;;;')
             if length < 6 :
                 return HttpResponseRedirect(reverse('session:lengtherror'))
 
@@ -59,7 +66,6 @@ def SessionCreateView(request, pk):
             start_time = times_form.cleaned_data['start_time']
             duration = times_form.cleaned_data['duration']
             stop_time = times_form.cleaned_data['stop_time']
-
             x = int(( TotalMinutes(stop_time) - TotalMinutes(start_time) ) / TotalMinutes(duration))
 
             #Creating the SessionCategory Instance
@@ -319,10 +325,12 @@ def SetPriceView(request,pk):
         days = request.POST.getlist('days')
         price_form = PriceForm(data = request.POST )
         if price_form.is_valid():
-            range_start = price_form.cleaned_data['range_start']
-            range_start = jdatetime.date(range_start.year,range_start.month,range_start.day)
-            range_end = price_form.cleaned_data['range_end']
-            range_end = jdatetime.date(range_end.year,range_end.month,range_end.day)
+            range_start_str = price_form.cleaned_data['range_start']
+            range_start_list = range_start_str.split('-')
+            range_start = jdatetime.date(int(range_start_list[0]),int(range_start_list[1]),int(range_start_list[2]))
+            range_end_str = price_form.cleaned_data['range_end']
+            range_end_list = range_end_str.split('-')
+            range_end = jdatetime.date(int(range_end_list[0]),int(range_end_list[1]),int(range_end_list[2]))
             price = price_form.cleaned_data['price']
             sessioncategory_instance = get_object_or_404(SessionCategoryModel,pk = pk)
             sessions = sessioncategory_instance.sessions.all()
@@ -387,10 +395,12 @@ def SessionDeleteView(request,pk):
         days = request.POST.getlist('days')
         form = SessionDeleteForm(data = request.POST )
         if form.is_valid():
-            range_start = form.cleaned_data['range_start']
-            range_start = jdatetime.date(range_start.year,range_start.month,range_start.day)
-            range_end = form.cleaned_data['range_end']
-            range_end = jdatetime.date(range_end.year,range_end.month,range_end.day)
+            range_start_str = form.cleaned_data['range_start']
+            range_start_list = range_start_str.split('-')
+            range_start = jdatetime.date(int(range_start_list[0]),int(range_start_list[1]),int(range_start_list[2]))
+            range_end_str = form.cleaned_data['range_end']
+            range_end_list = range_end_str.split('-')
+            range_end = jdatetime.date(int(range_end_list[0]),int(range_end_list[1]),int(range_end_list[2]))
             sessions = sessioncategory_instance.sessions.all()
             ##########
             session_category_1 = SessionCategoryModel.objects.create(salon=sessioncategory_instance.salon,
@@ -429,6 +439,8 @@ def SessionDeleteView(request,pk):
             sessioncategory_instance.delete()
             return HttpResponseRedirect(reverse('session:categories',
                                                 kwargs={'pk':salon_pk}))
+        else:
+            print(form.errors)
 
     else:
         form = SessionDeleteForm()
@@ -436,28 +448,8 @@ def SessionDeleteView(request,pk):
         obj = list[0]
         session_instances = get_list_or_404(SessionModel,day = obj.day,
                                             session_category = sessioncategory_instance)
-    return render(request,'session/setprice.html',{'sessions':session_instances,
+    return render(request,'session/sessiondelete.html',{'sessions':session_instances,
                   'session_category':sessioncategory_instance,'form':form})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 @login_required
@@ -471,12 +463,20 @@ def SessionCreateView_2(request,pk):
         times_form = TimesForm(data = request.POST )
         if times_form.is_valid() and days_form_2.is_valid():
 
-            first_day = days_form_2.cleaned_data['first_day']
-            first_day = jdatetime.date(first_day.year,first_day.month,first_day.day)
+            first_day_str = days_form_2.cleaned_data['first_day']
+            first_day_list = first_day_str.split('-')
+            first_day = jdatetime.date(int(first_day_list[0]),int(first_day_list[1]),int(first_day_list[2]))
             #last_day is treating as final day (last_day is sessioning :) )
-            last_day = days_form_2.cleaned_data['last_day']
-            last_day = jdatetime.date(last_day.year,last_day.month,last_day.day)
+            last_day_str = days_form_2.cleaned_data['last_day']
+            last_day_list = last_day_str.split('-')
+            last_day = jdatetime.date(int(last_day_list[0]),int(last_day_list[1]),int(last_day_list[2]))
 
+
+            last_data_instance = salon_instance.lastdatas.all()
+            if not last_data_instance[0].first_day_2:
+                return HttpResponseRedirect(reverse('session:boundaryerror'))
+            if last_day >= last_data_instance[0].first_day_2:
+                return HttpResponseRedirect(reverse('session:boundaryerror'))
             start_time = times_form.cleaned_data['start_time']
             duration = times_form.cleaned_data['duration']
             stop_time = times_form.cleaned_data['stop_time']
@@ -572,10 +572,16 @@ def SessionCreateView_2(request,pk):
     else:
         days_form_2 = DaysForm_2
         times_form = TimesForm()
+        last_data_instance = get_object_or_404(LastDataModel,salon = salon_instance)
         return render(request,'session/sessioncreate_2.html',
-                              {'times_form':times_form,'days_form':days_form_2})
+                              {'times_form':times_form,
+                              'last_data':last_data_instance,'days_form':days_form_2})
 
 
 def InterferenceErrorView(request,pk):
     session_instance = get_object_or_404(SessionModel,pk = pk)
     return render(request,'session/interferenceerror.html',{'session':session_instance})
+
+
+class BoundaryErrorView(TemplateView):
+    template_name = 'session/boundaryerror.html'
