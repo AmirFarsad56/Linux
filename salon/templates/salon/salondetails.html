@@ -38,6 +38,15 @@
       <p>Confirm Salon From: <a href="{% url 'salon:confirm' pk=salon_detail.pk %}">here</a> </p>
       <p>DELETE Salon From: <a href="{% url 'salon:delete' pk=salon_detail.pk %}">here</a> </p>
       {% endif %}
+      <br>
+      {% for a in salon_detail.lastdatas.all %}
+      {% if a.first_day_2 %}
+      current first_day for adding sessions is {{a.first_day_2}}
+      {% else %}
+      this salon has not created any sessions so it has not dirst_day_2
+      {% endif %}
+      <p><a href="{% url 'session:lastdataset' pk=salon_detail.pk %}">Ajdust</a> LastData for this salon</p>
+      {% endfor %}
 
   </body>
 </html>

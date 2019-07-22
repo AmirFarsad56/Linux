@@ -10,7 +10,11 @@ updating the uploaded images
 
 messages (back to front) in signing up (maybe the best way is to delete it)
 
+last_day must be > first_day must be checked in front
+
 sportclubs should change their password in first_login
+
+what happens to dthe booked sessions that are going to be deleted?
 
 salons must have a pending filed that when a masteruser told them to change your salon other masterusers
 doesn't see that salon in unpublished list
@@ -22,7 +26,7 @@ url mapping for commonusers to see salon list
 later when a sportclub or a salon is banned all booked money should return to their related users
 and inform them with a message or email
 
-
+protecting views with user_required and every user can only adjust datas created by himself
 
 masterusers should update their pictures and password
 

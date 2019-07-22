@@ -200,10 +200,10 @@ Related to Sport Club: {sportclub}
 
 @login_required
 @masteruser_required
-def SalonDetailsView(request,pk):
+def SalonDetailViewMasterUser(request,pk):
     if request.user.is_masteruser:
         salon = get_object_or_404(SalonModel,pk = pk)
-        return render(request,'salon/salondetails.html',
+        return render(request,'salon/salondetail_masteruser.html',
                           {'salon_detail':salon})
     else:
         return HttpResponseRedirect(reverse('login'))

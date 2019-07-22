@@ -19,6 +19,7 @@ class SessionCategoryModel(models.Model):
     fridays = models.BooleanField(default = False)
     range_start_day = jmodels.jDateField(null = False, blank = False)
     range_end_day = jmodels.jDateField(null = False, blank = False)
+    is_closed = models.BooleanField(null = False, default = False)
 
 
 class SessionModel(models.Model):
@@ -46,39 +47,25 @@ class LastDataModel(models.Model):
     first_day = jmodels.jDateField(null = True, blank = True)
     first_day_2 = jmodels.jDateField(null = True, blank = True)
     last_day = jmodels.jDateField(null = True, blank = True)
-    last_saturday = jmodels.jDateField(null = True, blank = True)
-    last_sunday = jmodels.jDateField(null = True, blank = True)
-    last_monday = jmodels.jDateField(null = True, blank = True)
-    last_tuesday = jmodels.jDateField(null = True, blank = True)
-    last_wednesday = jmodels.jDateField(null = True, blank = True)
-    last_thursday = jmodels.jDateField(null = True, blank = True)
-    last_friday = jmodels.jDateField(null = True, blank = True)
-    last_saturday_2 = jmodels.jDateField(null = True, blank = True)
-    last_sunday_2 = jmodels.jDateField(null = True, blank = True)
-    last_monday_2 = jmodels.jDateField(null = True, blank = True)
-    last_tuesday_2 = jmodels.jDateField(null = True, blank = True)
-    last_wednesday_2 = jmodels.jDateField(null = True, blank = True)
-    last_thursday_2 = jmodels.jDateField(null = True, blank = True)
-    last_friday_2 = jmodels.jDateField(null = True, blank = True)
+    last_saturday = models.BooleanField(default = False)
+    last_sunday = models.BooleanField(default = False)
+    last_monday = models.BooleanField(default = False)
+    last_tuesday = models.BooleanField(default = False)
+    last_wednesday = models.BooleanField(default = False)
+    last_thursday = models.BooleanField(default = False)
+    last_friday = models.BooleanField(default = False)
 
     def save(self, *args, **kwargs):
-        if self.last_saturday is not None and self.last_sunday is not None and self.last_monday is not None and self.last_tuesday is not None and self.last_wednesday is not None and self.last_thursday is not None and self.last_friday is not None:
+        if self.last_saturday and self.last_sunday and self.last_monday and self.last_tuesday and self.last_wednesday and self.last_thursday and self.last_friday:
             self.first_day_2 = self.last_day + timedelta(days = 1)
             self.first_day = None
             self.last_day = None
             self.last_length = None
-            self.last_saturday_2 = self.last_saturday
-            self.last_saturday = None
-            self.last_sunday_2 = self.last_sunday
-            self.last_sunday = None
-            self.last_monday_2 = self.last_monday
-            self.last_monday = None
-            self.last_tuesday_2 = self.last_tuesday
-            self.last_tuesday = None
-            self.last_wednesday_2 = self.last_wednesday
-            self.last_wednesday = None
-            self.last_thursday_2 = self.last_thursday
-            self.last_thursday = None
-            self.last_friday_2 = self.last_friday
-            self.last_friday = None
+            self.last_saturday = False
+            self.last_sunday = False
+            self.last_monday = False
+            self.last_tuesday = False
+            self.last_wednesday = False
+            self.last_thursday = False
+            self.last_friday = False
         super(LastDataModel, self).save(*args, **kwargs)

@@ -5,10 +5,12 @@
     <title></title>
   </head>
   <body>
-    bayad pk haye marbut be har SessionCategory dar kolle salone marbute entekhab shavad va urls.py tanzim shavand
+    bayad pk haye marbut be har SessionCategory dar kolle salone marbute entekhab shavad va urls.py tanzim shavand <br><br>
     {% for session in sessions%}
     {{session.day}}<br>
     {{session.time}}<br>
+    {{session.session_category}}<br>
+    
     <p>----------------------------</p>
     {% endfor %}
 

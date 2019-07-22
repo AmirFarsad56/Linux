@@ -6,49 +6,50 @@
   </head>
   <body>
 
+
     <form id='days_form' method="POST">
       {% if lastdata_instance.last_length %}
-      <p>create sessions for the length of {{lastdata_instance.last_length}} +  1 days
-       between {{lastdata_instance.first_day}} and {{lastdata_instance.last_day}}</p>
+        <p>create sessions for the length of {{lastdata_instance.last_length}} +  1 days
+         between {{lastdata_instance.first_day}} and {{lastdata_instance.last_day}}</p>
       {% else %}
-      {% if lastdata_instance.first_day_2 %}
-      <p>first day of the range is {{lastdata_instance.first_day_2}}</p>
-      {% else %}
-      <p>first day of the range is today</p>
+        {% if lastdata_instance.first_day_2 %}
+          <p>first day of the range is {{lastdata_instance.first_day_2}}</p>
+        {% else %}
+          <p>first day of the range is today</p>
+        {% endif %}
+        <p>enter the end of the range of making sessions: {{days_form.last_day}}</p>
       {% endif %}
-      <p>enter the end of the range of making sessions: {{days_form.last_day}}</p>
-      {% endif %}
+      <p><a href="{% url 'session:lastdataset' pk=lastdata_instance.salon.pk %}">Ajdust</a> LastData for your salon</p>
 
-
-      {% if lastdata_instance.last_saturday == null %}
-      <p>saturdays: {{days_form.saturdays}}</p>
-      {% endif %}
-
-      {% if lastdata_instance.last_sunday == null %}
-      <p>sundays: {{days_form.sundays}}</p>
+      {% if lastdata_instance.last_saturday == False %}
+      <input type="checkbox" name="selected_days" value="0">saturdays<br>
       {% endif %}
 
-      {% if lastdata_instance.last_monday == null %}
-      <p>mondays: {{days_form.mondays}}</p>
+      {% if lastdata_instance.last_sunday == False %}
+      <input type="checkbox" name="selected_days" value="1">sundays<br>
       {% endif %}
 
-      {% if lastdata_instance.last_tuesday == null %}
-      <p>tuesdays: {{days_form.tuesdays}}</p>
+      {% if lastdata_instance.last_monday == False %}
+      <input type="checkbox" name="selected_days" value="2">mondays<br>
       {% endif %}
 
-      {% if lastdata_instance.last_wednesday == null %}
-      <p>wednesdays: {{days_form.wednesdays}}</p>
+      {% if lastdata_instance.last_tuesday == False %}
+      <input type="checkbox" name="selected_days" value="3">tuesdays<br>
       {% endif %}
 
-      {% if lastdata_instance.last_thursday == null %}
-      <p>thursdays: {{days_form.thursdays}}</p>
+      {% if lastdata_instance.last_wednesday == False %}
+      <input type="checkbox" name="selected_days" value="4">wednesdays<br>
       {% endif %}
 
-
-      {% if lastdata_instance.last_friday == null %}
-      <p>fridays: {{days_form.fridays}}</p>
+      {% if lastdata_instance.last_thursday == False %}
+      <input type="checkbox" name="selected_days" value="5">thursdays<br>
       {% endif %}
 
+      {% if lastdata_instance.last_friday == False %}
+      <input type="checkbox" name="selected_days" value="6">fridays<br>
+      {% endif %}
+      <br>
+      <input type="checkbox" name="is_closed" value="closed">CLOSED<br>
       {{times_form.as_p}}
       {% csrf_token %}
     <input type='submit' name='days_form' value='Form 1' />

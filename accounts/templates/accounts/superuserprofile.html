@@ -5,7 +5,9 @@
     <title></title>
   </head>
   <body>
+    {% if superuser.picture %}
     profile image <img src="{{superuser.picture.url}}" width="70" height="70"/>
+    {% endif %}
     <p>Welcome To Profile Page {{superuser.username}}</p>
     {% if not user.first_name %}
     **************** {{superuser.slug}}
