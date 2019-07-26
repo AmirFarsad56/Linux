@@ -3,10 +3,11 @@ from session.views import (SessionCreateView, SessionListView, LengthError,
                            SessionCategoriesView, SetPriceView, CategorizedSessionListView,
                            SessionUpdateView,SessionDeleteView,SessionCreateView_2,
                            InterferenceErrorView, BoundaryErrorView, NoInputErrorView,
-                           LastDataSetView, LogicalErrorView)
+                           LastDataSetView, LogicalErrorView, AllSessionListView)
 
 app_name ='session'
 urlpatterns = [
+    path('sessions-list/', AllSessionListView.as_view(), name='all_sessions_list'),
     path('create/<int:pk>/', SessionCreateView, name='create'),
     path('list/<int:pk>/', SessionListView, name='list'),
     path('length-error', LengthError.as_view(), name='lengtherror'),

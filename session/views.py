@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import CreateView, TemplateView, UpdateView
+from django.views.generic import CreateView, TemplateView, UpdateView, ListView
 from django.shortcuts import get_object_or_404, get_list_or_404
 from jdatetime import date, timedelta
 from jdatetime import datetime as JDATETIMETOOL
@@ -485,12 +485,14 @@ def SessionCreateView(request, pk):
 
                 if length < 6 :
                     return HttpResponseRedirect(reverse('session:lengtherror'))
-
-                jstart_time = JDATETIMETOOL.strptime(str(start_time),'%H:%M')
-                jstop_time = JDATETIMETOOL.strptime(str(stop_time),'%H:%M')
-                stop_2 = JDATETIMETOOL.strptime(str(duration),'%H:%M') +  timedelta(hours=jstart_time.hour, minutes = jstart_time.minute)
-                if first_day > last_day or jstop_time < stop_2 :
-                    return HttpResponseRedirect(reverse('session:logicalerror'))
+                try: # be aware of this try structure before adding any other logical errors
+                    jstart_time = JDATETIMETOOL.strptime(str(start_time),'%H:%M')
+                    jstop_time = JDATETIMETOOL.strptime(str(stop_time),'%H:%M')
+                    stop_2 = JDATETIMETOOL.strptime(str(duration),'%H:%M') +  timedelta(hours=jstart_time.hour, minutes = jstart_time.minute)
+                    if first_day > last_day or jstop_time < stop_2 :
+                        return HttpResponseRedirect(reverse('session:logicalerror'))
+                except:
+                    pass
                 #Creating the SessionCategory Instance
                 session_category = SessionCategoryModel.objects.create(salon=salon_instance,
                                         range_start_day = first_day, range_end_day = last_day)
@@ -621,3 +623,14 @@ def LastDataSetView(request, pk):
 
 class LogicalErrorView(TemplateView):
     template_name = 'session/logicalerror.html'
+
+
+@method_decorator(login_required, name='dispatch')
+class AllSessionListView(ListView):
+    model = SessionModel
+    template_name = 'session/allsessionslist.html'
+    context_object_name = 'sessions'
+
+    def get_queryset(self):
+        queryset = SessionModel.objects.filter( salon__is_confirmed = True ).order_by('day')
+        return queryset
