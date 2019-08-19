@@ -2,7 +2,7 @@ from django.urls import include, path
 from salon.views import (SalonCreateView, SalonUpdateView, SalonDetailView,
                         ConfirmedSalonListView, UnConfirmedSalonListView,
                         SalonConfirmView, SalonDeleteView, SalonBanView,
-                        SalonDetailViewMasterUser)
+                        SalonDetailViewMasterUser,SalonSetProfitPercentage)
 
 
 app_name ='salon'
@@ -18,5 +18,6 @@ urlpatterns = [
     path('salon/delete/<int:pk>/',SalonDeleteView, name='delete'),
     path('salon/ban/<int:pk>/',SalonBanView, name='ban'),
     path('salon/detail/<int:pk>/',SalonDetailViewMasterUser, name='detail'),
+    path('salon/setprofitpercentage/<int:pk>/',SalonSetProfitPercentage, name='setprofitpercentage'),
 
 ]

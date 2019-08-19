@@ -35,8 +35,10 @@ class SessionModel(models.Model):
     time = models.TimeField(null = True)
     duration = models.CharField(max_length = 264, blank = False , null = False)
     price = models.IntegerField(blank = True, null = True)
+    discount_percentage = models.IntegerField(null = False, default = 0)
     is_booked = models.BooleanField(blank = False, default = False)
     is_ready = models.BooleanField(blank = False, default = False)
+    booking_code = models.CharField(max_length = 264, blank = True , null = True)
 
 
 class LastDataModel(models.Model):

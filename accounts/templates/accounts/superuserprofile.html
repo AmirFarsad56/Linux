@@ -29,6 +29,28 @@
       <p>Send cloud Message <a href="{% url 'accounts:cloudmessage' %}">here</a></p>
       <p>Send cloud Email <a href="{% url 'accounts:cloudemail' %}">here</a></p>
       <p>Change Passwrod <a href="{% url 'accounts:passwordchange' slug=user.slug %}">here</a></p>
+
+
+
+      {% if profit_percantage %}
+      update profit percantage
+      <a href="{% url 'booking:updateprofitpercentage' pk=profit_percantage.get.pk%}"> here</a><br>
+      {% else %}
+      set profit percentage for first time
+      <a href="{% url 'booking:createprofitpercentage'%}"> here</a><br> if you're seeing this not for first time sth has went wrong <br>
+      {% endif %}
+<br>
+
+      {% if terms %}
+      update Terms and Condition for Company
+      <a href="{% url 'company:updateterms' pk=terms.get.pk%}"> here</a><br>
+      {% else %}
+      set Terms and Condition for Company for first time
+      <a href="{% url 'company:createterms'%}"> here</a><br> if you're seeing this not for first time sth has went wrong <br>
+      {% endif %}
+<br>
+      <a href="{% url 'sportclub:listforsuperuser' %}">List of Sportclubs</a>
+
     </p>
   </body>
 </html>

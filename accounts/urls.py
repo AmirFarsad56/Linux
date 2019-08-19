@@ -4,7 +4,7 @@ from accounts.views import (SuperUserProfileView, SuperUserUpdateView,
 
 app_name ='accounts'
 urlpatterns = [
-    path('profile/<slug:slug>/', SuperUserProfileView.as_view(), name='profile'),
+    path('profile/<slug:slug>/', SuperUserProfileView, name='profile'),
     path('update/<slug:slug>/', SuperUserUpdateView, name='update'),
     path('cloudmessage/', CloudMessageView, name='cloudmessage'),
     path('cloudemail/', CloudEmailView, name='cloudemail'),

@@ -1,0 +1,336 @@
+{% extends "base_templates/base1.html" %}
+{% load customtags %}
+{% block head_block %}
+<title>
+    پروفایل | سامانه ورزش کن
+</title>
+{% endblock %}
+
+{% block body_block %}
+
+
+
+
+<br><br>
+
+
+<div class="container">
+  <div class="row center">
+    <span class="center-align gold-text fMarkazi">درصورت وجود سانس با کلیک بر روی هر یک از روزها میتوانید به سانس های آن روز دسترسی داشته باشید</span>
+  </div>
+
+<div class="slider">
+    <ul class="slides">
+<li>    <table class="grey darken-4 white-text fMarkazi">
+      <th class="center" style="white-space:pre">
+        <td style="white-space:pre">{% for day in days_1 %}{% if day|only_day|cutbr == '1' %}<h5 class="pink-text">{{day|only_year}}</h5>{% endif %}{% endfor %}</td>
+        <td style="white-space:pre">          </td><td style="white-space:pre">          </td><td style="white-space:pre">          </td>
+        <td style="white-space:pre">{% for day in days_1 %}{% if day|only_day|cutbr == '1' %}<h5 class="pink-text">{{day|only_month}}</h5>{% endif %}{% endfor %}</td>
+        <td></td>
+        <tr class="center">
+
+
+<td class="gold-text center" style="white-space:pre">    جمعه   </td>
+<td class="gold-text center" style="white-space:pre">پنج شنبه  </td>
+<td class="gold-text center" style="white-space:pre">چهارشنبه </td>
+<td class="gold-text center" style="white-space:pre"> سه شنبه </td>
+<td class="gold-text center" style="white-space:pre"> دوشنبه  </td>
+<td class="gold-text center" style="white-space:pre"> یکشنبه  </td>
+<td class="gold-text center" style="white-space:pre">   شنبه  </td>
+        </tr>
+      </th>
+
+
+{% for day in days_1 %}
+
+
+{% if '-br' in day %}<tr><td class="center">{% if day|cutbr in session_days %}<a class="blue-text" href="{% url 'session:day_list' pk=salon.pk str=day|cutbr %}">{{day|only_day}}</a>{% else %}{{day|only_day}}{% endif %}</td>{% else %}<td class="center">{% if day|cutbr in session_days %}<a class="blue-text" href="{% url 'session:day_list' pk=salon.pk str=day|cutbr %}">{{day|only_day}}</a>{% else %}{{day|only_day}}{% endif %}</td>{% endif %}
+{% endfor %}
+<tr>
+  <td></td>
+</tr>
+<tr>
+  <td></td>
+</tr>
+<tr>
+  <td></td>
+</tr>
+
+    </table>
+</li>
+<li>
+  <table class="grey darken-4 white-text fMarkazi">
+        <th class="center" style="white-space:pre">
+          <td style="white-space:pre">{% for day in days_2 %}{% if day|only_day|cutbr == '1' %}<h5 class="pink-text">{{day|only_year}}</h5>{% endif %}{% endfor %}</td>
+          <td style="white-space:pre">          </td><td style="white-space:pre">          </td><td style="white-space:pre">          </td>
+          <td style="white-space:pre">{% for day in days_2 %}{% if day|only_day|cutbr == '1' %}<h5 class="pink-text">{{day|only_month}}</h5>{% endif %}{% endfor %}</td>
+          <td></td>
+          <tr class="center">
+
+
+  <td class="gold-text center" style="white-space:pre">    جمعه   </td>
+  <td class="gold-text center" style="white-space:pre">پنج شنبه  </td>
+  <td class="gold-text center" style="white-space:pre">چهارشنبه </td>
+  <td class="gold-text center" style="white-space:pre"> سه شنبه </td>
+  <td class="gold-text center" style="white-space:pre"> دوشنبه  </td>
+  <td class="gold-text center" style="white-space:pre"> یکشنبه  </td>
+  <td class="gold-text center" style="white-space:pre">   شنبه  </td>
+          </tr>
+        </th>
+
+
+  {% for day in days_2 %}
+
+
+  {% if '-br' in day %}<tr><td class="center">{% if day|cutbr in session_days %}<a class="blue-text" href="{% url 'session:day_list' pk=salon.pk str=day|cutbr %}">{{day|only_day}}</a>{% else %}{{day|only_day}}{% endif %}</td>{% else %}<td class="center">{% if day|cutbr in session_days %}<a class="blue-text" href="{% url 'session:day_list' pk=salon.pk str=day|cutbr %}">{{day|only_day}}</a>{% else %}{{day|only_day}}{% endif %}</td>{% endif %}
+  {% endfor %}
+  <tr>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+  </tr>
+      </table>
+</li>
+<li>
+  <table class="grey darken-4 white-text fMarkazi">
+        <th class="center" style="white-space:pre">
+          <td style="white-space:pre">{% for day in days_3 %}{% if day|only_day|cutbr == '1' %}<h5 class="pink-text">{{day|only_year}}</h5>{% endif %}{% endfor %}</td>
+          <td style="white-space:pre">          </td><td style="white-space:pre">          </td><td style="white-space:pre">          </td>
+          <td style="white-space:pre">{% for day in days_3 %}{% if day|only_day|cutbr == '1' %}<h5 class="pink-text">{{day|only_month}}</h5>{% endif %}{% endfor %}</td>
+          <td></td>
+          <tr class="center">
+
+
+  <td class="gold-text center" style="white-space:pre">    جمعه   </td>
+  <td class="gold-text center" style="white-space:pre">پنج شنبه  </td>
+  <td class="gold-text center" style="white-space:pre">چهارشنبه </td>
+  <td class="gold-text center" style="white-space:pre"> سه شنبه </td>
+  <td class="gold-text center" style="white-space:pre"> دوشنبه  </td>
+  <td class="gold-text center" style="white-space:pre"> یکشنبه  </td>
+  <td class="gold-text center" style="white-space:pre">   شنبه  </td>
+          </tr>
+        </th>
+
+
+  {% for day in days_3 %}
+
+
+  {% if '-br' in day %}<tr><td class="center">{% if day|cutbr in session_days %}<a class="blue-text" href="{% url 'session:day_list' pk=salon.pk str=day|cutbr %}">{{day|only_day}}</a>{% else %}{{day|only_day}}{% endif %}</td>{% else %}<td class="center">{% if day|cutbr in session_days %}<a class="blue-text" href="{% url 'session:day_list' pk=salon.pk str=day|cutbr %}">{{day|only_day}}</a>{% else %}{{day|only_day}}{% endif %}</td>{% endif %}
+  {% endfor %}
+  <tr>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+  </tr>
+      </table>
+</li>
+<li>
+  <table class="grey darken-4 white-text fMarkazi">
+        <th class="center" style="white-space:pre">
+          <td style="white-space:pre">{% for day in days_4 %}{% if day|only_day|cutbr == '1' %}<h5 class="pink-text">{{day|only_year}}</h5>{% endif %}{% endfor %}</td>
+          <td style="white-space:pre">          </td><td style="white-space:pre">          </td><td style="white-space:pre">          </td>
+          <td style="white-space:pre">{% for day in days_4 %}{% if day|only_day|cutbr == '1' %}<h5 class="pink-text">{{day|only_month}}</h5>{% endif %}{% endfor %}</td>
+          <td></td>
+          <tr class="center">
+
+
+  <td class="gold-text center" style="white-space:pre">    جمعه   </td>
+  <td class="gold-text center" style="white-space:pre">پنج شنبه  </td>
+  <td class="gold-text center" style="white-space:pre">چهارشنبه </td>
+  <td class="gold-text center" style="white-space:pre"> سه شنبه </td>
+  <td class="gold-text center" style="white-space:pre"> دوشنبه  </td>
+  <td class="gold-text center" style="white-space:pre"> یکشنبه  </td>
+  <td class="gold-text center" style="white-space:pre">   شنبه  </td>
+          </tr>
+        </th>
+
+
+  {% for day in days_4 %}
+
+
+  {% if '-br' in day %}<tr><td class="center">{% if day|cutbr in session_days %}<a class="blue-text" href="{% url 'session:day_list' pk=salon.pk str=day|cutbr %}">{{day|only_day}}</a>{% else %}{{day|only_day}}{% endif %}</td>{% else %}<td class="center">{% if day|cutbr in session_days %}<a class="blue-text" href="{% url 'session:day_list' pk=salon.pk str=day|cutbr %}">{{day|only_day}}</a>{% else %}{{day|only_day}}{% endif %}</td>{% endif %}
+  {% endfor %}
+  <tr>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+  </tr>
+      </table>
+</li>
+<li>
+  <table class="grey darken-4 white-text fMarkazi">
+        <th class="center" style="white-space:pre">
+          <td style="white-space:pre">{% for day in days_5 %}{% if day|only_day|cutbr == '1' %}<h5 class="pink-text">{{day|only_year}}</h5>{% endif %}{% endfor %}</td>
+          <td style="white-space:pre">          </td><td style="white-space:pre">          </td><td style="white-space:pre">          </td>
+          <td style="white-space:pre">{% for day in days_5 %}{% if day|only_day|cutbr == '1' %}<h5 class="pink-text">{{day|only_month}}</h5>{% endif %}{% endfor %}</td>
+          <td></td>
+          <tr class="center">
+
+
+  <td class="gold-text center" style="white-space:pre">    جمعه   </td>
+  <td class="gold-text center" style="white-space:pre">پنج شنبه  </td>
+  <td class="gold-text center" style="white-space:pre">چهارشنبه </td>
+  <td class="gold-text center" style="white-space:pre"> سه شنبه </td>
+  <td class="gold-text center" style="white-space:pre"> دوشنبه  </td>
+  <td class="gold-text center" style="white-space:pre"> یکشنبه  </td>
+  <td class="gold-text center" style="white-space:pre">   شنبه  </td>
+          </tr>
+        </th>
+
+
+  {% for day in days_5 %}
+
+
+  {% if '-br' in day %}<tr><td class="center">{% if day|cutbr in session_days %}<a class="blue-text" href="{% url 'session:day_list' pk=salon.pk str=day|cutbr %}">{{day|only_day}}</a>{% else %}{{day|only_day}}{% endif %}</td>{% else %}<td class="center">{% if day|cutbr in session_days %}<a class="blue-text" href="{% url 'session:day_list' pk=salon.pk str=day|cutbr %}">{{day|only_day}}</a>{% else %}{{day|only_day}}{% endif %}</td>{% endif %}
+  {% endfor %}
+  <tr>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+  </tr>
+      </table>
+</li>
+<li>
+  <table class="grey darken-4 white-text fMarkazi">
+        <th class="center" style="white-space:pre">
+          <td style="white-space:pre">{% for day in days_6 %}{% if day|only_day|cutbr == '1' %}<h5 class="pink-text">{{day|only_year}}</h5>{% endif %}{% endfor %}</td>
+          <td style="white-space:pre">          </td><td style="white-space:pre">          </td><td style="white-space:pre">          </td>
+          <td style="white-space:pre">{% for day in days_6 %}{% if day|only_day|cutbr == '1' %}<h5 class="pink-text">{{day|only_month}}</h5>{% endif %}{% endfor %}</td>
+          <td></td>
+          <tr class="center">
+
+
+  <td class="gold-text center" style="white-space:pre">    جمعه   </td>
+  <td class="gold-text center" style="white-space:pre">پنج شنبه  </td>
+  <td class="gold-text center" style="white-space:pre">چهارشنبه </td>
+  <td class="gold-text center" style="white-space:pre"> سه شنبه </td>
+  <td class="gold-text center" style="white-space:pre"> دوشنبه  </td>
+  <td class="gold-text center" style="white-space:pre"> یکشنبه  </td>
+  <td class="gold-text center" style="white-space:pre">   شنبه  </td>
+          </tr>
+        </th>
+
+
+  {% for day in days_6 %}
+
+
+  {% if '-br' in day %}<tr><td class="center">{% if day|cutbr in session_days %}<a class="blue-text" href="{% url 'session:day_list' pk=salon.pk str=day|cutbr %}">{{day|only_day}}</a>{% else %}{{day|only_day}}{% endif %}</td>{% else %}<td class="center">{% if day|cutbr in session_days %}<a class="blue-text" href="{% url 'session:day_list' pk=salon.pk str=day|cutbr %}">{{day|only_day}}</a>{% else %}{{day|only_day}}{% endif %}</td>{% endif %}
+  {% endfor %}
+  <tr>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+  </tr>
+      </table>
+</li>
+</ul>
+</div>
+
+  <div class="row">
+
+<br><br>
+  <div class="container">
+    <div class="container">
+      <div class="center card-panel hoverable gold z-depth-5 fMarkazi">
+      <a href="{% url 'session:create' pk=salon.pk %}" style="white-space:pre" class=" waves-effect waves-dark btn-flat btn-large gold white-text"><h5><span class="black-text">          </span>ایجاد سانس در روز جدید<span class="black-text">          </span></h5></a><br>
+    <a href="{% url 'session:create_2' pk=salon.pk %}" style="white-space:pre" class="waves-effect waves-dark btn-flat btn-large gold white-text"><h5><span class="black-text"></span>اضافه کردن سانس به روز دارای سانس<span class="black-text"></span></h5></a><br>
+    <a href="{% url 'session:create_2' pk=salon.pk %}" style="white-space:pre" class="waves-effect waves-dark btn-flat btn-large gold white-text"><h5><span class="black-text">         </span>لیست سانس های رزرو شده<span class="black-text">         </span></h5></a><br>
+    <a href="{% url 'session:lastdataset' pk=salon.pk %}" style="white-space:pre" class="waves-effect waves-dark btn-flat btn-large gold white-text"><h5><span class="black-text">        </span>ویرایش روز اول ایجاد سانس <span class="black-text">        </span></h5></a><br>
+  </div>
+  </div>
+  </div>
+<br><br>
+ {% for category in salon.sessioncategories.all %}
+  <div class="center card-panel hoverable pink accent-3 z-depth-5 fMarkazi">
+    <h6>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align white-text">{{category.range_start_day}}</div>
+      <div class="col s6 m6 l6 left-align">از روز</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align white-text">{{category.range_end_day}}</div>
+      <div class="col s6 m6 l6 left-align">تا روز</div>
+    </div>
+    {% if category.is_closed %}
+    <div class="row">
+      <div class="col s6 m6 l6 right-align white-text">تعطیل</div>
+      <div class="col s6 m6 l6 left-align">وضعیت سالن</div>
+    </div>
+    {% else %}
+    <div class="row">
+      <div class="col s6 m6 l6 right-align white-text">
+        {% if category.saturdays %}شنبه ها {% endif %}
+        {% if category.sundays %} یکشنبه ها{% endif %}
+        {% if category.mondays %} دوشنبه ها{% endif %}
+        {% if category.tuesdays %} سه شنبه ها{% endif %}
+        {% if category.wednesdays %} چهارشنبه ها{% endif %}
+        {% if category.thursdays %} پنج شنبه ها{% endif %}
+        {% if category.fridays %} جمعه ها {% endif %}
+      </div>
+      <div class="col s6 m6 l6 left-align">روز های هفته</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align white-text">{{floor|time:"G:i"}}</div>
+      <div class="col s6 m6 l6 left-align">شروع اولین سانس</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align white-text">{{ceil|time:"G:i"}}</div>
+      <div class="col s6 m6 l6 left-align">پایان آخرین سانس</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align white-text">{{duration|time:"G:i"}}</div>
+      <div class="col s6 m6 l6 left-align">مدت زمان هر سانس</div>
+    </div>
+
+    </h6>
+    <div class="row">
+      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'session:setprice' pk=category.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6><span>        </span>قیمت گذاری سانس ها<span>        </span></h6></a><p></p>
+</div>
+      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'session:delete' pk=category.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6><span>         </span>حذف کردن سانس ها<span>        </span></h6></a><p></p>
+</div>
+
+      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'session:setdiscountpercentage' pk=category.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6><span>      </span>تعیین تخفیف سانس ها<span>      </span></h6></a><p></p>
+</div>
+      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'session:categorizedsessions' pk=category.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>لیست سانس های این مجموعه</h6></a><p></p>
+</div>
+<div class="col s12 m12 l12 center-align"><a style="white-space:pre" href="{% url 'session:statuschange' pk=category.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>تعیین قابل یا غیرقابل رزرو بودن سانس ها</h6></a><p></p>
+</div>
+    </div>
+    {% endif %}
+</div>
+<br><br>
+{% endfor %}
+
+{% endblock %}
+{% block script_block %}
+<script>
+  $(document).ready(function(){
+    $('.slider').slider({
+        height : 480,
+        interval: 9999999999999,
+    });
+  })
+
+
+</script>
+{% endblock %}

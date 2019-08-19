@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
+import jdatetime
 from django.utils import timezone
 
 #SMS send
@@ -119,13 +120,14 @@ def CommonUserBanView(request,slug):
         ############################## change this to commonuser detail page
         masteruser_instance = get_object_or_404(UserModel, slug = request.user.slug)
         masteruser_instance_logs = masteruser_instance.user_logs
-
+        now = jdatetime.datetime.now()
+        dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
         new_log = '''{previous_logs}\n
 On {date_time}:\n
 Banned CommonUser: {user}
 -------------------------------------------------------
         '''.format(previous_logs = masteruser_instance_logs,
-                   date_time = timezone.localtime(timezone.now()),
+                   date_time = dtime,
                     user = str(user_instance.username),)
         masteruser_instance.user_logs = new_log
         masteruser_instance.save()
@@ -145,13 +147,14 @@ def CommonUserUnBanView(request,slug):
         user_instance.save()
         masteruser_instance = get_object_or_404(UserModel, slug = request.user.slug)
         masteruser_instance_logs = masteruser_instance.user_logs
-
+        now = jdatetime.datetime.now()
+        dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
         new_log = '''{previous_logs}\n
 On {date_time}:\n
 UnBanned CommonUser: {user}
 -------------------------------------------------------
         '''.format(previous_logs = masteruser_instance_logs,
-                   date_time = timezone.localtime(timezone.now()),
+                   date_time = dtime,
                     user = str(user_instance.username),)
         masteruser_instance.user_logs = new_log
         masteruser_instance.save()
@@ -170,13 +173,14 @@ def CommonUserDeleteView(request,slug):
         commonuser_instance.delete()
         masteruser_instance = get_object_or_404(UserModel, slug = request.user.slug)
         masteruser_instance_logs = masteruser_instance.user_logs
-
+        now = jdatetime.datetime.now()
+        dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
         new_log = '''{previous_logs}\n
 On {date_time}:\n
 Deleted CommonUser: {user}
 -------------------------------------------------------
         '''.format(previous_logs = masteruser_instance_logs,
-                   date_time = timezone.localtime(timezone.now()),
+                   date_time = dtime,
                     user = str(user_instance.username),)
         masteruser_instance.user_logs = new_log
         masteruser_instance.save()
@@ -214,6 +218,8 @@ def MesssageSendingView(request,slug):
 
                 masteruser_instance = get_object_or_404(UserModel, slug = request.user.slug)
                 masteruser_instance_logs = masteruser_instance.user_logs
+                now = jdatetime.datetime.now()
+                dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
                 new_log = '''{previous_logs}\n
 On {date_time}:\n
 Sent a message to: {user} (Common User)\n
@@ -221,7 +227,7 @@ Message:\n
 {message}
 -------------------------------------------------------
                 '''.format(previous_logs = masteruser_instance_logs,
-                           date_time = timezone.localtime(timezone.now()),
+                           date_time = dtime,
                             user = str(commonuser_instance.user.username),
                             message = str(message_text),)
 
@@ -256,6 +262,8 @@ def EmailSendingView(request,slug):
                 )
                 masteruser_instance = get_object_or_404(UserModel, slug = request.user.slug)
                 masteruser_instance_logs = masteruser_instance.user_logs
+                now = jdatetime.datetime.now()
+                dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
                 new_log = '''{previous_logs}\n
 On {date_time}:\n
 Sent an Email to: {user} (Common User)\n
@@ -265,7 +273,7 @@ Email Text:\n
 {text}
 -------------------------------------------------------
                 '''.format(previous_logs = masteruser_instance_logs,
-                           date_time = timezone.localtime(timezone.now()),
+                           date_time = dtime,
                             user = str(commonuser_instance.user.username),
                             subject = str(email_subject),
                             text = str(email_text),)

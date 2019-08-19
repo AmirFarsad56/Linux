@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+import jdatetime
 from django.http import HttpResponseRedirect
 from django.contrib.auth.password_validation import validate_password, MinimumLengthValidator
 from django.contrib.auth import authenticate, login
@@ -19,6 +20,8 @@ from accounts.forms import (EmailForm, MessageForm, TypesForm,
 from commonuser.models import CommonUserModel
 from sportclub.models import SportClubModel
 from masteruser.models import MasterUserModel
+from booking.models import ProfitPercentageModel
+from company.models import TermsModel
 
 #Email send
 from django.core.mail import send_mail
@@ -28,14 +31,17 @@ from django.utils import timezone
 from kavenegar import KavenegarAPI
 
 
-@method_decorator([login_required, superuser_required], name='dispatch')
-class SuperUserProfileView(DetailView):
-    model = UserModel
-    context_object_name = 'superuser'
-    template_name = 'accounts/superuserprofile.html'
-
-    def get_queryset(self):
-        return UserModel.objects.filter(username = self.request.user.username )
+@login_required
+@superuser_required
+def SuperUserProfileView(request,slug):
+    user = get_object_or_404(UserModel , slug = slug)
+    if user.username == request.user.username:
+        profit_percantage = ProfitPercentageModel.objects.all()
+        terms_condition = TermsModel.objects.all()
+        return render(request, 'accounts/superuserprofile.html', {'superuser':user,
+                        'profit_percantage':profit_percantage,'terms':terms_condition})
+    else:
+        return HttpResponseRedirect(reverse('login'))
 
 
 @login_required
@@ -91,14 +97,16 @@ def CloudMessageView(request):
                     to += 'Sport Clubs '
                 if masterusers:
                     to += 'Master Users '
+                now = jdatetime.datetime.now()
+                dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
                 new_log = '''{previous_logs}\n
-On {date_time}:\n
+On {date_time} \n
 Sent Cloud Message To: {to}\n
 Message:\n
 {message}
 -------------------------------------------------------
                 '''.format(previous_logs = superuser_instance_logs,
-                           date_time = timezone.localtime(timezone.now()),
+                           date_time = dtime,
                             to = to,
                             message = str(message_text),)
                 superuser_instance.user_logs = new_log
@@ -164,6 +172,8 @@ def CloudEmailView(request):
                     to += 'Sport Clubs '
                 if masterusers:
                     to += 'Master Users '
+                now = jdatetime.datetime.now()
+                dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
                 new_log = '''{previous_logs}\n
 On {date_time}:\n
 Sent Cloud Email To: {to}\n
@@ -173,7 +183,7 @@ Email Text:\n
 {text}
 -------------------------------------------------------
                 '''.format(previous_logs = superuser_instance_logs,
-                           date_time = timezone.localtime(timezone.now()),
+                           date_time = dtime,
                             to = to,
                             subject = str(email_subject),
                             text = str(email_text),)

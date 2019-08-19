@@ -47,6 +47,9 @@ INSTALLED_APPS = [
     'sportclub',
     'salon',
     'session',
+    'booking',
+    'company',
+    'dynamic_formsets',
 ]
 
 AUTH_USER_MODEL = 'accounts.UserModel'

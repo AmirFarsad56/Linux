@@ -13,3 +13,8 @@ Modules
 		pip install jdatetime
 	Message Service
 		pip install kavenegar
+
+	materialize clear js files that there is no need to them
+	4xmen mpdatepicker initializing
+
+https://github.com/slashmili/django-jalali => set local ?

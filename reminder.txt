@@ -1,7 +1,15 @@
 url mapping for extra functionalities that maybe added to the site
 defining get_absolute_url to redirect to profile/login page after creating a user
 
+a booking code must be generated and both booker and sportclub can have them and match them if needed
+
+think of this site as a wite for swimming pool booking pool
+
 CloudMessageView is not checked because identity is not verified in kavenegar
+
+
+do sth for loading time for datepicker
+
 
 considering created_at = timezone.now() for models like SessionCategoryModel
 
@@ -18,6 +26,8 @@ what happens to dthe booked sessions that are going to be deleted?
 
 salons must have a pending filed that when a masteruser told them to change your salon other masterusers
 doesn't see that salon in unpublished list
+
+remember me check for login page
 
 restrict length to be chosen from dropdown menu
 

@@ -12,7 +12,8 @@
     to :{{category.range_end_day}}<br>
     <a href="{% url 'session:categorizedsessions' pk=category.pk %}">See Sessions</a><br>
     <a href="{% url 'session:setprice' pk=category.pk %}">set price for this category</a><br>
-    <a href="{% url 'session:delete' pk=category.pk %}">Delete Sessions</a><br><br>
+    <a href="{% url 'session:delete' pk=category.pk %}">Delete Sessions</a><br>
+    <a href="{% url 'session:setdiscountpercentage' pk=category.pk %}">set discount percentage for this category</a><br><br>
     {% endif %}
     {% endfor %}
     <a href="{% url 'session:create_2' salon.pk %}">create new sessions</a>

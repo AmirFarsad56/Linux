@@ -7,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.conf import settings
+import jdatetime
 from django.utils import timezone
 
 #Email send
@@ -66,13 +67,14 @@ def MasterUserSignupView(request):
                      ###
                      superuser_instance = get_object_or_404(UserModel, slug = request.user.slug)
                      superuser_instance_logs = superuser_instance.user_logs
-
+                     now = jdatetime.datetime.now()
+                     dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
                      new_log = '''{previous_logs}\n
 On {date_time}:\n
 Created Masteruser: {user}
 -------------------------------------------------------
                      '''.format(previous_logs = superuser_instance_logs,
-                                date_time = timezone.localtime(timezone.now()),
+                                date_time = dtime,
                                  user = str(user.username),)
                      superuser_instance.user_logs = new_log
                      superuser_instance.save()
@@ -131,13 +133,14 @@ def MasterUserBanView(request,slug):
         masteruser.user.save()
         superuser_instance = get_object_or_404(UserModel, slug = request.user.slug)
         superuser_instance_logs = superuser_instance.user_logs
-
+        now = jdatetime.datetime.now()
+        dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
         new_log = '''{previous_logs}\n
 On {date_time}:\n
 Banned Masteruser: {user}
 -------------------------------------------------------
         '''.format(previous_logs = superuser_instance_logs,
-                   date_time = timezone.localtime(timezone.now()),
+                   date_time = dtime,
                     user = str(user.username),)
         superuser_instance.user_logs = new_log
         superuser_instance.save()
@@ -156,13 +159,14 @@ def MasterUserUnBanView(request,slug):
         masteruser.user.save()
         superuser_instance = get_object_or_404(UserModel, slug = request.user.slug)
         superuser_instance_logs = superuser_instance.user_logs
-
+        now = jdatetime.datetime.now()
+        dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
         new_log = '''{previous_logs}\n
 On {date_time}:\n
 UnBanned Masteruser: {user}
 -------------------------------------------------------
         '''.format(previous_logs = superuser_instance_logs,
-                   date_time = timezone.localtime(timezone.now()),
+                   date_time = dtime,
                     user = str(user.username),)
         superuser_instance.user_logs = new_log
         superuser_instance.save()
@@ -181,13 +185,14 @@ def MasterUserDeleteView(request,slug):
         masteruser.delete()
         superuser_instance = get_object_or_404(UserModel, slug = request.user.slug)
         superuser_instance_logs = superuser_instance.user_logs
-
+        now = jdatetime.datetime.now()
+        dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
         new_log = '''{previous_logs}\n
 On {date_time}:\n
 Deleted Masteruser: {user}
 -------------------------------------------------------
         '''.format(previous_logs = superuser_instance_logs,
-                   date_time = timezone.localtime(timezone.now()),
+                   date_time = dtime,
                     user = str(user.username),)
         superuser_instance.user_logs = new_log
         superuser_instance.save()
@@ -230,6 +235,8 @@ def MesssageSendingView(request,slug):
 
                 superuser_instance = get_object_or_404(UserModel, slug = request.user.slug)
                 superuser_instance_logs = superuser_instance.user_logs
+                now = jdatetime.datetime.now()
+                dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
                 new_log = '''{previous_logs}\n
 On {date_time}:\n
 SENT A MESSAGE TO: {user} (Master User)\n
@@ -237,7 +244,7 @@ Message:\n
 {message}
 -------------------------------------------------------
                 '''.format(previous_logs = superuser_instance_logs,
-                           date_time = timezone.localtime(timezone.now()),
+                           date_time = dtime,
                             user = str(masteruser_instance.user.username),
                             message = str(message_text),)
                 superuser_instance.user_logs = new_log
@@ -271,6 +278,8 @@ def EmailSendingView(request,slug):
                 )
                 superuser_instance = get_object_or_404(UserModel, slug = request.user.slug)
                 superuser_instance_logs = superuser_instance.user_logs
+                now = jdatetime.datetime.now()
+                dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
                 new_log = '''{previous_logs}\n
 On {date_time}:\n
 SENT A MESSAGE TO: {user} (Master User)\n
@@ -280,7 +289,7 @@ Email Text:\n
 {text}
 -------------------------------------------------------
                 '''.format(previous_logs = superuser_instance_logs,
-                           date_time = timezone.localtime(timezone.now()),
+                           date_time = dtime,
                             user = str(masteruser_instance.user.username),
                             subject = str(email_subject),
                             text = str(email_text),)

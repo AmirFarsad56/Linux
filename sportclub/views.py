@@ -8,6 +8,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.utils import timezone
+import jdatetime
 
 #SMS send
 from kavenegar import KavenegarAPI
@@ -20,6 +21,7 @@ from sportclub.models import SportClubModel
 from accounts.models import UserModel
 from salon.models import SalonModel
 from sportclub.decorators import sportclub_required
+from accounts.decorators import superuser_required
 from masteruser.decorators import masteruser_required
 from sportclub.forms import MessageForm, EmailForm, BankInfoForm, SportClubUpdateForm
 
@@ -65,13 +67,14 @@ def SportClubSignupView(request):
                      registered = True
                      masteruser_instance = get_object_or_404(UserModel, slug = request.user.slug)
                      masteruser_instance_logs = masteruser_instance.user_logs
-
+                     now = jdatetime.datetime.now()
+                     dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
                      new_log = '''{previous_logs}\n
  On {date_time}:\n
  Created SportClub: {sportclub}
  -------------------------------------------------------
                      '''.format(previous_logs = masteruser_instance_logs,
-                                date_time = timezone.localtime(timezone.now()),
+                                date_time = dtime,
                                  sportclub = str(user.username),)
                      masteruser_instance.user_logs = new_log
                      masteruser_instance.save()
@@ -99,7 +102,16 @@ def SportClubSignupView(request):
 def SportClubProfileView(request, slug):
     user = request.user
     SportClubDetail = get_object_or_404(SportClubModel, user = user)
-    return render(request,'sportclub/sportclubprofile.html',
+    return render(request,'sportclub/profile.html',
+                    {'sportclub_detail':SportClubDetail})
+
+
+@sportclub_required
+@login_required
+def SportClubWorkSpaceView(request, slug):
+    user = request.user
+    SportClubDetail = get_object_or_404(SportClubModel, user = user)
+    return render(request,'sportclub/workspace.html',
                     {'sportclub_detail':SportClubDetail})
 
 
@@ -108,6 +120,13 @@ class SportClubListView(ListView):
     model = SportClubModel
     context_object_name = 'sportclubs'
     template_name = 'sportclub/sportclublist.html'
+
+
+@method_decorator([login_required, superuser_required], name='dispatch')
+class SportClubListViewSuperUser(ListView):
+    model = SportClubModel
+    context_object_name = 'sportclubs'
+    template_name = 'sportclub/sportclublistsuperuser.html'
 
 
 @login_required
@@ -124,6 +143,25 @@ def SportClubDetailView(request,slug):
                            'salons':salon_instances})
         except:
             return render(request,'sportclub/sportclubdetail.html',
+                          {'sportclub_detail':sportclub_instance})
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+@login_required
+@superuser_required
+def SportClubDetailViewSuperUser(request,slug):
+    if request.user.is_superuser:
+        user_instance = get_object_or_404(UserModel, slug = slug)
+        sportclub_instance = get_object_or_404(SportClubModel, user = user_instance)
+
+        try:
+            salon_instances = get_list_or_404(SalonModel, sportclub = sportclub_instance)
+            return render(request,'sportclub/sportclubdetailsuperuser.html',
+                          {'sportclub_detail':sportclub_instance,
+                           'salons':salon_instances})
+        except:
+            return render(request,'sportclub/sportclubdetailsuperuser.html',
                           {'sportclub_detail':sportclub_instance})
     else:
         return HttpResponseRedirect(reverse('login'))
@@ -157,13 +195,14 @@ def SportClubBanView(request,slug):
             salon_instance.save()
         masteruser_instance = get_object_or_404(UserModel, slug = request.user.slug)
         masteruser_instance_logs = masteruser_instance.user_logs
-
+        now = jdatetime.datetime.now()
+        dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
         new_log = '''{previous_logs}\n
 On {date_time}:\n
 Banned Sportclub: {user}
 -------------------------------------------------------
         '''.format(previous_logs = masteruser_instance_logs,
-                   date_time = timezone.localtime(timezone.now()),
+                   date_time = dtime,
                     user = str(user_instance.username),)
         masteruser_instance.user_logs = new_log
         masteruser_instance.save()
@@ -182,13 +221,14 @@ def SportClubUnBanView(request,slug):
         user_instance.save()
         masteruser_instance = get_object_or_404(UserModel, slug = request.user.slug)
         masteruser_instance_logs = masteruser_instance.user_logs
-
+        now = jdatetime.datetime.now()
+        dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
         new_log = '''{previous_logs}\n
 On {date_time}:\n
 UnBanned Sportclub: {user}
 -------------------------------------------------------
         '''.format(previous_logs = masteruser_instance_logs,
-                   date_time = timezone.localtime(timezone.now()),
+                   date_time = dtime,
                     user = str(user_instance.username),)
         masteruser_instance.user_logs = new_log
         masteruser_instance.save()
@@ -208,14 +248,15 @@ def SportClubDeleteView(request,slug):
         sportclub_instance.delete()
         masteruser_instance = get_object_or_404(UserModel, slug = request.user.slug)
         masteruser_instance_logs = masteruser_instance.user_logs
-
+        now = jdatetime.datetime.now()
+        dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
         new_log = '''{previous_logs}\n
 On {date_time}:\n
 Deleted Sportclub: {user}
 -------------------------------------------------------
         '''.format(previous_logs = masteruser_instance_logs,
-                   date_time = timezone.localtime(timezone.now()),
-                    user = str(user_instance.username),)
+                   date_time = dtime,
+                   user = str(user_instance.username),)
         masteruser_instance.user_logs = new_log
         masteruser_instance.save()
         user_instance.delete()
@@ -252,6 +293,8 @@ def MesssageSendingView(request,slug):
 
                 masteruser_instance = get_object_or_404(UserModel, slug = request.user.slug)
                 masteruser_instance_logs = masteruser_instance.user_logs
+                now = jdatetime.datetime.now()
+                dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
                 new_log = '''{previous_logs}\n
 On {date_time}:\n
 Sent a Message to: {user} (Sport Club)\n
@@ -259,7 +302,7 @@ Message:\n
 {message}
 -------------------------------------------------------
                 '''.format(previous_logs = masteruser_instance_logs,
-                           date_time = timezone.localtime(timezone.now()),
+                           date_time = dtime,
                             user = str(sportclub_instance.user.username),
                             message = str(message_text),)
                 masteruser_instance.user_logs = new_log
@@ -293,6 +336,8 @@ def EmailSendingView(request,slug):
                 )
                 masteruser_instance = get_object_or_404(UserModel, slug = request.user.slug)
                 masteruser_instance_logs = masteruser_instance.user_logs
+                now = jdatetime.datetime.now()
+                dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
                 new_log = '''{previous_logs}\n
 On {date_time}:\n
 Sent an Email to: {user} (Sport Club)\n
@@ -302,7 +347,7 @@ Email Text:\n
 {text}
 -------------------------------------------------------
                 '''.format(previous_logs = masteruser_instance_logs,
-                           date_time = timezone.localtime(timezone.now()),
+                           date_time = dtime,
                             user = str(sportclub_instance.user.username),
                             subject = str(email_subject),
                             text = str(email_text),)

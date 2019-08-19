@@ -1,14 +1,13 @@
-﻿<!DOCTYPE html>
+﻿{% extends "base_templates/base1.html" %}
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
+{% block head_block %}
+<title>
+    صفحه اصلی | سامانه ورزش کن
+</title>
+{% endblock %}
 
-
-    <p>welcome {{user.username}}</p>
+{% block body_block %}
+    <p class="pink-text text-accent-3">welcome {{user.username}}</p>
     {% if user.is_sportclub %}
     <a href="{% url 'sportclub:profile' slug=user.slug %}">Profile Page</a>
     {% endif %}
@@ -25,16 +24,13 @@
     <a href="{% url 'accounts:profile' slug=user.slug %}">Profile Page</a>
     {% endif %}
 
+    {% if user.is_authenticated %}
     <p> <a href="{% url 'logout' %}">logout</a></p>
+    {% endif %}
 
-
-    <p> please login from <a href="{% url 'login' %}">here</a></p>
-    <p>or sign up commonuser from <a href="{% url 'commonuser:signup' %}">here</a></p>
+    <p class="pink-text text-accent-3"> please login from <a href="{% url 'login' %}">here</a></p>
+    <p class="pink-text text-accent-3">or sign up commonuser from <a href="{% url 'commonuser:signup' %}">here</a></p>
     <br><br><br>
-    <a href="{% url 'session:all_sessions_list' %}">session list</a>
+    <a class="pink-text text-accent-3" href="{% url 'session:all_sessions_list' %}">session list</a>
 
-
-
-
-</body>
-</html>
+{% endblock %}

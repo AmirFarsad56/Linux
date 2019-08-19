@@ -1,0 +1,51 @@
+.fMarkazi {
+  font-family: 'Markazi Text', serif;
+}
+.fLalezar {
+  font-family: 'Lalezar', cursive;
+}
+.gold{
+  background-color: #d4af37;
+}
+.gold-text{
+  color: #d4af37;
+}
+.icon-border{
+  border: 5px solid red;
+}
+
+.input-field label {
+  color: black;
+}
+/* label focus color */
+.input-field input[type=text]:focus{
+  color: white !important;
+}
+/* label underline focus color */
+.input-field input[type=text]{
+  border-bottom: 1px solid black;
+  box-shadow: 20 10px 0 0 black;
+}
+.input-field input[type=text]:focus{
+  border-bottom: 1px solid white;
+  box-shadow: 20 10px 0 0 white;
+}
+
+/* icon prefix focus color */
+.input-field .prefix.active {
+  color: white;
+}
+
+/* label focus color */
+ .input-field input:focus + label {
+   color: white !important;
+ }
+ /* label underline focus color */
+ .input-field input:focus {
+   border-bottom: 1px solid white !important;
+   box-shadow: 0 1px 0 0 white !important
+ }
+ .timepicker-modal,
+.datepicker-modal{
+  top: -5% !important;
+}

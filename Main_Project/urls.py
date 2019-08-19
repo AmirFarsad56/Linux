@@ -28,7 +28,9 @@ urlpatterns = [
     path('masteruser/', include('masteruser.urls',namespace = 'masteruser')),
     path('',include('salon.urls',namespace = 'salon')),
     path('session/', include('session.urls',namespace = 'session')),
+    path('booking/', include('booking.urls',namespace = 'booking')),
+    path('company/', include('company.urls',namespace = 'company')),
     #path('accounts/',include('accounts.urls', namespace = 'accounts')),
-    path('',IndexView.as_view(),name = 'index'),
+    path('',IndexView,name = 'index'),
     path('',include('django.contrib.auth.urls')),
 ]+ static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

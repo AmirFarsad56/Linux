@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    {% for session in sessions %}
+    {{session.day}}<br>
+    {{session.time}}<br>
+    {% if session.is_booked %}
+    concede this session <a href="#"></a>
+    {% else %}
+    book this session <a href="{% url 'booking:booking' pk=session.pk%}">here</a>
+    {% endif %}
+    <p>---------------</p>
+    {% endfor %}
+  </body>
+</html>

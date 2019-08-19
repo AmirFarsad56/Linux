@@ -1,27 +1,52 @@
-﻿<!DOCTYPE html>
+{% extends "base_templates/base1.html" %}
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
+{% block head_block %}
+<title>
+    ورود | سامانه ورزش کن
+</title>
+{% endblock %}
 
-    <div>
-        <h2>Please Login:</h2>
-
-        {% if form.errors %}
-        <p>Some errors occured please try again!</p>
-        {% endif %}
+{% block body_block %}
+<div class="section">
+  <div class="container">
+  <div class="container"><br>
+<span class="center-align"><h3 class="fMarkazi gold-text";>ورود</h3><br><br></span>
+  <div class="row center">
+  <div class="card-panel hoverable pink accent-3 z-depth-5">
 
         <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="Login" />
+          <div class="input-field col s12">
+  {{form.username}}
+  <label class="fMarkazi" for="username">نام کاربری</label>
+</div>
+<div class="input-field col s12 red-text">
+{{form.password}}
+<label class="fMarkazi right-align" for="password">رمز عبور</label>
+</div>
+
+            {% if form.errors %}
+            <p class="fMarkazi white-text">نام کاربری یا رمز عبور اشتباه است</p>
+            {% endif %}
+
+                {% csrf_token %}
+
+                <button class="hoverable btn waves-effect waves-dark gold white-text z-depth-3" type="submit">ورود
+    </button>
+    <br><br>
+            <a class="white-text fMarkazi" href="{% url 'password_reset' %}">فراموشی رمز عبور</a>
         </form>
-        <a href="{% url 'password_reset' %}">Forgot Password?</a>
-    </div>
+  </div>
+</div>
+</div>
 
+</div>
 
-</body>
-</html>
+</div>
+{% endblock %}
+{% block script_block %}
+<script type="text/javascript">
+  $(document).ready(function() {
+  M.updateTextFields();
+});
+</script>
+{% endblock %}
