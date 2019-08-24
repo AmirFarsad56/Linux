@@ -79,6 +79,7 @@ Created Masteruser: {user}
                      superuser_instance.user_logs = new_log
                      superuser_instance.save()
                      ###
+                     return HttpResponseRedirect(reverse('accounts:workspace',kwargs={'slug':superuser_instance.slug}))
                 else:
                      messages.error(request, 'فیلد من ربات نیستم را به درستی کامل کنید')
 
@@ -102,10 +103,25 @@ Created Masteruser: {user}
 @masteruser_required
 def MasterUserProfileView(request,slug):
     user_instance = get_object_or_404(UserModel,slug = slug)
-    masteruser_instance = get_object_or_404(MasterUserModel, user = user_instance)
-    return render(request,'masteruser/masteruserprofile.html',
-                  {'masteruser_detail':masteruser_instance})
+    if user_instance == request.user:
+        masteruser_instance = get_object_or_404(MasterUserModel, user = user_instance)
+        return render(request,'masteruser/masteruserprofile.html',
+                      {'masteruser_detail':masteruser_instance})
+    else:
+        return HttpResponseRedirect(reverse('login'))
 
+
+
+@login_required
+@masteruser_required
+def WorkSpaceView(request,slug):
+    user_instance = get_object_or_404(UserModel,slug = slug)
+    if user_instance == request.user:
+        masteruser_instance = get_object_or_404(MasterUserModel, user = user_instance)
+        return render(request,'masteruser/workspace.html',
+                      {'masteruser_detail':masteruser_instance})
+    else:
+        return HttpResponseRedirect(reverse('login'))
 
 
 @method_decorator([login_required, superuser_required], name='dispatch')
@@ -127,8 +143,10 @@ class BannedMasterUserListView(ListView):
 @superuser_required
 def MasterUserBanView(request,slug):
     if request.user.is_superuser:
+
         user = get_object_or_404(UserModel,slug = slug)
         masteruser = get_object_or_404(MasterUserModel,user = user)
+        print(slug,user,user.username)
         masteruser.user.is_active = False
         masteruser.user.save()
         superuser_instance = get_object_or_404(UserModel, slug = request.user.slug)
@@ -144,8 +162,7 @@ Banned Masteruser: {user}
                     user = str(user.username),)
         superuser_instance.user_logs = new_log
         superuser_instance.save()
-        return HttpResponseRedirect(reverse('masteruser:detail',
-                                            kwargs={'slug':masteruser.user.slug}))
+        return HttpResponseRedirect(reverse('masteruser:list'))
     else:
         return HttpResponseRedirect(reverse('login'))
 
@@ -170,8 +187,7 @@ UnBanned Masteruser: {user}
                     user = str(user.username),)
         superuser_instance.user_logs = new_log
         superuser_instance.save()
-        return HttpResponseRedirect(reverse('masteruser:detail',
-                                            kwargs={'slug':masteruser.user.slug}))
+        return HttpResponseRedirect(reverse('masteruser:bannedlist'))
     else:
         return HttpResponseRedirect(reverse('login'))
 
@@ -213,6 +229,43 @@ def MasterUserDetailView(request,slug):
                       {'masteruser':masteruser_instance})
     else:
         return HttpResponseRedirect(reverse('login'))
+
+
+@login_required
+@superuser_required
+def BanModalView(request,slug):
+    if request.user.is_superuser:
+        user_instance = get_object_or_404(UserModel, slug = slug)
+        masteruser_instance = get_object_or_404(MasterUserModel, user = user_instance)
+        return render(request,'masteruser/banmodal.html',
+                      {'masteruser':masteruser_instance})
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+@login_required
+@superuser_required
+def UnBanModalView(request,slug):
+    if request.user.is_superuser:
+        user_instance = get_object_or_404(UserModel, slug = slug)
+        masteruser_instance = get_object_or_404(MasterUserModel, user = user_instance)
+        return render(request,'masteruser/unbanmodal.html',
+                      {'masteruser':masteruser_instance})
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+@login_required
+@superuser_required
+def DeleteModalView(request,slug):
+    if request.user.is_superuser:
+        user_instance = get_object_or_404(UserModel, slug = slug)
+        masteruser_instance = get_object_or_404(MasterUserModel, user = user_instance)
+        return render(request,'masteruser/deletemodal.html',
+                      {'masteruser':masteruser_instance})
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
 
 
 @login_required

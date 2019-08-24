@@ -20,7 +20,7 @@
 
 
         this.getPersianWeekDay = function (jdate) {
-            
+
             var tmp = this.imploiter(this.Persian2Gregorian(this.exploiter(jdate)),'-');
             var dd = new Date(tmp + " 00:00:00").getDay() + 1;
             if (dd > 6) {
@@ -92,7 +92,7 @@
 
 
             window.mp_last_month = parseInt(mn);
-            // 
+            //
             var last_day_of_this_month = this.pGetLastDayMonth(mn, yr);
 //            get frist day of month week day
 
@@ -100,7 +100,7 @@
 
 
 
-//            today 
+//            today
             var dtmp = new Date();
             var today = this.imploiter(this.pTimestamp2Date(Math.round(dtmp.getTime() / 1000)));
 
@@ -134,7 +134,7 @@
                         + '" data-gdate="' + this.imploiter(this.Persian2Gregorian([yr, mn, i]), settings.gSpliter) + '" title="' +
                         this.pTimestamp2Date(tmsmp) + '">' + this.parseHindi(i) + '</td>');
 
-                // console.log(i,start_m_weekday);        
+                // console.log(i,start_m_weekday);
                 if ((i + start_m_weekday) % 7 == 0) {
                     content = content + ('</tr><tr>');
                 }
@@ -182,7 +182,7 @@
                 var yyyy = parseInt($("#mpyear input").val());
                 if ($.mpdt.thisMonth - 1 == 0) {
                     $.mpdt.thisMonth = 13;
-                    yyyy++;
+                    yyyy--;
                 }
                 $.mpdt.ShowMonth($.mpdt.thisMonth - 1, yyyy, $.mpdt.selectedDate);
             });
@@ -190,7 +190,7 @@
                 var yyyy = parseInt($("#mpyear input").val());
                 if ($.mpdt.thisMonth + 1 == 13) {
                     $.mpdt.thisMonth = 0;
-                    yyyy--;
+                    yyyy = yyyy + 1;
                 }
                 $.mpdt.ShowMonth($.mpdt.thisMonth + 1, yyyy, $.mpdt.selectedDate);
             });
@@ -215,7 +215,7 @@
 
         this.AddDatepcikerBlock = function () {
 
-            // add header and body of calendar 
+            // add header and body of calendar
             $("#mpdatepicker-modal").append('<div id="mpdatepicker-block"><div class="mpbtn mpfleft mp-nxt" >&rsaquo;</div> ' +
                     ' <div class="mpbtn mpfright mp-prv" >&lsaquo;</div><div class="mpheader"><div id="mpmonth"> <ul></ul> <span> اردیبهشت </span>  </div> <div id="mpyear">  <input type="number" value="1396" /> </div>   </div> ' +
                     '<table> <thead> <th> ش </th><th> ی </th><th> د </th><th> س  </th><th> چ </th><th> پ </th><th> ج</th> </thead> <tbody></tbody> </table>' +
@@ -272,7 +272,7 @@
         };
 
         /**
-         *  from parsi date by mobin ghasem pour 
+         *  from parsi date by mobin ghasem pour
          * @param {integer} year
          * @returns {Boolean}
          */
@@ -322,7 +322,7 @@
 
 
         /**
-         * from parsi date by mobin ghasem pour 
+         * from parsi date by mobin ghasem pour
          * @param {Array} indate
          * @returns {Array}
          */
@@ -360,7 +360,7 @@
 
 
         /**
-         * from parsi date by mobin ghasem pour 
+         * from parsi date by mobin ghasem pour
          * @param {Array} indate
          * @returns {Array}
          */
@@ -476,4 +476,3 @@
     };
 
 }(jQuery));
-

@@ -1,47 +1,166 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
-    <h1>SportClub Details</h1>
-    <p>
+{% extends "base_templates/base1.html" %}
 
-      username: {{sportclub_detail.user.username}}<br>
-      phone number: {{sportclub_detail.phone_number}}<br>
-      address: {{sportclub_detail.address}}<br>
-      more info: {{sportclub_detail.info}}<br>
-      {% if sportclub_detail.bankaccount_name %}
-      accounts owner name {{sportclub_detail.bankaccount_name}}<br>
-      bank name: {{sportclub_detail.bankaccount_bankname}}<br>
-      card number:{{sportclub_detail.bankaccount_cardnumber}}<br>
-      account number{{sportclub_detail.bankaccount_number}}<br>
-      shaba number{{sportclub_detail.bankaccount_shabanumber}}<br>
-      {% else %}
-      this sportclub has not entered his bank details.<br>
-      {% endif %}
+{% block head_block %}
+<title>
+    لیست سالن ها | سامانه ورزش
+</title>
+{% endblock %}
 
-      {% if sportclub_detail.user.is_active %}
-      This sportclub is active <br>
-      <p><a href="{% url 'sportclub:ban' slug=sportclub_detail.user.slug %}">BAN?</a> </p>
-      {% else %}
-      this sportclub is banned for some reason <br>
-      <p><a href="{% url 'sportclub:unban' slug=sportclub_detail.user.slug %}">UNBAN?</a> </p>
-      <p><a href="{% url 'sportclub:delete' slug=sportclub_detail.user.slug %}">DELETE?</a> </p>
-      in front some pop has to show for these
-      {% endif %}
-      <a href="{% url 'sportclub:sendsms' slug=sportclub_detail.user.slug %}">Send SMS?</a><br>
-      <a href="{% url 'sportclub:sendemail' slug=sportclub_detail.user.slug %}">Send EMAIL?</a><br>
-      {% for salon in salons %}
-      {{salon}}<br>
-      <p>salon details: <a href="{% url 'salon:detail' pk=salon.pk %}">here</a> </p>
-      <p>-----------------------------------------</p>
-      {% endfor %}
+{% block body_block %}
 
 
-    </p>
+<div class="section">
+
+  <div class="container"><br>
+<span class="center-align"><h3 class="fMarkazi gold-text";>لیست سالن های ورزشی</h3><br><br></span>
+
+  <div class="row center">
+
+    {% for salon in salons %}
+  <div class="card-panel hoverable pink accent-3 z-depth-5 fMarkazi">
+{% if salon.pictures.all %}
+    <div class="slider">
+        <ul class="slides">
+{% for pic in salon.pictures.all %}
+    <li>
+      <img src="{{pic.picture.url}}"> <!-- random image -->
+    </li>
+{% endfor %}
+  </ul>
+</div>
+{% endif %}
+    <h3 class=" fMarkazi gold-text">اطلاعات سالن ورزشی</h3>
+  <div class="row">
+    <div class="col s6 m6 l6 right-align">
+    {% if salon.is_confirmed %}
+    تایید شده <i class="material-icons green-text">check</i>
+    {% else %}
+    در انتظار تایید شدن <i class="material-icons white-text">close</i>
+    {% endif %}
+  </div>
+    <div class="col s6 m6 l6 left-align">وضعیت سالن</div>
+  </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align">{{salon.area}}</div>
+      <div class="col s6 m6 l6 left-align">(انداره سالن (متر مربع</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align">{{salon.lastdatas.get.first_day}}</div>
+      <div class="col s6 m6 l6 left-align">مرز ایجاد سانس</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align">{{salon.floor_type}}</div>
+      <div class="col s6 m6 l6 left-align">جنس کف سالن</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align">
+{% if salon.locker %}<img class="tooltipped" data-position="bottom" data-tooltip="کمد" src="/media/logos/locker.png" width="35">
+{% endif %}
+{% if salon.air_conditioner %}<img class="tooltipped" data-position="bottom" data-tooltip="تهویه هوا" src="/media/logos/air_conditioner.png" width="35">
+{% endif %}
+{% if salon.ball_rent %}<img class="tooltipped" data-position="bottom" data-tooltip="اجاره توپ" src="/media/logos/ball_rent.png" width="35">
+{% endif %}
+{% if salon.spectator_place %}<img class="tooltipped" data-position="bottom" data-tooltip="جایگاه تماشاچی" src="/media/logos/spectator_place.png" width="35">
+{% endif %}
+{% if salon.shower %}<img class="tooltipped" data-position="bottom" data-tooltip="حمام" src="/media/logos/shower.png" width="35">
+{% endif %}
+{% if salon.changing_room %}<img class="tooltipped" data-position="bottom" data-tooltip="اتاق تعویض لباس" src="/media/logos/changing_room1.png" width="35">
+{% endif %}
+{% if salon.parking_area %}<img class="tooltipped" data-position="bottom" data-tooltip="پارکینگ" src="/media/logos/parking_area.png" width="35">
+{% endif %}
+{% if salon.drinking_water %}<img class="tooltipped" data-position="bottom" data-tooltip="آب آشامیدنی" src="/media/logos/drinking_water.png" width="35">
+{% endif %}
+{% if salon.safe_keeping %}<img class="tooltipped" data-position="bottom" data-tooltip="امانتداری" src="/media/logos/safe_keeping.png" width="35">
+{% endif %}
+{% if salon.buffet %}<img class="tooltipped" data-position="bottom" data-tooltip="بوفه" src="/media/logos/buffet.png" width="35">
+{% endif %}
+{% if salon.taxi %}<img class="tooltipped" data-position="bottom" data-tooltip="تاکسی" src="/media/logos/taxi.png" width="35">
+{% endif %}
+{% if salon.wifi %}<img class="tooltipped" data-position="bottom" data-tooltip="وای فای" src="/media/logos/wifi.png" width="35">
+{% endif %}
+      </div>
+      <div class="col s6 m6 l6 left-align">امکانات سالن</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align">
+        {% if salon.is_football %}
+        فوتبال
+        {% endif %}
+        {% if salon.is_futsall %}
+        فوتسال
+        {% endif %}
+        {% if salon.is_volleyball %}
+        والیبال
+        {% endif %}
+        {% if salon.is_basketball %}
+        بسکتبال
+        {% endif %}
+        {% if salon.is_handball %}
+        هندبال
+        {% endif %}
+      </div>
+      <div class="col s6 m6 l6 left-align">مناسب برای</div>
+    </div>
+    <div class="row">
+
+    </div>
 
 
-  </body>
-</html>
+
+
+    {% if salon.is_confirmed %}
+    <div class="row">
+<div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'salon:banmodal' pk=salon.pk %}" class="waves-effect waves-light btn modal-trigger modal-close red white-text"><h6>                   <span>مسدود کردن سالن</span>                   </h6></a><p></p></div>
+<div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'session:list' pk=salon.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>                   <span>سانس های این سالن</span>                 </h6></a><p></p></div>
+<div class="col s12 m12 l12 center-align"><a style="white-space:pre" href="{% url 'session:lastdataset' pk=salon.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>             <span>تعیین مرزهای ایجاد سانس</span>            </h6></a><p></p></div>
+</div>
+    {% else %}
+<div class="row">
+      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'salon:confirmmodal' pk=salon.pk %}" class="waves-effect waves-light btn modal-trigger modal-close green white-text"><h6>                      <span>تایید کردن سالن</span>                     </h6></a><p></p></div>
+<div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'session:list' pk=salon.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>                   <span>سانس های این سالن</span>                 </h6></a><p></p></div>
+<div class="col s12 m12 l12 center-align"><a style="white-space:pre" href="{% url 'session:lastdataset' pk=salon.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>             <span>تعیین مرزهای ایجاد سانس</span>            </h6></a><p></p></div>
+</div>
+    {% endif %}
+
+
+
+  </div>
+  <div class="row">
+    <br>
+
+  </div>
+
+
+
+
+
+
+
+  {% endfor %}
+
+</div>
+<br><br>
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+{% endblock %}
+{% block script_block %}
+<script>
+  $(document).ready(function(){
+    $('.slider').slider();
+  });
+  $(document).ready(function(){
+    $('.modal').modal();
+  });
+</script>
+{% endblock %}

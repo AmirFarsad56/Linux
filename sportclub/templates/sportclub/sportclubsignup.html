@@ -1,41 +1,123 @@
-﻿<!DOCTYPE html>
+{% extends "base_templates/base1.html" %}
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
+{% block head_block %}
+<title>
+    افزودن مجموعه ورزشی | سامانه ورزش کن
+</title>
+{% endblock %}
 
-    <div class="container">
-        <div class="jumbotron">
-            {% if registered %}
-            <h1>Thank you for registering!</h1>
-            <p>Check it's login via<a href="{% url 'login' %}">login</a></p>
-            or go back to profile Page via
-            <a href="{% url 'masteruser:profile' slug=user.slug %}"> here</a>
+{% block body_block %}
+<div class="section fMarkazi">
+  <div class="container">
+  <div class="container"><br>
+<span class="center-align"><h3 class="fMarkazi gold-text";>افزودن مجموعه ورزشی</h3><br><br></span>
+  <div class="row center">
+  <div class="card-panel hoverable pink accent-3 z-depth-5">
+    {% if registered %}
+    <h3 class="white-text fMarkazi">مجموعه ورزشی با موفقیت اضافه شد</h3>
+<a href="{% url 'masteruser:workspace' slug=user.slug %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>میزکار</h6></a>
 
-            {% else %}
-            <h1>Register Here</h1>
-            <h3>Just fill out the form.</h3>
+    {% else %}
+        <form method="POST">
+          {% csrf_token %}
+
             <form enctype="multipart/form-data" method="POST">
-                {% csrf_token %}
-                {{ user_form.as_p }}
+              <div class="input-field col s12">
+      {{user_form.username}}
+      <label class="fMarkazi" for="username">نام کاربری</label>
+    </div>
+    <div class="input-field col s12">
+{{user_form.email}}
+<label class="fMarkazi" for="username">ایمیل</label>
+</div>
+<div class="input-field col s12">
+{{user_form.first_name}}
+<label class="fMarkazi" for="username">نام</label>
+</div>
+<div class="input-field col s12">
+{{user_form.last_name}}
+<label class="fMarkazi" for="username">نام خانوادگی</label>
+</div>
+<div class="input-field col s12">
+{{user_form.password1}}
+<label class="fMarkazi" for="username">رمز عبور</label>
+</div>
+<div class="input-field col s12">
+{{user_form.password2}}
+<label class="fMarkazi" for="username">تکرار رمز</label>
+</div>
+<div class="input-field col s12">
+{{sportclub_form.phone_number}}
+<label class="fMarkazi" for="username">تلفن</label>
+</div>
+<div class="input-field col s12">
+{{sportclub_form.address}}
+<label class="fMarkazi" for="username">آدرس</label>
+</div>
+<div class="input-field col s12">
+{{sportclub_form.info}}
+<label class="fMarkazi" for="username">اطلاعات دیگر</label>
+</div>
+<div class="input-field col s12 m12 l12">
+  <div class="file-field input-field">
 
-                {{ sportclub_form.as_p }}
+<div class="btn gold">
+{{sportclub_form.picture}}
+<span>عکس</span>
 
-                <script src='https://www.google.com/recaptcha/api.js'></script>
-                <div class="g-recaptcha" data-sitekey="6LfbM5oUAAAAAIin3dtuLQB95QITpdUK09tsZ9Ku"></div>
-                <input type="submit" value="Register">
+</div>
+<div class="file-path-wrapper">
+<input class="file-path" type="text">
+</div>
+</div>
+</div>
+<div class="row">
+  <div class="input-field col s12 m12 l12">
+    <label>
+      {{user_form.terms}}
+      <span>کاربر قوانین سایت را به طور کامل قبول دارد</span>
+    </label>
+  </div>
+  <div class="row">
+
+  </div>
+<br>
+</div>
+<div class="row center">
+  <script class="center" src='https://www.google.com/recaptcha/api.js'></script>
+  <div class="g-recaptcha" data-sitekey="6LfbM5oUAAAAAIin3dtuLQB95QITpdUK09tsZ9Ku"></div>
+
+</div>
+<div class="row">
+
+</div>
+<br><br>
+          {% if user_form.errors%}
+                <p class="fMarkazi white-text">{{user_form.errors}}</p>
+                {% endif %}
+                {% if sportclub_form.errors%}
+                <p class="fMarkazi white-text">{{sportclub_form.errors}}</p>
+                {% endif %}
+
+                    {% csrf_token %}
+
+                    <button class="hoverable btn waves-effect waves-dark gold white-text z-depth-3" type="submit">تایید
+        </button>
             </form>
-            {% if user.is_authenticated %}
-            Welcome {{user.username}}
             {% endif %}
-            {% endif %}
-
+          </div>
+        </div>
+        </div>
 
         </div>
-    </div>
-
-</body>
-</html>
+        </div>
+        </div>
+        </div>
+        {% endblock %}
+        {% block script_block %}
+        <script type="text/javascript">
+          $(document).ready(function() {
+          M.updateTextFields();
+        });
+        </script>
+        {% endblock %}

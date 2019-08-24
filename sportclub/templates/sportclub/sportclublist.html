@@ -1,23 +1,130 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
+{% extends "base_templates/base1.html" %}
 
-        <p>Here is the list of SportClubs</p>
-        {% for sportclub in sportclubs %}
-        {% if sportclub.user.is_active %}
-        {{ sportclub.user.username }}<br>
-        {{ sportclub.address }}<br>
-        <p>sportclub details: <a href="{% url 'sportclub:detail' slug=sportclub.user.slug %}">here</a> </p>
+{% block head_block %}
+<title>
+    لیست مجموعه های ورزشی | سامانه ورزش کن
+</title>
+{% endblock %}
 
-        <br>
-                <p>----------------------------------------------------</p><br>
-        {% endif %}
-        {% endfor %}
+{% block body_block %}
+<div class="section fMarkazi white-text">
+  <div class="container">
+  <div class="container"><br>
+<span class="center-align"><h3 class="fMarkazi gold-text";>لیست مجموعه های ورزشی فعال</h3><br><br></span>
+  <div class="row center">
+    {% for sportclub in sportclubs %}
+    {% if sportclub.user.is_active %}
+  <div class="card-panel hoverable pink accent-3 z-depth-5">
+    <h6>
+<div class="row">
+  <div class="row">
+    <h5 class="gold-text">اطلاعات کاربری</h5>
+
+  </div>
+      <div class="col s6 m6 l6 right-align black-text black-text">{{sportclub.user.username}}</div>
+      <div class="col s6 m6 l6 left-align">نام کاربری</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align black-text">{{sportclub.user.first_name}}</div>
+      <div class="col s6 m6 l6 left-align">نام</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align black-text">{{sportclub.user.last_name}}</div>
+      <div class="col s6 m6 l6 left-align">نام خانوادگی</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align black-text">{{sportclub.user.email}}</div>
+      <div class="col s6 m6 l6 left-align">ایمیل</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align black-text">{{sportclub.phone_number}}</div>
+      <div class="col s6 m6 l6 left-align">شماره تلفن</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align black-text">{{sportclub.address}}</div>
+      <div class="col s6 m6 l6 left-align">آدرس</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align black-text">{{sportclub.info}}</div>
+      <div class="col s6 m6 l6 left-align">اطلاعات دیگر</div>
+    </div>
+    {% if  sportclub.bankaccount_cardnumber and sportclub.bankaccount_bankname and sportclub.bankaccount_ownername and sportclub.bankaccount_accountnumber %}
+    <div class="row">
+      <h5 class="gold-text">اطلاعات حساب</h5>
+
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align black-text">{{sportclub.bankaccount_ownername}}</div>
+      <div class="col s6 m6 l6 left-align">نام دارنده حساب</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align black-text">{{sportclub.bankaccount_bankname}}</div>
+      <div class="col s6 m6 l6 left-align">بانک</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align black-text">{{sportclub.bankaccount_cardnumber}}</div>
+      <div class="col s6 m6 l6 left-align">شماره کارت</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align black-text">{{sportclub.bankaccount_accountnumber}}</div>
+      <div class="col s6 m6 l6 left-align">شماره حساب</div>
+    </div>
+    {% else %}
+    <div class="row">
+      <h5 class="gold-text">اطلاعات حساب</h5>
+</div>
+    <div class="row">
+کاربر هنوز اطلاعات حساب خود را وارد نکرده است
+    </div>
+    {% endif %}
+    {% if sportclub.terms_and_conditions %}
+    <div class="row">
+      <h5 class="gold-text">قوانین خاص مجموعه ورزشی</h5>
+
+    <div class="col s12 m12 l12 right-align black-text">{{sportclub.terms_and_conditions|linebreaks}}</div>
+    {% else %}
+    <div class="row">
+      <h5 class="gold-text">قوانین خاص مجموعه ورزشی</h5>
+
+    <div class="col s12 m12 l12 center-align">کاربر هنوز هیچ قانون خاصی برای مجموعه ورزشی خود وارد نکرده است</div><br>
+    {% endif %}
+
+    <br>
+
+    <div class="row">
+      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'sportclub:banmodal' slug=sportclub.user.slug %}" class="waves-effect waves-light btn modal-trigger modal-close red white-text"><h6><span>            </span>بلاک کردن<span>            </span></h6></a><p></p>
+</div>
+      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'sportclub:detail' slug=sportclub.user.slug %}" class="hoverable waves-effect waves-light btn gold white-text"><h6><span>         </span>لیست سالن ها<span>        </span></h6></a><p></p>
+</div>
+      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'sportclub:sendemail' slug=sportclub.user.slug %}" class="hoverable waves-effect waves-light btn gold white-text"><h6><span>           </span>ارسال ایمیل<span>           </span></h6></a><p></p>
+</div>
+      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'sportclub:sendsms' slug=sportclub.user.slug %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>             <span>ارسال پیام</span>            </h6></a><p></p>
+</div>
+
+    </div>
+
+      <!-- Modal Structure -->
 
 
-  </body>
-</html>
+</h6>
+  </div>
+  <br><br>
+  {% endif %}
+  {% endfor %}
+</div>
+</div>
+
+</div>
+</div>
+{% endblock %}
+{% block script_block %}
+<script type="text/javascript">
+  $(document).ready(function() {
+  M.updateTextFields();
+});
+
+$(document).ready(function(){
+  $('.modal').modal();
+});
+</script>
+{% endblock %}

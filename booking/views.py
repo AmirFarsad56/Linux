@@ -21,7 +21,7 @@ class CreateProfitPercentageView(CreateView):
     template_name = 'booking/createprofitpercentage.html'
 
     def get_success_url(self):
-        return reverse('accounts:profile',kwargs={'slug':self.request.user.slug})
+        return reverse('accounts:workspace',kwargs={'slug':self.request.user.slug})
 
 
 @method_decorator([login_required, superuser_required], name='dispatch')
@@ -31,7 +31,7 @@ class UpdateProfitPercentageView(UpdateView):
     template_name = 'booking/updateprofitpercentage.html'
 
     def get_success_url(self):
-        return reverse('accounts:profile',kwargs={'slug':self.request.user.slug})
+        return reverse('accounts:workspace',kwargs={'slug':self.request.user.slug})
 
 
 @login_required

@@ -7,7 +7,11 @@ from sportclub.views import (SportClubSignupView, SportClubProfileView,
                             EmailSendingView, BankInfoChangeView,
                             SportClubUpdateView, TermsAndConditionsView,
                             SportClubListViewSuperUser,SportClubDetailViewSuperUser,
-                            SportClubWorkSpaceView)
+                            SportClubWorkSpaceView,SportClubDetailsView,
+                            SportClubBanView_2,SportClubUnBanView_2,
+                            SportClubBanView_3,SportClubUnBanView_3,BanModalView,
+                            UnBanModalView,UnBanModalView_2,UnBanModalView_3,
+                            BanModalView_2,BanModalView_3)
 from salon.views import SalonCreateView
 
 app_name ='sportclub'
@@ -20,8 +24,19 @@ urlpatterns = [
     path('detail-superuser/<slug:slug>/', SportClubDetailViewSuperUser, name='detailforsuperuser'),
     path('bannedlist/', BannedSportClubListView.as_view(), name='bannedlist'),
     path('list/<slug:slug>/', SportClubDetailView, name='detail'),
+    path('datails/<slug:slug>/', SportClubDetailsView, name='details'),
     path('ban/<slug:slug>/', SportClubBanView, name='ban'),
+    path('ban-modal/<slug:slug>/', BanModalView, name='banmodal'),
+    path('ban-modal-2/<slug:slug>/', BanModalView_2, name='banmodal2'),
+    path('ban-modal-3/<slug:slug>/', BanModalView_3, name='banmodal3'),
+    path('ban-2/<slug:slug>/', SportClubBanView_2, name='ban_2'),
+    path('ban-3/<slug:slug>/', SportClubBanView_3, name='ban_3'),
     path('unban/<slug:slug>/', SportClubUnBanView, name='unban'),
+    path('unban-modal/<slug:slug>/', UnBanModalView, name='unbanmodal'),
+    path('unban-modal-2/<slug:slug>/', UnBanModalView_2, name='unbanmodal2'),
+    path('unban-modal-3/<slug:slug>/', UnBanModalView_3, name='unbanmodal3'),
+    path('unban-2/<slug:slug>/', SportClubUnBanView_2, name='unban_2'),
+    path('unban-3/<slug:slug>/', SportClubUnBanView_3, name='unban_3'),
     path('delete/<slug:slug>/', SportClubDeleteView, name='delete'),
     path('salon/bannedsportclub/<slug:slug>',BannedSportClubExceptionView,
          name='bannedsportclubexception'),

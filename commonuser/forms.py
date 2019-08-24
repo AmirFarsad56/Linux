@@ -10,12 +10,12 @@ class CommonUserForm(forms.ModelForm):
 
 
 class MessageForm(forms.Form):
-    text = forms.CharField(widget=forms.Textarea)
+    text = forms.CharField(widget=forms.Textarea(attrs={'class': 'materialize-textarea'}))
 
 
 class EmailForm(forms.Form):
-    subject = forms.CharField(widget=forms.Textarea)
-    text = forms.CharField(widget=forms.Textarea)
+    subject = forms.CharField()
+    text = forms.CharField(widget=forms.Textarea(attrs={'class': 'materialize-textarea'}))
 
 
 class CommonUserUpdateForm(forms.ModelForm):

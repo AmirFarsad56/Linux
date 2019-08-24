@@ -22,3 +22,6 @@ class MasterUserUpdateForm(forms.ModelForm):
     class Meta():
         model = MasterUserModel
         fields = ('phone_number','picture')
+        widgets = {
+            'picture': forms.FileInput(attrs={}),
+        }

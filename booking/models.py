@@ -13,9 +13,10 @@ class ProfitPercentageModel(models.Model):
 class BookingModel(models.Model):
     session = models.ForeignKey(SessionModel, on_delete = models.PROTECT , null = False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete = models.SET_NULL, null = True)
-    date = jmodels.jDateTimeField(null = False)
+    datetime = jmodels.jDateTimeField(null = False)
     price = models.IntegerField(null = False)
     profit_percantage = models.IntegerField(null = False)
+    cancelled = models.BooleanField(null = False, default = True)
 
     def __str__(self):
         return str(user.username)

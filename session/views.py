@@ -363,14 +363,126 @@ def SessionWorkSpaceView(request,pk):
 
 
 @login_required
-@sportclub_required
 def SessionListView(request,pk):
-    salon = get_object_or_404(SalonModel,pk = pk)
-    if request.user == salon.sportclub.user:
-        sessions = get_list_or_404(SessionModel.objects.order_by('day'), salon = salon)
-        return render(request,'session/sessionlist.html',
-                      {'sessions':sessions,
-                       'salon':salon})
+    from jdatetime import date as jdate
+    salon_instance = get_object_or_404(SalonModel,pk = pk)
+    if request.user == salon_instance.sportclub.user or request.user.is_masteruser:
+        sessions = get_list_or_404(SessionModel.objects.order_by('day'),salon = salon_instance)
+
+        first_day = sessions[0].day
+        last_day = sessions[-1].day
+
+        counter = 0
+        while True:
+            if counter == 0:
+                now = first_day
+                if now.month == 12:
+                    month_length =  (jdate(now.year+1, 1, 1) - jdate(now.year, 12, 1)).days
+                    previous_month_length = (jdate(now.year, now.month, 1) - jdate(now.year, now.month-1, 1)).days
+                    this_date = str(now.year)+'-12-'
+                    next_date = str(now.year+1)+'-1-'
+                    prev_date = str(now.year)+'-11-'
+                elif now.month == 1:
+                    month_length =  (jdate(now.year, now.month+1, 1) - jdate(now.year, now.month, 1)).days
+                    previous_month_length = (jdate(now.year, now.month, 1) - jdate(now.year-1, 12, 1)).days
+                    this_date = str(now.year)+'-1-'
+                    next_date = str(now.year)+'-2-'
+                    prev_date = str(now.year-1)+'-12-'
+                else:
+                    month_length =  (jdate(now.year, now.month+1, 1) - jdate(now.year, now.month, 1)).days
+                    previous_month_length = (jdate(now.year, now.month, 1) - jdate(now.year, now.month-1, 1)).days
+                    this_date = str(now.year)+'-'+str(now.month)+'-'
+                    next_date = str(now.year)+'-'+str(now.month+1)+'-'
+                    prev_date = str(now.year)+'-'+str(now.month-1)+'-'
+
+                first_day_of_month_weekday = jdate(now.year, now.month, 1).weekday()
+                array = [0,]
+                days = [0,]
+                if (month_length == 30 and first_day_of_month_weekday == 6) or (month_length == 31 and first_day_of_month_weekday >=5):
+                    for i in range(41):
+                        array.append(0)
+                        days.append(0)
+                else:
+                    for i in range(34):
+                        array.append(0)
+                        days.append(0)
+
+
+                for i in range(first_day_of_month_weekday):
+                    array[first_day_of_month_weekday-i-1] = prev_date + '' #str(previous_month_length - i)
+
+                for i in range(month_length):
+                    array[first_day_of_month_weekday+i] = this_date + str(i + 1)
+
+                for i in range(len(array) - array.index(0)):
+                    array[array.index(0)] = next_date+ '' #str(i+1)
+                for i in range(len(array)):
+                    days[i] = array[(int(i/7)+1)*7-1-(i-int(i/7)*7)]
+                for i in range(len(days)):
+                    if int((i)/7) == ((i)/7):
+                        days[i] = days[i]+'-br'
+                dictionary = {'days_0':days,}
+                counter = 1
+                if now.year == last_day.year and now.month == last_day.month:
+                    break
+            else:
+                now = jdate(now.year,now.month,15)+timedelta(days=30)
+                if now.month == 12:
+                    month_length =  (jdate(now.year+1, 1, 1) - jdate(now.year, 12, 1)).days
+                    previous_month_length = (jdate(now.year, now.month, 1) - jdate(now.year, now.month-1, 1)).days
+                    this_date = str(now.year)+'-12-'
+                    next_date = str(now.year+1)+'-1-'
+                    prev_date = str(now.year)+'-11-'
+                elif now.month == 1:
+                    month_length =  (jdate(now.year, now.month+1, 1) - jdate(now.year, now.month, 1)).days
+                    previous_month_length = (jdate(now.year, now.month, 1) - jdate(now.year-1, 12, 1)).days
+                    this_date = str(now.year)+'-1-'
+                    next_date = str(now.year)+'-2-'
+                    prev_date = str(now.year-1)+'-12-'
+                else:
+                    month_length =  (jdate(now.year, now.month+1, 1) - jdate(now.year, now.month, 1)).days
+                    previous_month_length = (jdate(now.year, now.month, 1) - jdate(now.year, now.month-1, 1)).days
+                    this_date = str(now.year)+'-'+str(now.month)+'-'
+                    next_date = str(now.year)+'-'+str(now.month+1)+'-'
+                    prev_date = str(now.year)+'-'+str(now.month-1)+'-'
+
+                first_day_of_month_weekday = jdate(now.year, now.month, 1).weekday()
+                array = [0,]
+                days = [0,]
+                if (month_length == 30 and first_day_of_month_weekday == 6) or (month_length == 31 and first_day_of_month_weekday >=5):
+                    for i in range(41):
+                        array.append(0)
+                        days.append(0)
+                else:
+                    for i in range(34):
+                        array.append(0)
+                        days.append(0)
+
+
+                for i in range(first_day_of_month_weekday):
+                    array[first_day_of_month_weekday-i-1] = prev_date + '' #str(previous_month_length - i)
+
+                for i in range(month_length):
+                    array[first_day_of_month_weekday+i] = this_date + str(i + 1)
+
+                for i in range(len(array) - array.index(0)):
+                    array[array.index(0)] = next_date+ '' #str(i+1)
+                for i in range(len(array)):
+                    days[i] = array[(int(i/7)+1)*7-1-(i-int(i/7)*7)]
+                for i in range(len(days)):
+                    if int((i)/7) == ((i)/7):
+                        days[i] = days[i]+'-br'
+                dictionary['days_{first}'.format(first = str(counter))] = days
+                counter += 1
+                if now.year == last_day.year and now.month == last_day.month:
+                    break
+        session_days=['',]
+        i=0
+        for session in sessions:
+            str_1 = str(session.day)
+            str_1 = str_1.replace('-0','-',2)
+            session_days.append(str_1)
+        return render(request,'session/sessionlist.html',{'data': sorted(dictionary.items()),'session_days':session_days,'salon':salon_instance})
     else:
         return HttpResponseRedirect(reverse('login'))
 
@@ -900,7 +1012,7 @@ def SessionCreateView_2(request,pk):
                                                 kwargs={'pk':pk}))
             else:
                 print(times_form.errors)
-                return HttpResponseRedirect(reverse('salon:salondetail',
+                return HttpResponseRedirect(reverse('session:workspace',
                                                 kwargs={'pk':pk}))
         else:
             days_form_2 = DaysForm_2
@@ -1021,7 +1133,7 @@ def SessionCreateView(request, pk):
                 if is_closed == 'closed':
                     session_category.is_closed = True
                     session_category.save()
-                    return HttpResponseRedirect(reverse('salon:salondetail',
+                    return HttpResponseRedirect(reverse('session:workspace',
                                                     kwargs={'pk':pk}))
 
 
@@ -1042,14 +1154,14 @@ def SessionCreateView(request, pk):
                     if day > last_day:
                         break
 
-                return HttpResponseRedirect(reverse('salon:salondetail',
+                return HttpResponseRedirect(reverse('session:workspace',
                                                 kwargs={'pk':pk}))
                 session_category.range_finish_day = last_day
                 session_category.save()
             else:
                 print(days_form.errors)
                 print(times_form.errors)
-                return HttpResponseRedirect(reverse('salon:salondetail',
+                return HttpResponseRedirect(reverse('session:workspace',
                                                 kwargs={'pk':pk}))
         else:
             days_form = DaysForm()
@@ -1087,11 +1199,11 @@ def LastDataSetView(request, pk):
                 if request.user.is_masteruser:
                     return HttpResponseRedirect(reverse('salon:detail',
                                                     kwargs={'pk':pk}))
-                return HttpResponseRedirect(reverse('salon:salondetail',
+                return HttpResponseRedirect(reverse('session:workspace',
                                                 kwargs={'pk':pk}))
             else:
                 print(lastdatasetform.errors)
-                return HttpResponseRedirect(reverse('salon:salondetail',
+                return HttpResponseRedirect(reverse('session:workspace',
                                                 kwargs={'pk':pk}))
 
         else:
@@ -1121,9 +1233,10 @@ class AllSessionListView(ListView):
 
 
 @login_required
-@sportclub_required
 def DayListView(request,pk,str):
-    # if request.user == # XXX:
     salon = get_object_or_404(SalonModel,pk = pk)
-    sessionlist = get_list_or_404(SessionModel,day = str, salon=salon)
-    return render(request,'session/daylist.html',{'sessions':sessionlist})
+    if request.user == salon.sportclub.user or request.user.is_masteruser:
+        sessionlist = get_list_or_404(SessionModel,day = str, salon=salon)
+        return render(request,'session/daylist.html',{'sessions':sessionlist})
+    else:
+        return HttpResponseRedirect(reverse('login'))    

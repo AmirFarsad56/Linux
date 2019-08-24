@@ -22,13 +22,14 @@ class TypesForm(forms.Form):
     sportclubs = forms.BooleanField(required=False)
 
 
+
 class MessageForm(forms.Form):
-    text = forms.CharField(widget=forms.Textarea)
+    text = forms.CharField(widget=forms.Textarea(attrs={'class': 'materialize-textarea'}))
 
 
 class EmailForm(forms.Form):
-    subject = forms.CharField(widget=forms.Textarea)
-    text = forms.CharField(widget=forms.Textarea)
+    subject = forms.CharField()
+    text = forms.CharField(widget=forms.Textarea(attrs={'class': 'materialize-textarea'}))
 
 
 class UserUpdateForm(forms.ModelForm):
@@ -41,6 +42,9 @@ class SuperUserUpdateForm(forms.ModelForm):
     class Meta():
         model = UserModel
         fields = ('first_name','last_name','email','picture')
+        widgets = {
+            'picture': forms.FileInput(attrs={}),
+        }
 
 
 class PasswordChangeForm(forms.Form):

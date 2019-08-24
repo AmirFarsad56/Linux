@@ -11,7 +11,7 @@
 <span class="center-align"><h3 class="fMarkazi gold-text";>لیست سانس ها</h3><br><br></span>
 <div class="container">
   <div class="row">
-    <div class="col s12 m4 l4 center-align"><i class="large material-icons blue-grey-text text-darken-4">turned_in</i><br>
+    <div class="col s12 m4 l4 center-align"><i class="large material-icons grey-text text-darken-4">turned_in</i><br>
       سانس های رزرو شده
 
     </div>
@@ -30,7 +30,7 @@
 <div class="container">
 {% for session in sessions %}
 {% if session.is_booked %}
-<div class="center card-panel hoverable blue-grey darken-4 z-depth-5 fMarkazi white-text">
+<div class="center card-panel hoverable grey darken-4 z-depth-5 fMarkazi white-text">
   <h6>
     <div class="row">
       <div class="col s6 m3 l3 right-align">
@@ -175,9 +175,10 @@
 
 
     </div>
-
+{% if request.user.is_sportclub %}
 <div class="col s12 m12 l12 center-align"><a style="white-space:pre" href="{% url 'session:update' pk=session.pk %}" class="hoverable waves-effect waves-light btn grey darken-4 gold-text"><h6>ویرایش مشخصات سانس</h6></a><p></p>
 </div>
+{% endif %}
 </h6>
   </div>
 {% endif %}

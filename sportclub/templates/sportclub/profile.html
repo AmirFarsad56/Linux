@@ -52,14 +52,16 @@
       <div class="col s6 m6 l6 left-align">اطلاعات دیگر</div>
     </div>
     </h6>
-<a href="{% url 'sportclub:update' slug=user.slug %}" class="hoverable waves-effect waves-light btn gold white-text"><h6> ویرایش  </h6></a><p></p>
-<a href="{% url 'accounts:passwordchange' slug=user.slug %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>تغییر رمز  </h6></a>
+    <div class="row">
+      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'sportclub:update' slug=user.slug %}" class="waves-effect waves-light btn modal-trigger modal-close gold white-text"><h6>               <span>ویرایش مشخصات</span>               </h6></a><p></p></div>
+      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'accounts:passwordchange' slug=user.slug %}" class="waves-effect waves-light btn modal-trigger modal-close gold white-text"><h6>                       <span>تغییر رمز</span>                       </h6></a><p></p></div>
+    </div>
   </div>
 
 <br><br>
   <div class="card-panel hoverable pink accent-3 z-depth-5 fMarkazi">
     <h3 class=" fMarkazi gold-text">اطلاعات حساب</h3>
-    {% if  sportclub_detail.bankaccount_cardnumber and sportclub_detail.bankaccount_bankname and sportclub_detail.bankaccount_ownername and sportclub_detail.bankaccount_accountnumber and sportclub_detail.bankaccount_shabanumber%}
+    {% if  sportclub_detail.bankaccount_cardnumber and sportclub_detail.bankaccount_bankname and sportclub_detail.bankaccount_ownername and sportclub_detail.bankaccount_accountnumber %}
 <h6>
     <div class="row">
       <div class="col s6 m6 l6 right-align">{{sportclub_detail.bankaccount_ownername}}</div>
@@ -77,14 +79,13 @@
       <div class="col s6 m6 l6 right-align">{{sportclub_detail.bankaccount_accountnumber}}</div>
       <div class="col s6 m6 l6 left-align">شماره حساب</div>
     </div>
-    <div class="row">
-      <div class="col s6 m6 l6 right-align">{{sportclub_detail.bankaccount_shabanumber}}</div>
-      <div class="col s6 m6 l6 left-align">شماره شبا</div>
     </h6>
     {% else %}
     <h5>شما هنوز اطلاعات حساب بانکی خود را وارد نکردید لطفا هر چه سریعتر اطلاعات حساب خود را به طور کامل وارد کنید تا قادر به انجام فعالیت های خود در سایت ورزش کن باشید</h5><br>
     {% endif %}
-<a href="{% url 'sportclub:bankinfochange' slug=user.slug %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>ویرایش   </h6></a>
+    <div class="row">
+    <div class="col s12 m12 l12 center-align"><a style="white-space:pre" href="{% url 'sportclub:bankinfochange' slug=user.slug %}" class="waves-effect waves-light btn modal-trigger modal-close gold white-text"><h6>               <span>ویرایش</span>               </h6></a><p></p></div>
+    </div>
   </div>
 
 
@@ -106,7 +107,9 @@
       {% endif %}
     </div>
     </h6>
-<a href="{% url 'sportclub:termsandconditions' slug=user.slug %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>ویرایش   </h6></a>
+    <div class="row">
+    <div class="col s12 m12 l12 center-align"><a style="white-space:pre" href="{% url 'sportclub:termsandconditions' slug=user.slug %}" class="waves-effect waves-light btn modal-trigger modal-close gold white-text"><h6>               <span>ویرایش</span>               </h6></a><p></p></div>
+    </div>
   </div>
 
 </div>

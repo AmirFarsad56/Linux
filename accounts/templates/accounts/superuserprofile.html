@@ -1,56 +1,92 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
-    {% if superuser.picture %}
-    profile image <img src="{{superuser.picture.url}}" width="70" height="70"/>
-    {% endif %}
-    <p>Welcome To Profile Page {{superuser.username}}</p>
-    {% if not user.first_name %}
-    **************** {{superuser.slug}}
-    <p>you have not entered your details <br>
-      please update your datas through
-      <a href="{% url 'accounts:update' slug=user.slug %}"> here </a>
-      to be able to see you complete profile page
-      {% else %}
-      mr {{superuser.first_name}} {{superuser.last_name}}<br>
-      you can update you info
-      <a href="{% url 'accounts:update' slug=user.slug %}">here</a><br>
-            list of <a href="{% url 'masteruser:list' %}">MasterUsers</a>
-      {% endif %}
+{% extends "base_templates/base1.html" %}
 
-      <p>signup a masteruser via <a href="{% url 'masteruser:signup' %}">here</a></p>
+{% block head_block %}
+<title>
+    پروفایل | سامانه ورزش کن
+</title>
+{% endblock %}
 
-      <p>list of masteruser <a href="{% url 'masteruser:list' %}">here</a></p>
-      <p>list of banned masteruser <a href="{% url 'masteruser:bannedlist' %}">here</a></p>
-      <p>Send cloud Message <a href="{% url 'accounts:cloudmessage' %}">here</a></p>
-      <p>Send cloud Email <a href="{% url 'accounts:cloudemail' %}">here</a></p>
-      <p>Change Passwrod <a href="{% url 'accounts:passwordchange' slug=user.slug %}">here</a></p>
+{% block body_block %}
+
+{% if superuser.picture %}
+<div class="parallax-container">
+      <div class="parallax"><img src="{{superuser.picture.url}}"></div>
+    </div>
+{% endif %}
+<div class="section">
+
+  <div class="container"><br>
+<span class="center-align"><h3 class="fMarkazi gold-text";>{{user.first_name}} {{user.last_name}} خوش آمدید</h3><br><br></span>
 
 
+  <div class="row center">
+  <div class="card-panel hoverable pink accent-3 z-depth-5 fMarkazi">
+    <h3 class=" fMarkazi gold-text">اطلاعات شخصی</h3>
+<h6>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align">{{user.username}}</div>
+      <div class="col s6 m6 l6 left-align">نام کاربری</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align">{{user.first_name}}</div>
+      <div class="col s6 m6 l6 left-align">نام</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align">{{user.last_name}}</div>
+      <div class="col s6 m6 l6 left-align">نام خانوادگی</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align">{{user.email}}</div>
+      <div class="col s6 m6 l6 left-align">ایمیل</div>
+    </div>
+    </h6>
+    <div class="row">
+      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'accounts:update' slug=user.slug %}" class="waves-effect waves-light btn modal-trigger modal-close gold white-text"><h6>               <span>ویرایش مشخصات</span>               </h6></a><p></p></div>
+      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'accounts:passwordchange' slug=user.slug %}" class="waves-effect waves-light btn modal-trigger modal-close gold white-text"><h6>                       <span>تغییر رمز</span>                       </h6></a><p></p></div>
+    </div>
+  </div>
+<br><br>
+</div>
+</div>
+</div>
+{% endblock %}
+{% block script_block %}
+<script>
+  $(document).ready(function(){
+    $('.parallax').parallax();
+  });
+</script>
+{% endblock %}
 
-      {% if profit_percantage %}
-      update profit percantage
-      <a href="{% url 'booking:updateprofitpercentage' pk=profit_percantage.get.pk%}"> here</a><br>
-      {% else %}
-      set profit percentage for first time
-      <a href="{% url 'booking:createprofitpercentage'%}"> here</a><br> if you're seeing this not for first time sth has went wrong <br>
-      {% endif %}
-<br>
 
-      {% if terms %}
-      update Terms and Condition for Company
-      <a href="{% url 'company:updateterms' pk=terms.get.pk%}"> here</a><br>
-      {% else %}
-      set Terms and Condition for Company for first time
-      <a href="{% url 'company:createterms'%}"> here</a><br> if you're seeing this not for first time sth has went wrong <br>
-      {% endif %}
-<br>
-      <a href="{% url 'sportclub:listforsuperuser' %}">List of Sportclubs</a>
 
-    </p>
-  </body>
-</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->

@@ -109,10 +109,14 @@ def SportClubProfileView(request, slug):
 @sportclub_required
 @login_required
 def SportClubWorkSpaceView(request, slug):
-    user = request.user
-    SportClubDetail = get_object_or_404(SportClubModel, user = user)
-    return render(request,'sportclub/workspace.html',
-                    {'sportclub_detail':SportClubDetail})
+    user_instance = get_object_or_404(UserModel,slug = slug)
+    if user_instance == request.user:
+        SportClubDetail = get_object_or_404(SportClubModel, user = user_instance)
+        return render(request,'sportclub/workspace.html',
+                        {'sportclub_detail':SportClubDetail})
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
 
 
 @method_decorator([login_required, masteruser_required], name='dispatch')
@@ -146,6 +150,99 @@ def SportClubDetailView(request,slug):
                           {'sportclub_detail':sportclub_instance})
     else:
         return HttpResponseRedirect(reverse('login'))
+
+
+@login_required
+@masteruser_required
+def SportClubDetailsView(request,slug):
+    if request.user.is_masteruser:
+        user_instance = get_object_or_404(UserModel, slug = slug)
+        sportclub_instance = get_object_or_404(SportClubModel, user = user_instance)
+
+        try:
+            salon_instances = get_list_or_404(SalonModel, sportclub = sportclub_instance)
+            return render(request,'sportclub/sportclubdetails.html',
+                          {'sportclub':sportclub_instance,
+                           'salons':salon_instances})
+        except:
+            return render(request,'sportclub/sportclubdetails.html',
+                          {'sportclub':sportclub_instance})
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+@login_required
+@masteruser_required
+def UnBanModalView(request,slug):
+    if request.user.is_masteruser:
+        user_instance = get_object_or_404(UserModel, slug = slug)
+        sportclub_instance = get_object_or_404(SportClubModel, user = user_instance)
+        return render(request,'sportclub/unbanmodal.html',
+                      {'sportclub':sportclub_instance})
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+@login_required
+@masteruser_required
+def UnBanModalView_2(request,slug):
+    if request.user.is_masteruser:
+        user_instance = get_object_or_404(UserModel, slug = slug)
+        sportclub_instance = get_object_or_404(SportClubModel, user = user_instance)
+
+        return render(request,'sportclub/unbanmodal2.html',
+                      {'sportclub':sportclub_instance})
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+@login_required
+@masteruser_required
+def UnBanModalView_3(request,slug):
+    if request.user.is_masteruser:
+        user_instance = get_object_or_404(UserModel, slug = slug)
+        sportclub_instance = get_object_or_404(SportClubModel, user = user_instance)
+        return render(request,'sportclub/unbanmodal3.html',
+                      {'sportclub':sportclub_instance})
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+@login_required
+@masteruser_required
+def BanModalView(request,slug):
+    if request.user.is_masteruser:
+        user_instance = get_object_or_404(UserModel, slug = slug)
+        sportclub_instance = get_object_or_404(SportClubModel, user = user_instance)
+        return render(request,'sportclub/banmodal.html',
+                      {'sportclub':sportclub_instance})
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+@login_required
+@masteruser_required
+def BanModalView_2(request,slug):
+    if request.user.is_masteruser:
+        user_instance = get_object_or_404(UserModel, slug = slug)
+        sportclub_instance = get_object_or_404(SportClubModel, user = user_instance)
+        return render(request,'sportclub/banmodal2.html',
+                      {'sportclub':sportclub_instance})
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+@login_required
+@masteruser_required
+def BanModalView_3(request,slug):
+    if request.user.is_masteruser:
+        user_instance = get_object_or_404(UserModel, slug = slug)
+        sportclub_instance = get_object_or_404(SportClubModel, user = user_instance)
+        return render(request,'sportclub/banmodal3.html',
+                      {'sportclub':sportclub_instance})
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
 
 
 @login_required
@@ -186,13 +283,18 @@ def BannedSportClubExceptionView(request,slug):
 def SportClubBanView(request,slug):
     if request.user.is_masteruser:
         user_instance = get_object_or_404(UserModel, slug = slug)
+
+        sportclub_instance = get_object_or_404(SportClubModel, user = user_instance)
+
+        try:
+            salon_instances = get_list_or_404(SalonModel, sportclub = sportclub_instance)
+            for salon_instance in salon_instances:
+                salon_instance.is_confirmed = False
+                salon_instance.save()
+        except:
+            pass
         user_instance.is_active = False
         user_instance.save()
-        sportclub_instance = get_object_or_404(SportClubModel, user = user_instance)
-        salon_instances = get_list_or_404(SalonModel, sportclub = sportclub_instance)
-        for salon_instance in salon_instances:
-            salon_instance.is_confirmed = False
-            salon_instance.save()
         masteruser_instance = get_object_or_404(UserModel, slug = request.user.slug)
         masteruser_instance_logs = masteruser_instance.user_logs
         now = jdatetime.datetime.now()
@@ -206,8 +308,77 @@ Banned Sportclub: {user}
                     user = str(user_instance.username),)
         masteruser_instance.user_logs = new_log
         masteruser_instance.save()
-        return HttpResponseRedirect(reverse("sportclub:detail",
-                                            kwargs={'slug':user_instance.slug}))
+        return HttpResponseRedirect(reverse("sportclub:list"))
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+@login_required
+@masteruser_required
+def SportClubBanView_2(request,slug):
+    if request.user.is_masteruser:
+        user_instance = get_object_or_404(UserModel, slug = slug)
+
+        sportclub_instance = get_object_or_404(SportClubModel, user = user_instance)
+
+        try:
+            salon_instances = get_list_or_404(SalonModel, sportclub = sportclub_instance)
+            for salon_instance in salon_instances:
+                salon_instance.is_confirmed = False
+                salon_instance.save()
+        except:
+            pass
+        user_instance.is_active = False
+        user_instance.save()
+        masteruser_instance = get_object_or_404(UserModel, slug = request.user.slug)
+        masteruser_instance_logs = masteruser_instance.user_logs
+        now = jdatetime.datetime.now()
+        dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
+        new_log = '''{previous_logs}\n
+On {date_time}:\n
+Banned Sportclub: {user}
+-------------------------------------------------------
+        '''.format(previous_logs = masteruser_instance_logs,
+                   date_time = dtime,
+                    user = str(user_instance.username),)
+        masteruser_instance.user_logs = new_log
+        masteruser_instance.save()
+        return HttpResponseRedirect(reverse("salon:confirmedsalonlist"))
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+@login_required
+@masteruser_required
+def SportClubBanView_3(request,slug):
+    if request.user.is_masteruser:
+        user_instance = get_object_or_404(UserModel, slug = slug)
+
+        sportclub_instance = get_object_or_404(SportClubModel, user = user_instance)
+
+        try:
+            salon_instances = get_list_or_404(SalonModel, sportclub = sportclub_instance)
+            for salon_instance in salon_instances:
+                salon_instance.is_confirmed = False
+                salon_instance.save()
+        except:
+            pass
+        user_instance.is_active = False
+        user_instance.save()
+        masteruser_instance = get_object_or_404(UserModel, slug = request.user.slug)
+        masteruser_instance_logs = masteruser_instance.user_logs
+        now = jdatetime.datetime.now()
+        dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
+        new_log = '''{previous_logs}\n
+On {date_time}:\n
+Banned Sportclub: {user}
+-------------------------------------------------------
+        '''.format(previous_logs = masteruser_instance_logs,
+                   date_time = dtime,
+                    user = str(user_instance.username),)
+        masteruser_instance.user_logs = new_log
+        masteruser_instance.save()
+        return HttpResponseRedirect(reverse("salon:unconfirmedsalonlist"))
     else:
         return HttpResponseRedirect(reverse('login'))
 
@@ -232,8 +403,7 @@ UnBanned Sportclub: {user}
                     user = str(user_instance.username),)
         masteruser_instance.user_logs = new_log
         masteruser_instance.save()
-        return HttpResponseRedirect(reverse("sportclub:detail",
-                                            kwargs={'slug':user_instance.slug}))
+        return HttpResponseRedirect(reverse("sportclub:bannedlist"))
     else:
         return HttpResponseRedirect(reverse('login'))
 
@@ -241,6 +411,57 @@ UnBanned Sportclub: {user}
 
 @login_required
 @masteruser_required
+def SportClubUnBanView_2(request,slug):
+    if request.user.is_masteruser:
+        user_instance = get_object_or_404(UserModel, slug = slug)
+        user_instance.is_active = True
+        user_instance.save()
+        masteruser_instance = get_object_or_404(UserModel, slug = request.user.slug)
+        masteruser_instance_logs = masteruser_instance.user_logs
+        now = jdatetime.datetime.now()
+        dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
+        new_log = '''{previous_logs}\n
+On {date_time}:\n
+UnBanned Sportclub: {user}
+-------------------------------------------------------
+        '''.format(previous_logs = masteruser_instance_logs,
+                   date_time = dtime,
+                    user = str(user_instance.username),)
+        masteruser_instance.user_logs = new_log
+        masteruser_instance.save()
+        return HttpResponseRedirect(reverse("salon:confirmedsalonlist"))
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+@login_required
+@masteruser_required
+def SportClubUnBanView_3(request,slug):
+    if request.user.is_masteruser:
+        user_instance = get_object_or_404(UserModel, slug = slug)
+        user_instance.is_active = True
+        user_instance.save()
+        masteruser_instance = get_object_or_404(UserModel, slug = request.user.slug)
+        masteruser_instance_logs = masteruser_instance.user_logs
+        now = jdatetime.datetime.now()
+        dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
+        new_log = '''{previous_logs}\n
+On {date_time}:\n
+UnBanned Sportclub: {user}
+-------------------------------------------------------
+        '''.format(previous_logs = masteruser_instance_logs,
+                   date_time = dtime,
+                    user = str(user_instance.username),)
+        masteruser_instance.user_logs = new_log
+        masteruser_instance.save()
+        return HttpResponseRedirect(reverse("salon:unconfirmedsalonlist"))
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+
+@login_required
+@superuser_required
 def SportClubDeleteView(request,slug):
     if request.user.is_masteruser:
         user_instance = get_object_or_404(UserModel, slug = slug)
@@ -261,7 +482,7 @@ Deleted Sportclub: {user}
         masteruser_instance.save()
         user_instance.delete()
 
-        return HttpResponseRedirect(reverse('sportclub:bannedlist'))
+        return HttpResponseRedirect(reverse('sportclub:list'))
     else:
         return HttpResponseRedirect(reverse('login'))
 

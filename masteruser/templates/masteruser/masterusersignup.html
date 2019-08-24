@@ -1,41 +1,96 @@
-<!DOCTYPE html>
+{% extends "base_templates/base1.html" %}
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
+{% block head_block %}
+<title>
+    افزودن مدیر سایت | سامانه ورزش کن
+</title>
+{% endblock %}
 
-    <div class="container">
-        <div class="jumbotron">
-          {% if user.is_superuser %}
-            {% if registered %}
-            <h1>Master User registered successfuly</h1>
-            <p>check its login <a href="{% url 'login' %}">login</a></p>
+{% block body_block %}
+<div class="section">
+  <div class="container">
+  <div class="container"><br>
+<span class="center-align"><h3 class="fMarkazi gold-text";>افزودن مدیر سایت</h3><br><br></span>
+  <div class="row center">
+  <div class="card-panel hoverable pink accent-3 z-depth-5">
 
-            {% else %}
-            <h1>Register Here</h1>
-            <h3>Just fill out the form.</h3>
-            {% for message in messages %}
-            {{message}}
-            {% endfor %}
-            <form method="POST">
-                {% csrf_token %}
-                {{ user_form.as_p }}
+        <form method="POST" enctype="multipart/form-data">
+          <div class="input-field col s12">
+  {{user_form.username}}
+  <label class="fMarkazi" for="username">نام کاربری</label>
+</div>
+<div class="input-field col s12">
+{{user_form.password1}}
+<label class="fMarkazi" for="username">کلمه عبور</label>
+</div>
+<div class="input-field col s12">
+{{user_form.password2}}
+<label class="fMarkazi" for="username">تکرار کلمه عبور</label>
+</div>
+          <div class="input-field col s12">
+  {{user_form.first_name}}
+  <label class="fMarkazi" for="username">نام</label>
+</div>
+<div class="input-field col s12 red-text">
+{{user_form.last_name}}
+<label class="fMarkazi right-align" for="password">نام خانوادگی</label>
+</div>
+<div class="input-field col s12 red-text">
+{{user_form.email}}
+<label class="fMarkazi right-align" for="password">ایمیل</label>
+</div>
+<div class="input-field col s12 red-text">
+{{masteruser_form.phone_number}}
+<label class="fMarkazi right-align" for="password">شماره تلفن</label>
+</div>
+<div class="row">
 
-                {{ masteruser_form.as_p }}
 
-                <script src='https://www.google.com/recaptcha/api.js'></script>
-                <div class="g-recaptcha" data-sitekey="6LfbM5oUAAAAAIin3dtuLQB95QITpdUK09tsZ9Ku"></div>
-                <input type="submit" value="Register">
-            </form>
+  <div class="row">
 
-            {% endif %}
+    <div class="input-field col s12 m12 l12">
+      <label>
+        {{user_form.terms}}
+        <span>کاربر قوانین سایت را به طور کامل قبول دارد</span>
+      </label>
+    </div>
+    <div class="row">
 
-            {% endif %}
-        </div>
     </div>
 
-</body>
-</html>
+  </div>
+  <div class="row center">
+    <script class="center" src='https://www.google.com/recaptcha/api.js'></script>
+    <div class="g-recaptcha" data-sitekey="6LfbM5oUAAAAAIin3dtuLQB95QITpdUK09tsZ9Ku"></div>
+
+  </div>
+
+            {% if user_form.errors %}
+            {{user_form.errors}}
+            {% endif %}
+            {% if masteruser_form.errors %}
+            {{masteruser_form.errors}}
+            {% endif %}
+
+                {% csrf_token %}
+
+                <button class="hoverable btn waves-effect waves-dark gold white-text z-depth-3" type="submit">تایید
+    </button>
+    <br><br>
+        </form>
+  </div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
+{% block script_block %}
+<script type="text/javascript">
+  $(document).ready(function() {
+  M.updateTextFields();
+});
+</script>
+{% endblock %}

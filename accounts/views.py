@@ -46,6 +46,20 @@ def SuperUserProfileView(request,slug):
 
 @login_required
 @superuser_required
+def SuperUserWorkSpaceView(request,slug):
+    user = get_object_or_404(UserModel , slug = slug)
+    if user.username == request.user.username:
+        profit_percantage = ProfitPercentageModel.objects.all()
+        terms_condition = TermsModel.objects.all()
+        return render(request, 'accounts/workspace.html', {'superuser':user,
+                        'profit_percantage':profit_percantage,'terms':terms_condition})
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+
+@login_required
+@superuser_required
 def CloudMessageView(request):
     api = KavenegarAPI('30383967456C38706753473546583443536233774E374E6E702B5832386C7648')
     if request.user.is_superuser:
@@ -231,18 +245,7 @@ def PasswordChangeView(request,slug):
                     validate_password(new_password,user=user, password_validators=None)
                     user.set_password(new_password)
                     user.save()
-                    if user.is_superuser:
-                        return HttpResponseRedirect(reverse('accounts:profile',
-                                                    kwargs={'slug':user.slug}))
-                    if user.is_masteruser:
-                        return HttpResponseRedirect(reverse('masteruser:profile',
-                                                    kwargs={'slug':user.slug}))
-                    if user.is_sportclub:
-                        return HttpResponseRedirect(reverse('sportclub:profile',
-                                                    kwargs={'slug':user.slug}))
-                    if user.is_commonuser:
-                        return HttpResponseRedirect(reverse('commonuser:profile',
-                                                    kwargs={'slug':user.slug}))
+                    return HttpResponseRedirect(reverse('login'))
                 except:
                     error1 ='کلمه عبور باید بیش از 6 کاراکتر باشد'
                     error2 ='کلمه عبور باید نمیتواند شامل نام کاربری باشد'
