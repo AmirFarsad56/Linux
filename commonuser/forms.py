@@ -3,7 +3,9 @@ from commonuser.models import CommonUserModel
 
 
 class CommonUserForm(forms.ModelForm):
-
+    def __init__(self, *args, **kwargs):
+        super(CommonUserForm, self).__init__(*args, **kwargs)
+        self.fields['picture'].required = False
     class Meta:
         model = CommonUserModel
         fields = ('phone_number','picture')

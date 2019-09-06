@@ -22,7 +22,7 @@
       <h5>
       {% csrf_token %}
 
-    بازه زمانی انتخابی شما میتواند مابین دو تاریخ <span style="white-space:pre">  {{session_category.range_start_day|date:"d-m-Y"}}  </span> و <span style="white-space:pre">  {{session_category.range_end_day|date:"d-m-Y"}}  </span> باشد
+    بازه زمانی انتخابی شما میتواند مابین دو تاریخ <span style="white-space:pre">{% if today > session_category.range_start_day %}{{today|date:"d-m-Y"}}{% else %}{{session_category.range_start_day|date:"d-m-Y"}}{% endif %}</span> و <span style="white-space:pre">  {{session_category.range_end_day|date:"d-m-Y"}}  </span> باشد
 
     <div class="row ">
       <div class="input-field col s12 m6 l6">

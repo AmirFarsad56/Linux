@@ -102,14 +102,16 @@
 
 <div class="input-field col s12 m12 l12">
   <label>
-    <input type="checkbox" name="is_closed" value="closed">
+    <input type="checkbox" name="is_closed" value="open" id="myCheck" onclick="myFunction()">
     <span>تعطیل</span>
   </label>
 </div>
+
+
 </div>
 </h5>
 <br><br>
-<div class="row center">
+<div id="text" style="display:block" class="row center">
 
 <div class="input-field col s12 m4 l4">
     {{times_form.start_time}}
@@ -139,6 +141,22 @@
 </div>
 
 
+
+<script type="text/javascript">
+  function myFunction() {
+  // Get the checkbox
+  var checkBox = document.getElementById("myCheck");
+  // Get the output text
+  var text = document.getElementById("text");
+
+  // If the checkbox is checked, display the output text
+  if (checkBox.checked == false){
+    text.style.display = "block";
+  } else {
+    text.style.display = "none";
+  }
+}
+</script>
 {% endblock %}
 {% block script_block %}
 

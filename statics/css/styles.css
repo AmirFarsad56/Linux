@@ -1,0 +1,43 @@
+.fMarkazi {
+  font-family: 'Markazi Text', serif;
+}
+.fLalezar {
+  font-family: 'Lalezar', cursive;
+}
+.gold{
+  background-color: #d4af37;
+}
+.gold-text{
+  color: #d4af37;
+}
+.icon-border{
+  border: 5px solid red;
+}
+/* label name color */
+.input-field label {
+  color: white;
+}
+/* label focus color */
+ .input-field input:focus + label {
+   color: white !important;
+ }
+ /* label underline focus color */
+ .input-field input:focus {
+   border-bottom: 1px solid white !important;
+   box-shadow: 0 1px 0 0 white !important
+ }
+
+/* label name focus color */
+ .input-field textarea:focus + label {
+   color: white !important;
+ }
+ /* label underline focus color */
+ .input-field textarea:focus {
+   border-bottom: 1px solid white !important;
+   box-shadow: 0 1px 0 0 white !important
+ }
+
+ .timepicker-modal,
+.datepicker-modal{
+  top: -5% !important;
+}

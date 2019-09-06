@@ -29,7 +29,7 @@
   </ul>
 </div>
 {% else %}
-behtar ast axe salon ra upload konid
+لطفا هرچه زودتر نسبت به آپلود عکس های سالن از طریق لینک ویرایش اقدام فرمائید در غیر اینصورت سالن شما بازدید کمی خواهد داشت
 {% endif %}
     <h3 class=" fMarkazi gold-text">اطلاعات سالن ورزشی</h3>
 <h6>
@@ -101,11 +101,28 @@ behtar ast axe salon ra upload konid
       <div class="col s6 m6 l6 left-align">مناسب برای</div>
     </div>
     <div class="row">
-<a href="{% url 'salon:update' slug=user.slug pk=salon.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6> ویرایش  </h6></a><br>
+      <div class="col s6 m6 l6 right-align">{{salon.six_to_twelve_sessions_discount}}</div>
+      <div class="col s6 m6 l6 left-align">درصد تخفیف برای کاربرانی که قراردادی به مدت بین ۶ تا ۱۲ جلسه تنظیم میکنند</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align">{{salon.more_than_twelve_sessions_discount}}</div>
+      <div class="col s6 m6 l6 left-align">درصد تخفیف برای کاربرانی که قراردادی بالای ۱۲ جلسه تنظیم میکنند</div>
+    </div>
+    <div class="row">
+    <div class="col s12 m6 l6">
+<a href="{% url 'salon:update' slug=user.slug pk=salon.pk %}" style="white-space:pre"  class="hoverable waves-effect waves-light btn gold white-text"><h6><span>             </span> ویرایش  <span>             </span></h6></a><br>
     </div>
 
+    <div class="col s12 m6 l6">
+    <a href="{% url 'session:workspace' pk=salon.pk %}" style="white-space:pre"  class="hoverable waves-effect waves-light btn gold white-text"><h6><span>     </span>مدیریت سانس ها <span>     </span></h6></a><br> <br>
+    </div>
     <div class="row">
-    <a href="{% url 'session:workspace' pk=salon.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>مدیریت سانس ها </h6></a><br>
+
+    </div>
+    <div class="col s12 m12 l12">
+    <a  href="{% url 'salon:reckoninglist' pk=salon.pk %}" style="white-space:pre" class="waves-effect waves-light btn modal-trigger modal-close green white-text"><h6>                      <span>لیست تسویه حساب ها</span>                     </h6></a><br>
+    </div>
+
     </div>
     </h6>
   </div>

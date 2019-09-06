@@ -7,17 +7,24 @@ from django.forms import modelformset_factory
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from django.core.paginator import Paginator
+from django.shortcuts import get_list_or_404
 import jdatetime
 
 #handmade
 from accounts.models import UserModel
+from salon.filters import SalonFilter
+from company.filters import ReckoningFilter
 from sportclub.models import SportClubModel
-from salon.forms import SalonForm, SalonPictureForm, SalonProfitForm
+from salon.forms import SalonForm, SalonPictureForm, SalonProfitForm, SalonPictureUpdateForm
 from salon.models import SalonModel, SalonPictureModel
 from sportclub.decorators import sportclub_required
 from accounts.decorators import superuser_required
 from masteruser.decorators import masteruser_required
 from booking.models import ProfitPercentageModel
+from session.models import SessionModel
+from booking.models import BookingModel
+from company.models import ReckoningModel
 
 
 #recaptcha
@@ -101,11 +108,10 @@ def SalonUpdateView(request,slug,pk):
             return HttpResponseRedirect(reverse('sportclub:workspace',
                                         kwargs={'slug':slug,}))
         return render(request,'salon/updatesalon.html',
-                              {'form':salon_update_form,})
+                              {'form':salon_update_form,
+                              'salon':salon,})
     else:
         return HttpResponseRedirect(reverse('login'))
-
-
 
 
 @method_decorator([login_required, sportclub_required], name='dispatch')
@@ -118,18 +124,37 @@ class SalonDetailView(DetailView):
         return SalonModel.objects.filter(sportclub = self.request.user.sportclubs)
 
 
-@method_decorator([login_required, masteruser_required], name='dispatch')
-class ConfirmedSalonListView(ListView):
-    model = SalonModel
-    context_object_name = 'salons'
-    template_name = 'salon/confirmedsalonlist.html'
+@login_required
+@masteruser_required
+def ConfirmedSalonListView(request):
+    salon_list = SalonModel.objects.all()
+    salon_filter = SalonFilter(request.GET,queryset = salon_list)
+    paginator = Paginator(salon_filter.qs, 20)
+    page = request.GET.get('page')
+    salons = paginator.get_page(page)
+    return render(request,'salon/confirmedsalonlist.html',{'salons':salons,'filter':salon_filter})
 
 
-@method_decorator([login_required, masteruser_required], name='dispatch')
-class UnConfirmedSalonListView(ListView):
-    model = SalonModel
-    context_object_name = 'salons'
-    template_name = 'salon/unconfirmedsalonlist.html'
+@login_required
+@masteruser_required
+def UnConfirmedSalonListView(request):
+    salon_list = SalonModel.objects.all()
+    salon_filter = SalonFilter(request.GET,queryset = salon_list)
+    paginator = Paginator(salon_filter.qs, 20)
+    page = request.GET.get('page')
+    salons = paginator.get_page(page)
+    return render(request,'salon/unconfirmedsalonlist.html',{'salons':salons,'filter':salon_filter})
+
+
+@login_required
+@superuser_required
+def SalonListSuperUserView(request):
+    salon_list = SalonModel.objects.all()
+    salon_filter = SalonFilter(request.GET,queryset = salon_list)
+    paginator = Paginator(salon_filter.qs, 20)
+    page = request.GET.get('page')
+    salons = paginator.get_page(page)
+    return render(request,'salon/salonlistforsuperuser.html',{'salons':salons,'filter':salon_filter})
 
 
 @login_required
@@ -137,6 +162,14 @@ class UnConfirmedSalonListView(ListView):
 def SalonDeleteView(request,pk):
     if request.user.is_masteruser:
         salon = get_object_or_404(SalonModel,pk = pk)
+        sessions = get_list_or_404(SessionModel, salon = salon)
+        today = jdatetime.datetime.now().date()
+        print(today,';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;')
+
+        for session in sessions:
+            print(session.day , session.day > today)
+            if session.day > today and session.is_booked:
+                return HttpResponseRedirect(reverse('salon:bookedsessionerror',pk = salon.pk))
         masteruser_instance = get_object_or_404(UserModel, slug = request.user.slug)
         masteruser_instance_logs = masteruser_instance.user_logs
         now = jdatetime.datetime.now()
@@ -165,24 +198,27 @@ def SalonConfirmView(request,pk):
         salon = get_object_or_404(SalonModel,pk = pk)
         related_user = salon.sportclub.user
         if salon.sportclub.user.is_active:
-            salon.confirm()
-            masteruser_instance = get_object_or_404(UserModel, slug = request.user.slug)
-            masteruser_instance_logs = masteruser_instance.user_logs
-            now = jdatetime.datetime.now()
-            dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
-            new_log = '''{previous_logs}\n
+            if salon.sportclub.bankaccount_bankname and salon.sportclub.bankaccount_ownername and salon.sportclub.bankaccount_cardnumber and salon.sportclub.bankaccount_accountnumber:
+                salon.confirm()
+                masteruser_instance = get_object_or_404(UserModel, slug = request.user.slug)
+                masteruser_instance_logs = masteruser_instance.user_logs
+                now = jdatetime.datetime.now()
+                dtime = str(now.year)+'-'+str(now.month)+'-'+ str(now.day)+'  '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
+                new_log = '''{previous_logs}\n
 On {date_time}:\n
 Confirmed Salon: {salon}
 Related to Sport Club: {sportclub}
 -------------------------------------------------------
-            '''.format(previous_logs = masteruser_instance_logs,
-                       date_time = dtime,
-                        salon = str(salon),
-                        sportclub = str(salon.sportclub.user.username))
-            masteruser_instance.user_logs = new_log
-            masteruser_instance.save()
-            return HttpResponseRedirect(reverse('sportclub:detail',
-                                                kwargs={'slug':salon.sportclub.user.slug}))
+                '''.format(previous_logs = masteruser_instance_logs,
+                           date_time = dtime,
+                            salon = str(salon),
+                            sportclub = str(salon.sportclub.user.username))
+                masteruser_instance.user_logs = new_log
+                masteruser_instance.save()
+                return HttpResponseRedirect(reverse('sportclub:detail',
+                                                    kwargs={'slug':salon.sportclub.user.slug}))
+            else:
+                return HttpResponseRedirect(reverse('sportclub:noaccountdetailerror'))
         else:
             return HttpResponseRedirect(reverse('sportclub:bannedsportclubexception',
                                                 kwargs={'slug':related_user.username}))
@@ -330,3 +366,104 @@ def ConfirmModalView_2(request,pk):
                           {'salon':salon})
     else:
         return HttpResponseRedirect(reverse('login'))
+
+
+def SalonPictureUpdateView(request, pk):
+    pic = SalonPictureModel.objects.get(pk=pk) # or with get_object_or_404
+    if request.user == pic.salon.sportclub.user:
+        form = SalonPictureUpdateForm(request.POST or None,instance=pic)
+        if form.is_valid():
+            form.save()
+            if 'picture' in request.FILES:
+                pic.picture = request.FILES['picture']
+
+            pic.save()
+            return HttpResponseRedirect(reverse('salon:update',
+                                        kwargs={'slug':pic.salon.sportclub.user.slug,
+                                                'pk':pic.salon.pk}))
+        else:
+            print(form.errors)
+        return render(request, 'salon/salonpictureupdate.html', {'form':form})
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+
+def SalonPictureAddView(request, pk):
+    salon = SalonModel.objects.get(pk=pk)
+    if request.user == salon.sportclub.user:
+        if request.method == 'POST':
+            form = SalonPictureUpdateForm(data = request.POST)
+            if form.is_valid():
+                pic = form.save(commit = False)
+                pic.salon = salon
+                if 'picture' in request.FILES:
+                    pic.picture = request.FILES['picture']
+                pic.save()
+                return HttpResponseRedirect(reverse('salon:update',
+                                            kwargs={'slug':salon.sportclub.user.slug,
+                                                    'pk':salon.pk}))
+        else:
+            form = SalonPictureUpdateForm()
+        return render(request, 'salon/salonpictureupdate.html', {'form':form})
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+def SalonAccountingDetailView(request,pk):
+    if request.user.is_sportclub or request.user.is_superuser:
+        salon = get_object_or_404(SalonModel,pk = pk)
+        need_to_pay = 0
+        paid = 0
+        total_pure_profit = 0
+        pure_profit_this_round = 0
+        for booking_instance in salon.bookings.all():
+            if not booking_instance.transfered_to_sportclub:
+                need_to_pay += booking_instance.sportclub_portion
+                pure_profit_this_round += booking_instance.company_portion
+            else:
+                paid += booking_instance.sportclub_portion
+                total_pure_profit += booking_instance.company_portion
+        return render(request,'salon/accountingdetail.html',{'need_to_pay':need_to_pay,
+                                                            'total_pure_profit':total_pure_profit,
+                                                            'paid':paid, 'pk':salon.pk,
+                                                            'pure_profit_this_round':pure_profit_this_round})
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+def SalonReconingView(request,pk):
+    if request.user.is_superuser:
+        import jdatetime
+        import datetime
+        salon = get_object_or_404(SalonModel,pk = pk)
+        need_to_pay = 0
+        for booking_instance in salon.bookings.all():
+            if not booking_instance.transfered_to_sportclub:
+                need_to_pay += booking_instance.sportclub_portion #reckoning field and set transfered_to_sportclub and other ones
+        today = jdatetime.datetime.now().date()
+        time = datetime.datetime.now().time()
+        reckoning_object = ReckoningModel.objects.create(money_transfered = need_to_pay,transfered_at_date = today,
+                                                        transfered_at_time = time, salon = salon)
+        reckoning_object.save()
+        for booking_instance in salon.bookings.all():
+            if not booking_instance.transfered_to_sportclub:
+                booking_instance.reckoning = reckoning_object #reckoning field and set transfered_to_sportclub and other ones
+                booking_instance.transfer_to_sportclub()
+                booking_instance.save()
+
+        return HttpResponseRedirect(reverse('salon:accountingdetail',kwargs={'pk':salon.pk}))
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+
+def SalonReckoninglistView(request,pk):
+    if request.user.is_sportclub or request.user.is_superuser:
+        salon = get_object_or_404(SalonModel,pk = pk)
+        reckoning_list = ReckoningModel.objects.filter(salon = salon).order_by('-transfered_at_date','-transfered_at_time')
+        reckoning_filter = ReckoningFilter(request.GET,queryset = reckoning_list)
+        paginator = Paginator(reckoning_filter.qs, 20)
+        page = request.GET.get('page')
+        reckonings = paginator.get_page(page)
+        return render(request,'salon/reckoninglist.html',{'reckonings':reckonings, 'filter':reckoning_filter})

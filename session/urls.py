@@ -5,11 +5,11 @@ from session.views import (SessionCreateView, SessionListView, LengthError,
                            InterferenceErrorView, BoundaryErrorView, NoInputErrorView,
                            LastDataSetView, LogicalErrorView, AllSessionListView,
                            SetDiscountPercentageView, SessionWorkSpaceView,StatusChangeView,
-                           IsBookedErrorView,DayListView)
+                           IsBookedErrorView,DayListView, SessionDetailView)
 
 app_name ='session'
 urlpatterns = [
-    path('sessions-list/', AllSessionListView.as_view(), name='all_sessions_list'),
+    path('sessions-list/', AllSessionListView, name='all_sessions_list'),
     path('<int:pk>/create/', SessionCreateView, name='create'),
     path('<int:pk>/list/', SessionListView, name='list'),
     path('<int:pk>/workspace/', SessionWorkSpaceView, name='workspace'),
@@ -29,6 +29,7 @@ urlpatterns = [
     path('interference-error/<int:pk>/', InterferenceErrorView, name='interferenceerror'),
     path('lastdata-set/<int:pk>/', LastDataSetView, name='lastdataset'),
     path('day-list/<int:pk>/<str:str>/', DayListView, name='day_list'),
+    path('detail/<int:pk>/', SessionDetailView, name='sessiondetail'),
 
 
 ]

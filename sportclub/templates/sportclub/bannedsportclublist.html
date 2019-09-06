@@ -4,6 +4,11 @@
 <title>
     لیست مجموعه های ورزشی بلاک شده| سامانه ورزش کن
 </title>
+<style media="screen">
+  {% for sportclub in  filter.qs %}
+    #gis{{sportclub.pk}} {width:100%;height:400px;}
+  {% endfor %}
+</style>
 {% endblock %}
 
 {% block body_block %}
@@ -11,6 +16,41 @@
   <div class="container">
   <div class="container"><br>
 <span class="center-align"><h3 class="fMarkazi gold-text";>لیست مجموعه های ورزشی بلاک شده</h3><br><br></span>
+
+
+
+  <ul class="collapsible z-depth-5 fMarkazi hoverable popout gold-text">
+  <li>
+    <div class="collapsible-header grey darken-4 center" style="display: block;">
+جستجوی پیشرفته
+    </div>
+    <div class="collapsible-body grey darken-4">
+
+  <form method="get">
+<div class="row">
+
+    <div class="input-field col s12">
+      {{filter.form.sportclub_name}}
+      <label class="fMarkazi" for="area__gte">نام مجموعه ورزشی شامل</label>
+    </div>
+    <div class="input-field col s12">
+      {{filter.form.region}}
+      <label class="fMarkazi" for="area__lte">اسم استان شامل</label>
+    </div>
+
+
+      </div>
+    <div class="row">
+      <button class="hoverable btn waves-effect waves-dark gold white-text z-depth-3" type="submit">جستجو
+</button>
+    </div>
+
+  </form>
+</div>
+</li>
+</ul>
+
+
   <div class="row center">
     {% for sportclub in sportclubs %}
     {% if not sportclub.user.is_active %}
@@ -101,6 +141,8 @@
 </div>
       <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'sportclub:sendsms' slug=sportclub.user.slug %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>             <span>ارسال پیام</span>            </h6></a><p></p>
 </div>
+<h5 class="gold-text">موقعیت</h5>
+{% leaflet_map sportclub.pk|pk_to_str callback=sportclub.pk|pk_to_map_init %}
 
     </div>
 
@@ -114,7 +156,44 @@
 </div>
 
 </div>
+
+
+<div class="container center">
+
+
+<ul class="pagination  z-depth-5 hoverable white fMarkazi">
+  {% if sportclubs.has_previous %}
+  <li class="waves-effect"><a href="?page=1">&laquo; اولین صفحه</a></li>
+      <li class="waves-effect"><a href="?page={{ sportclubs.previous_page_number }}">قبلی  </a></li>
+
+  {% endif %}
+  <li  style="white-space:pre;"  class="disabled active">  <span>صفحه</span> <span>{{ sportclubs.number }}</span>  <span>از</span> <span>{{ sportclubs.paginator.num_pages }}</span> </li>
+
+  {% if sportclubs.has_next %}
+      <li class="waves-effect"><a href="?page={{ sportclubs.next_page_number }}">بعدی</a></li>
+      <li class="waves-effect"><a href="?page={{ sportclubs.paginator.num_pages }}">آخرین صفحه &raquo;</a></li>
+
+  {% endif %}
+
+</ul>
 </div>
+
+</div>
+
+<script type="text/javascript">
+{% for sportclub in filter.qs %}
+    function map_init_{{sportclub.pk}} (map, options) {
+        // get point lat and lon
+        var lon = "{{ sportclub.location.x }}";
+        var lat = "{{ sportclub.location.y }}";
+        // zoom to point & add it to map
+        map.setView([lat, lon], 12  );
+        L.marker([lat, lon]).addTo(map);
+    }
+{% endfor %}
+</script>
+
+
 {% endblock %}
 {% block script_block %}
 <script type="text/javascript">
@@ -124,6 +203,12 @@
 
 $(document).ready(function(){
   $('.modal').modal();
+});
+$(document).ready(function(){
+  $('.collapsible').collapsible();
+});
+$(document).ready(function(){
+  $('select').formSelect();
 });
 </script>
 {% endblock %}

@@ -1,0 +1,92 @@
+{% extends "base_templates/base1.html" %}
+
+{% block head_block %}
+<title>
+  مشخصات مجموعه ورزشی | سامانه ورزش کن
+</title>
+{% endblock %}
+
+{% block body_block %}
+<div class="section fMarkazi white-text">
+  <div class="container">
+  <div class="container"><br>
+<span class="center-align"><h3 class="fMarkazi gold-text";>مشخصات مجموعه ورزشی</h3><br><br></span>
+  <div class="row center">
+    {% if sportclub.user.is_active %}
+  <div class="card-panel hoverable pink accent-3 z-depth-5">
+    <h6>
+<div class="row">
+  <div class="row">
+    <h5 class="gold-text">اطلاعات کاربری</h5>
+
+  </div>
+      <div class="col s6 m6 l6 right-align black-text black-text">{{sportclub.user.username}}</div>
+      <div class="col s6 m6 l6 left-align">نام کاربری</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align black-text">{{sportclub.user.first_name}}</div>
+      <div class="col s6 m6 l6 left-align">نام</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align black-text">{{sportclub.user.last_name}}</div>
+      <div class="col s6 m6 l6 left-align">نام خانوادگی</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align black-text">{{sportclub.user.email}}</div>
+      <div class="col s6 m6 l6 left-align">ایمیل</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align black-text">{{sportclub.phone_number}}</div>
+      <div class="col s6 m6 l6 left-align">شماره تلفن</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align black-text">{{sportclub.address}}</div>
+      <div class="col s6 m6 l6 left-align">آدرس</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align black-text">{{sportclub.info}}</div>
+      <div class="col s6 m6 l6 left-align">اطلاعات دیگر</div>
+    </div>
+
+    {% if sportclub.terms_and_conditions %}
+    <div class="row">
+      <h5 class="gold-text">قوانین خاص مجموعه ورزشی</h5>
+
+    <div class="col s12 m12 l12 right-align black-text">{{sportclub.terms_and_conditions|linebreaks}}</div>
+    {% else %}
+    <div class="row">
+      <h5 class="gold-text">قوانین خاص مجموعه ورزشی</h5>
+
+    <div class="col s12 m12 l12 center-align">کاربر هنوز هیچ قانون خاصی برای مجموعه ورزشی خود وارد نکرده است</div><br>
+    {% endif %}
+
+    <br>
+
+    <div class="row">
+
+      <div class="col s12 m12 l12 center-align"><a style="white-space:pre" href="{% url 'sportclub:detail' slug=sportclub.user.slug %}" class="hoverable waves-effect waves-light btn gold white-text"><h6><span>         </span>لیست سالن ها<span>        </span></h6></a><p></p>
+</div>
+
+
+
+</h6>
+  </div>
+  <br><br>
+  {% endif %}
+</div>
+</div>
+
+</div>
+</div>
+{% endblock %}
+{% block script_block %}
+<script type="text/javascript">
+  $(document).ready(function() {
+  M.updateTextFields();
+});
+
+$(document).ready(function(){
+  $('.modal').modal();
+});
+</script>
+{% endblock %}

@@ -1,14 +1,19 @@
 from sportclub.models import SportClubModel
 from django import forms
+from django.contrib.gis import forms as Gforms
+from leaflet.forms.widgets import LeafletWidget
+
+
 
 class SportClubForm(forms.ModelForm):
 
     class Meta():
         model = SportClubModel
-        fields = ('phone_number','address','info','picture')
+        fields = ('phone_number','address','info','picture','location','sportclub_name','company_phone_number',)
         widgets = {
             'address': forms.Textarea(attrs={'id':'textarea1','class': 'materialize-textarea'}),
             'info': forms.Textarea(attrs={'class': 'materialize-textarea'}),
+            'location': LeafletWidget(),
         }
 
 
@@ -30,13 +35,16 @@ class BankInfoForm(forms.ModelForm):
 
 
 class SportClubUpdateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SportClubUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['picture'].required = False
     class Meta():
         model = SportClubModel
-        fields = ('phone_number','address','info','picture',)
+        fields = ('phone_number','address','info','picture','company_phone_number','sportclub_name')
         widgets = {
             'address': forms.Textarea(attrs={'id':'textarea1','class': 'materialize-textarea'}),
             'info': forms.Textarea(attrs={'class': 'materialize-textarea'}),
-            'picture': forms.FileInput(attrs={}),
+            'picture': forms.FileInput(attrs={},),
         }
 
 

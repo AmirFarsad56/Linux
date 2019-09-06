@@ -147,7 +147,32 @@
             <span>جایگاه تماشاچی</span>
           </label>
         </div>
+      </div> <br> <br>
+
+      <div class="input-field col s12">
+        {{form.six_to_twelve_sessions_discount}}
+        <label class="fMarkazi" for="username">درصد تخفیف برای کاربرانی که قراردادی به مدت بین ۶ تا ۱۲ جلسه تنظیم میکنند</label>
       </div>
+      <div class="input-field col s12">
+        {{form.more_than_twelve_sessions_discount}}
+        <label class="fMarkazi" for="username">درصد تخفیف برای کاربرانی که قراردادی بالای ۱۲ جلسه تنظیم میکنند</label>
+      </div>
+<div class="row">
+<div class="row gold-text center fMarkazi">
+  با کلیک بر روی هر یک از عکس ها میتوانید آن را تغییر دهید
+</div>
+
+        {% for picture in salon.pictures.all %}
+        <div class="center col s12 m6 l6">
+        <a href="{% url 'salon:pictureupdate' pk=picture.pk %}"><img src="{{picture.picture.url}}" height="90" width="150"></a>
+        </div>
+        {% endfor %}
+        <div class="center col s12 m6 l6">
+
+        <a href="{% url 'salon:pictureadd' pk=salon.pk %}"  class=" tooltipped" data-position="bottom" data-tooltip="اضافه کردن عکس ‍‍" ><i style="color:#d4af37;" class="material-icons large">add_a_photo</i></a>
+        </div>
+</div>
+
 <br><br>
             {% if form.errors %}
             <p class="fMarkazi white-text">مشکلی پیش آمد. لطفا فرم را دوباره و با دقت پر کنید</p>

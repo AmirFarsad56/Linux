@@ -1,13 +1,17 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.gis.db import models as Gmodel
 
 
 class SportClubModel(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete = models.CASCADE,
                                 primary_key = True, related_name = 'sportclubs')
-
+    region = models.CharField(max_length = 264, null = False, blank = False)
     phone_number = models.CharField(max_length = 20, blank = False)
+    company_phone_number = models.CharField(max_length = 20, blank = False)
+    sportclub_name = models.CharField(max_length = 264, null = False, blank = False)
     address = models.TextField(blank = False)
+    location = Gmodel.PointField(srid = 4326 ,null = True ,blank = True)
     info = models.TextField(blank = True, null= True)
     picture = models.ImageField(default = r'sportclub/default/coverpicture.png',
                                  upload_to=r'sportclub/coverpicture')

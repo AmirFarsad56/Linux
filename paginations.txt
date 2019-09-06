@@ -1,0 +1,19 @@
+<div class="container center">
+
+
+<ul class="pagination  z-depth-5 hoverable white fMarkazi">
+  {% if xxx.has_previous %}
+  <li class="waves-effect"><a href="?page=1">&laquo; اولین صفحه</a></li>
+      <li class="waves-effect"><a href="?page={{ xxx.previous_page_number }}">قبلی  </a></li>
+
+  {% endif %}
+  <li  style="white-space:pre;"  class="disabled active">  <span>صفحه</span> <span>{{ xxx.number }}</span>  <span>از</span> <span>{{ xxx.paginator.num_pages }}</span> </li>
+
+  {% if xxx.has_next %}
+      <li class="waves-effect"><a href="?page={{ xxx.next_page_number }}">بعدی</a></li>
+      <li class="waves-effect"><a href="?page={{ xxx.paginator.num_pages }}">آخرین صفحه &raquo;</a></li>
+
+  {% endif %}
+
+</ul>
+</div>

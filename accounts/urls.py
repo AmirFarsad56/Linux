@@ -1,7 +1,7 @@
 from django.urls import include, path
 from accounts.views import (SuperUserProfileView, SuperUserUpdateView,
                             CloudMessageView, CloudEmailView, PasswordChangeView,
-                            SuperUserWorkSpaceView)
+                            SuperUserWorkSpaceView,)
 
 app_name ='accounts'
 urlpatterns = [

@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.gis',
     'django.contrib.staticfiles',
+    'leaflet',
     'django_jalali',
     'accounts',
     'masteruser',
@@ -91,8 +93,12 @@ WSGI_APPLICATION = 'Main_Project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'database',
+        'USER': 'root',
+        'PASSWORD': '199271',
+        'HOST': 'localhost',
+        'PORT': '5432'
     }
 }
 
@@ -150,6 +156,7 @@ STATICFILES_DIRS = [
 MEDIA_ROOT = MEDIA_DIR
 MEDIA_URL = '/media/'
 
+LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
 
@@ -168,3 +175,11 @@ EMAIL_HOST_PASSWORD = '199271Raiden'
 
 #recapcha V2
 GOOGLE_RECAPTCHA_SECRET_KEY = '6LfbM5oUAAAAAFFzKeADkQubmwRqyK6CvvegnT-l'
+
+
+LEAFLET_CONFIG ={
+    'DEFAULT_CENTER' : (38.0742,46.3088),
+    'DEFAULT_ZOOM' : 11,
+    'ATTRIBUTION_PREFIX':'سامانه ورزش کن',
+    'MIN_ZOOM': 4.8,
+}

@@ -100,6 +100,14 @@
         {% endif %}
       </div>
       <div class="col s6 m6 l6 left-align">مناسب برای</div>
+      <div class="row">
+        <div class="col s6 m6 l6 right-align">{{salon.six_to_twelve_sessions_discount}}</div>
+        <div class="col s6 m6 l6 left-align">درصد تخفیف برای کاربرانی که قراردادی به مدت بین ۶ تا ۱۲ جلسه تنظیم میکنند</div>
+      </div>
+      <div class="row">
+        <div class="col s6 m6 l6 right-align">{{salon.more_than_twelve_sessions_discount}}</div>
+        <div class="col s6 m6 l6 left-align">درصد تخفیف برای کاربرانی که قراردادی بالای ۱۲ جلسه تنظیم میکنند</div>
+      </div>
     </div>
     <div class="row">
 
@@ -107,7 +115,7 @@
 
 
 
-
+{% if request.user.is_masteruser or request.user.is_superuser %}
     {% if salon.is_confirmed %}
     <div class="row">
 <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'salon:banmodal' pk=salon.pk %}" class="waves-effect waves-light btn modal-trigger modal-close red white-text"><h6>                   <span>مسدود کردن سالن</span>                   </h6></a><p></p></div>
@@ -121,7 +129,13 @@
 <div class="col s12 m12 l12 center-align"><a style="white-space:pre" href="{% url 'session:lastdataset' pk=salon.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>             <span>تعیین مرزهای ایجاد سانس</span>            </h6></a><p></p></div>
 </div>
     {% endif %}
-
+{% else %}
+<div class="row">
+  
+<div class="col s12 m12 l12 center-align"><a style="white-space:pre" href="{% url 'booking:signcontract' pk=salon.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>             <span>تنظیم قرارداد</span>            </h6></a><p></p></div>
+</div>
+</div>
+{% endif %}
 
 
   </div>
@@ -158,9 +172,6 @@
 <script>
   $(document).ready(function(){
     $('.slider').slider();
-  });
-  $(document).ready(function(){
-    $('.modal').modal();
   });
 </script>
 {% endblock %}

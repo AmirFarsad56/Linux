@@ -39,6 +39,9 @@ class UserUpdateForm(forms.ModelForm):
 
 
 class SuperUserUpdateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SuperUserUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['picture'].required = False
     class Meta():
         model = UserModel
         fields = ('first_name','last_name','email','picture')

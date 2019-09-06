@@ -8,6 +8,7 @@ class SalonModel(models.Model):
     is_confirmed = models.BooleanField(default = False,
                                        null = False)
     profit_percentage = models.PositiveIntegerField(null = False,)
+    company_discount_percentage = models.PositiveIntegerField(null = False, default = 0)
     area = models.PositiveIntegerField(blank=False, null = False)#change to integer
     floor_type = models.CharField(max_length = 264, blank = True, null = True)
     locker = models.BooleanField(blank = False, null = False)
@@ -27,9 +28,11 @@ class SalonModel(models.Model):
     is_football = models.BooleanField(blank = False, null = False)
     is_basketball = models.BooleanField(blank = False, null = False)
     is_handball = models.BooleanField(blank = False, null = False)
+    six_to_twelve_sessions_discount = models.PositiveIntegerField(null = False, default = 0)
+    more_than_twelve_sessions_discount = models.PositiveIntegerField(null = False, default = 0)
 
     def __str__(self):
-        name = str(self.area)+' square meters'
+        name = str(self.sportclub.sportclub_name)+'\'s '+str(self.pk) +'th  '+ str(self.area) + ' m2'
         return name
 
     def confirm(self):

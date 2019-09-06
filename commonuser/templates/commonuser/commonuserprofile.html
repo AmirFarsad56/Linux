@@ -17,5 +17,24 @@
     <p><a href="{% url 'commonuser:update' commonuser_detail.user.slug %}">Update</a> Your Infos</p>
     <p>Change Passwrod <a href="{% url 'accounts:passwordchange' slug=user.slug %}">here</a></p>
 
+
+    {% for booked_sessions in commonuser_detail.bookings.all %}
+    {% if booked_sessions.cancelled %} ------------------------------- <br>
+    cancelled <br>
+    cancelld at date {{booked_sessions.cancelled_at_date}} <br>
+    cancelled at time{{booked_sessions.cancelled_at_time}}<br>
+    pay back: {{booked_sessions.pay_back}}<br>
+    {% else %}
+    +++++++++++<br>
+    session day {{booked_sessions.session.day}}<br>
+    session time {{booked_sessions.session.time}}<br>
+
+    <a href="{% url 'booking:cancelsession' pk=booked_sessions.pk %}">Cancelle ?</a> <br>
+
+    ++++++++++++++++++
+      <br><br><br><br>
+    {% endif %}
+    {% endfor %}
+
   </body>
 </html>

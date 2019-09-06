@@ -30,7 +30,6 @@ from django.contrib import messages
 
 
 def CommonUserSignupView(request):
-    registered = False
 
     if request.method == 'POST':
 
@@ -61,7 +60,7 @@ def CommonUserSignupView(request):
                         commonuser.picture = request.FILES['picture']
 
                      commonuser.save()
-                     registered = True
+                     return HttpResponseRedirect(reverse('login'))
                 else:
                      messages.error(request, 'فیلد من ربات نیستم را به درستی کامل کنید')
 
@@ -77,8 +76,7 @@ def CommonUserSignupView(request):
 
     return render(request,'commonuser/commonusersignup.html',
                           {'user_form':user_form,
-                           'commonuser_form':commonuser_form,
-                           'registered':registered})
+                           'commonuser_form':commonuser_form})
 
 
 @login_required

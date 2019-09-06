@@ -4,6 +4,8 @@ from salon.models import SalonModel
 from django.utils.text import slugify
 from django.conf import settings
 from jdatetime import timedelta
+import jdatetime
+import datetime
 
 
 class SessionCategoryModel(models.Model):
@@ -20,6 +22,16 @@ class SessionCategoryModel(models.Model):
     range_start_day = jmodels.jDateField(null = False, blank = False)
     range_end_day = jmodels.jDateField(null = False, blank = False)
     is_closed = models.BooleanField(null = False, default = False)
+    created_at_date = jmodels.jDateField(null = True, max_length = 264)
+    created_at_time = models.TimeField(null = True, max_length = 264)
+
+    def save(self, *args, **kwargs):
+        self.created_at_date = jdatetime.datetime.now().date()
+        self.created_at_time = datetime.datetime.now().time()
+        super(SessionCategoryModel, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return str(self.salon.sportclub.sportclub_name) + '\'s ' + str(self.pk) + ' SessionCategory'
 
 
 class SessionModel(models.Model):
@@ -32,13 +44,23 @@ class SessionModel(models.Model):
                                   related_name = 'sessions',blank = False,
                                   null = False)
     day = jmodels.jDateField(null = True)
+    day_str = models.CharField(max_length = 264, null = False)
     time = models.TimeField(null = True)
     duration = models.CharField(max_length = 264, blank = False , null = False)
     price = models.IntegerField(blank = True, null = True)
     discount_percentage = models.IntegerField(null = False, default = 0)
     is_booked = models.BooleanField(blank = False, default = False)
     is_ready = models.BooleanField(blank = False, default = False)
-    booking_code = models.CharField(max_length = 264, blank = True , null = True)
+
+    def save(self, *args, **kwargs):
+        self.day_str = str(self.day)
+        super(SessionModel, self).save(*args, **kwargs)
+
+
+    def __str__(self):
+        return str(self.salon.sportclub.sportclub_name) + '\'s ' + str(self.pk) + ' Session'
+
+
 
 
 class LastDataModel(models.Model):
@@ -71,3 +93,6 @@ class LastDataModel(models.Model):
             self.last_thursday = False
             self.last_friday = False
         super(LastDataModel, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return str(self.salon.sportclub.sportclub_name) + '\'s '+ ' LastData'

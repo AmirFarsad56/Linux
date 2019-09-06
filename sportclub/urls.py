@@ -11,20 +11,24 @@ from sportclub.views import (SportClubSignupView, SportClubProfileView,
                             SportClubBanView_2,SportClubUnBanView_2,
                             SportClubBanView_3,SportClubUnBanView_3,BanModalView,
                             UnBanModalView,UnBanModalView_2,UnBanModalView_3,
-                            BanModalView_2,BanModalView_3)
+                            BanModalView_2,BanModalView_3, MapDataSetView, MapView,
+                            NoAccountDetailErrorView )
 from salon.views import SalonCreateView
 
 app_name ='sportclub'
 urlpatterns = [
     path('signup/', SportClubSignupView, name='signup'),
+    path('no-account-detail-eroor/', NoAccountDetailErrorView.as_view(), name='noaccountdetailerror'),
+    path('map-datasets/', MapDataSetView, name='mapdataset'),
+    path('map/', MapView, name='map'),
     path('profile/<slug:slug>/', SportClubProfileView, name='profile'),
     path('workspace/<slug:slug>/', SportClubWorkSpaceView, name='workspace'),
-    path('list/', SportClubListView.as_view(), name='list'),
-    path('list-superuser/', SportClubListViewSuperUser.as_view(), name='listforsuperuser'),
+    path('list/', SportClubListView, name='list'),
+    path('list-superuser/', SportClubListViewSuperUser, name='listforsuperuser'),
     path('detail-superuser/<slug:slug>/', SportClubDetailViewSuperUser, name='detailforsuperuser'),
-    path('bannedlist/', BannedSportClubListView.as_view(), name='bannedlist'),
+    path('bannedlist/', BannedSportClubListView, name='bannedlist'),
     path('list/<slug:slug>/', SportClubDetailView, name='detail'),
-    path('datails/<slug:slug>/', SportClubDetailsView, name='details'),
+    path('public-detail/<int:pk>/', SportClubDetailsView, name='publicdetail'),
     path('ban/<slug:slug>/', SportClubBanView, name='ban'),
     path('ban-modal/<slug:slug>/', BanModalView, name='banmodal'),
     path('ban-modal-2/<slug:slug>/', BanModalView_2, name='banmodal2'),

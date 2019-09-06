@@ -21,7 +21,7 @@ from commonuser.models import CommonUserModel
 from sportclub.models import SportClubModel
 from masteruser.models import MasterUserModel
 from booking.models import ProfitPercentageModel
-from company.models import TermsModel
+from company.models import TermsModel, SalonAdvertisementModel
 
 #Email send
 from django.core.mail import send_mail
@@ -51,8 +51,10 @@ def SuperUserWorkSpaceView(request,slug):
     if user.username == request.user.username:
         profit_percantage = ProfitPercentageModel.objects.all()
         terms_condition = TermsModel.objects.all()
+        salonadvertisement = SalonAdvertisementModel.objects.all()
         return render(request, 'accounts/workspace.html', {'superuser':user,
-                        'profit_percantage':profit_percantage,'terms':terms_condition})
+                        'profit_percantage':profit_percantage,'terms':terms_condition,
+                        'salonadvertisement':salonadvertisement})
     else:
         return HttpResponseRedirect(reverse('login'))
 
@@ -72,34 +74,47 @@ def CloudMessageView(request):
                 sportclubs = types_form.cleaned_data['sportclubs']
                 commonusers = types_form.cleaned_data['commonusers']
                 message_text = message_form.cleaned_data.get('text')
-
+                failed_to_users = ''' fails: \n '''
+                success = ''' success: \n '''
                 if masterusers:
                     master_users = MasterUserModel.objects.all()
                     for master_user in master_users:
-                        params = {
-                        'sender': '100065995',
-                        'receptor': master_user.phone_number,
-                        'message' : message_text
-                        }
-                        response = api.sms_send(params)
+                        try:
+                            params = {
+                            'sender': '100065995',
+                            'receptor': master_user.phone_number,
+                            'message' : message_text
+                            }
+                            response = api.sms_send(params)
+                            success += 'masteruser- name: ' +str(master_user.user.username) +' with phone_number: ' + str(master_user.phone_number) +'\n'
+                        except:
+                            failed_to_users += 'masteruser- name: ' +str(master_user.user.username) +' with phone_number: ' + str(master_user.phone_number) +'\n'
                 if sportclubs:
                     sport_clubs = SportClubModel.objects.all()
                     for sport_club in sport_clubs:
-                        params = {
-                        'sender': '100065995',
-                        'receptor': sport_club.phone_number,
-                        'message' : message_text
-                        }
-                        response = api.sms_send(params)
+                        try:
+                            params = {
+                            'sender': '100065995',
+                            'receptor': sport_club.phone_number,
+                            'message' : message_text
+                            }
+                            response = api.sms_send(params)
+                            success += 'sportclub- username: ' +str(sport_club.user.username) +' with phone_number: ' + str(sport_club.phone_number) +'\n'
+                        except:
+                            failed_to_users += 'sportclub- username: ' +str(sport_club.user.username) +' with phone_number: ' + str(sport_club.phone_number) +'\n'
                 if commonusers:
                     common_users = CommonUserModel.objects.all()
                     for common_user in common_users:
-                        params = {
-                        'sender': '100065995',
-                        'receptor': common_user.phone_number,
-                        'message' : message_text
-                        }
-                        response = api.sms_send(params)
+                        try:
+                            params = {
+                            'sender': '100065995',
+                            'receptor': common_user.phone_number,
+                            'message' : message_text
+                            }
+                            response = api.sms_send(params)
+                            success += 'commonuser- username: ' +str(common_user.user.username) +' with phone_number: ' + str(common_user.phone_number) +'\n'
+                        except:
+                            failed_to_users += 'commonuser- username: ' +str(common_user.user.username) +' with phone_number: ' + str(common_user.phone_number) +'\n'
 
 
                 superuser_instance = get_object_or_404(UserModel, slug = request.user.slug)
@@ -125,8 +140,9 @@ Message:\n
                             message = str(message_text),)
                 superuser_instance.user_logs = new_log
                 superuser_instance.save()
-                return HttpResponseRedirect(reverse('accounts:profile',
-                                            kwargs={'slug':request.user.slug}))
+                return render(request,'accounts/cloudmessage.html',
+                                      {'failed_to_users':failed_to_users,
+                                      'success':success})
         else:
             message_form = MessageForm()
             types_form = TypesForm()
@@ -150,32 +166,37 @@ def CloudEmailView(request):
                 masterusers = types_form.cleaned_data['masterusers']
                 sportclubs = types_form.cleaned_data['sportclubs']
                 commonusers = types_form.cleaned_data['commonusers']
+                failed_to_users = ''' fails : \n'''
+                success = ''' success : \n'''
                 for user in users:
-                    if masterusers and user.is_masteruser :
-                        send_mail(
-                        email_subject,
-                        email_text,
-                        'alienone306@gmail.com',
-                        [user.email,],
-                        fail_silently=False,
-                        )
-                    if sportclubs and user.is_sportclub :
-                        send_mail(
-                        email_subject,
-                        email_text,
-                        'alienone306@gmail.com',
-                        [user.email,],
-                        fail_silently=False,
-                        )
-                    if commonusers and user.is_commonuser :
-                        send_mail(
-                        email_subject,
-                        email_text,
-                        'alienone306@gmail.com',
-                        [user.email,],
-                        fail_silently=False,
-                        )
-
+                    try:
+                        if masterusers and user.is_masteruser :
+                            send_mail(
+                            email_subject,
+                            email_text,
+                            'alienone306@gmail.com',
+                            [user.email,],
+                            fail_silently=False,
+                            )
+                        if sportclubs and user.is_sportclub :
+                            send_mail(
+                            email_subject,
+                            email_text,
+                            'alienone306@gmail.com',
+                            [user.email,],
+                            fail_silently=False,
+                            )
+                        if commonusers and user.is_commonuser :
+                            send_mail(
+                            email_subject,
+                            email_text,
+                            'alienone306@gmail.com',
+                            [user.email,],
+                            fail_silently=False,
+                            )
+                        success += 'username: ' +str(user.username) +' with email: ' + str(user.email) +'\n'
+                    except:
+                        failed_to_users += 'username: ' +str(user.username) +' with email: ' + str(user.email) +'\n'
 
                 superuser_instance = get_object_or_404(UserModel, slug = request.user.slug)
                 superuser_instance_logs = superuser_instance.user_logs
@@ -203,8 +224,9 @@ Email Text:\n
                             text = str(email_text),)
                 superuser_instance.user_logs = new_log
                 superuser_instance.save()
-                return HttpResponseRedirect(reverse('accounts:profile',
-                                            kwargs={'slug':request.user.slug}))
+                return render(request,'accounts/cloudemail.html',
+                                      {'failed_to_users':failed_to_users,
+                                      'success':success})
         else:
             email_form = EmailForm()
             types_form = TypesForm()

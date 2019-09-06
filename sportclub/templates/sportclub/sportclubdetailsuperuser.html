@@ -102,14 +102,26 @@
       <div class="col s6 m6 l6 left-align">مناسب برای</div>
     </div>
     <div class="row">
+      <div class="col s6 m6 l6 right-align">{{salon.six_to_twelve_sessions_discount}}</div>
+      <div class="col s6 m6 l6 left-align">درصد تخفیف برای کاربرانی که قراردادی به مدت بین ۶ تا ۱۲ جلسه تنظیم میکنند</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align">{{salon.more_than_twelve_sessions_discount}}</div>
+      <div class="col s6 m6 l6 left-align">درصد تخفیف برای کاربرانی که قراردادی بالای ۱۲ جلسه تنظیم میکنند</div>
+    </div>
+    <div class="row">
 
     </div>
 
 
-<div class="row">
-  <div class="col s12 m12 l12 center-align"><a style="white-space:pre" href="{% url 'salon:setprofitpercentage' pk=salon.pk %}" class="waves-effect waves-light btn modal-trigger modal-close green white-text"><h6>                      <span>تعیین درصد بهره</span>                     </h6></a><p></p></div>
-
-</div>
+    <div class="row">
+      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'salon:setprofitpercentage' pk=salon.pk %}" class="waves-effect waves-light btn modal-trigger modal-close green white-text"><h6>                   <span>تعیین درصد بهره</span>                  </h6></a><p></p></div>
+    <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'salon:accountingdetail' pk=salon.pk %}" class="waves-effect waves-light btn modal-trigger modal-close green white-text"><h6>               <span>جزئیات صورت حساب</span>              </h6></a><p></p></div>
+    {% if not salon.advertisements.all %}
+    <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'company:salonadvertisementcreate' pk=salon.pk %}" class="waves-effect waves-light btn modal-trigger modal-close green white-text"><h6>                <span>تبلیغ در صفحه اصلی</span>               </h6></a><p></p></div>
+    {% endif %}
+    <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'salon:reckoninglist' pk=salon.pk %}" class="waves-effect waves-light btn modal-trigger modal-close green white-text"><h6>               <span>لیست تسویه حساب ها</span>             </h6></a><p></p></div>
+    </div>
 
 
   </div>
@@ -152,5 +164,3 @@
   });
 </script>
 {% endblock %}
-
-      <p>set profit percentage for this salon<a href="{% url 'salon:setprofitpercentage' pk=salon.pk %}">here</a> </p>

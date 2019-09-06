@@ -1,52 +1,10 @@
-url mapping for extra functionalities that maybe added to the site
-defining get_absolute_url to redirect to profile/login page after creating a user
-
-a booking code must be generated and both booker and sportclub can have them and match them if needed
-
-think of this site as a wite for swimming pool booking pool
-
 CloudMessageView is not checked because identity is not verified in kavenegar
-
 
 do sth for loading time for datepicker
 
-
-considering created_at = timezone.now() for models like SessionCategoryModel
-
-uploading several images ONE BY ONE
-updating the uploaded images
-
-messages (back to front) in signing up (maybe the best way is to delete it)
-
-last_day must be > first_day must be checked in front
-
-sportclubs should change their password in first_login
-
-what happens to dthe booked sessions that are going to be deleted?
-
-salons must have a pending filed that when a masteruser told them to change your salon other masterusers
-doesn't see that salon in unpublished list
-
-remember me check for login page
-
-restrict length to be chosen from dropdown menu
-
-url mapping for commonusers to see salon list
-
-later when a sportclub or a salon is banned all booked money should return to their related users
-and inform them with a message or email
-
-protecting views with user_required and every user can only adjust datas created by himself
-
-masterusers should update their pictures and password
-
-for setting price in sessions with sportclub their bank account details must be defined
-
-
-fixing redirect for superuser required login page
-
-
-setting the KavenegarAPI and sender number and email sender to secret key later
+########### Tiny Changes ############
+calendar sliders only to the month that has sessions in it maybe check it with lastdatamodel maybe just delete table from workspace
+#####################################
 
 
 
@@ -55,18 +13,6 @@ def get_success_url(self):
 		return reverse("accounts:profile", kwargs={'slug': slug})
 
 ---------------------------------------------------------------------------------------------
-when masteruser deletes or banes sth he should send an email of why to the owner
-
-everything that a master user done must be result in a reverse to a profile page because
-e.g. we can ban a salon from two ways and they should not endup both in the unconfirmedsalon list
-
-deleting the confirm page for delete and ban and unbaning masterusers via superusers
-
-in front part all delete ban or unbans must be asked for a confirm in a pop up show
-
-page for admin profile and settings
-
-time model must be generated daily automatically for 1 year length (???)
 
 ----------------------------------------------------------------------------------------
 passworrd validators check

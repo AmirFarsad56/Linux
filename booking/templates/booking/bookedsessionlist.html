@@ -1,0 +1,174 @@
+{% extends "base_templates/base1.html" %}
+{% load customtags %}
+
+{% block head_block %}
+<title>
+    لیست سانس ها | سامانه ورزش کن
+</title>
+{% endblock %}
+
+{% block body_block %}
+<span class="center-align"><h3 class="fMarkazi gold-text";>لیست سانس ها</h3><br><br></span>
+<div class="container">
+  <div class="row">
+    <div class="col s12 m1 l1 center-align">
+    </div>
+    <div class="col s12 m2 l2 center-align"><i class="large material-icons blue-text text-darken-2">turned_in</i><br>
+      سانس های رزرو شده
+
+    </div>
+    <div class="col s12 m2 l2 center-align"><i class="large material-icons orange-text">turned_in</i><br>
+      سانس های کنسل شده
+
+    </div>
+    <div class="col s12 m2 l2 center-align"><i class="large material-icons light-green-text text-accent-4">turned_in</i><br>
+      سانس های آماده رزرو
+
+    </div>
+    <div class="col s12 m2 l2 center-align"><i class="large material-icons red-text">turned_in</i><br>
+      سانس های غیر قابل رزرو یا بدون قیمت
+
+    </div>
+    <div class="col s12 m2 l2 center-align"><i class="large material-icons grey-text text-darken-4">turned_in</i><br>
+      سانس های گذشته
+
+    </div>
+    <div class="col s12 m1 l1 center-align">
+    </div>
+  </div>
+
+</div>
+<br><br>
+<div class="container">
+{% for session in sessions %}
+<div class="center card-panel hoverable orange z-depth-5 fMarkazi black-text">
+  <h6>
+    <div class="row">
+      <div class="col s6 m3 l3 right-align">
+        {{session.time|date:"H:i"}}-{{session.pk|session_end}}
+      </div>
+      <div class="col s6 m3 l3 right-align">
+زمان
+      </div>
+      <div class="col s6 m3 l3 right-align">
+        {{session.day}}
+      </div>
+      <div class="col s6 m3 l3 right-align">
+        روز
+      </div>
+
+      <div class="col s6 m3 l3 right-align">
+        {{session.discount_percentage}}%
+      </div>
+      <div class="col s6 m3 l3 right-align">
+        درصد تخفیف
+      </div>
+      <div class="col s6 m3 l3 right-align">
+        {{session.price}}
+      </div>
+      <div class="col s6 m3 l3 right-align">
+(قیمت (تومان
+      </div>
+          </div>
+          <ul class="collapsible popout gold-text">
+          <li>
+            <div class="collapsible-header grey darken-3 " style="display: block;">
+
+<h5 class="gold-text" >مشخصات  رزرو کننده</h5>
+          </div>
+            <div class="collapsible-body grey darken-2 white-text">
+              <img style=" margin-bottom: 18px" src="{{session.booker.commonusers.picture.url}}" height="50">
+              <div class="row">
+                <div class="col s6 m3 l3 right-align">
+                  {{session.booker.first_name}}
+                </div>
+                <div class="col s6 m3 l3 right-align black-text">
+        نام
+                </div>
+                <div class="col s6 m3 l3 right-align">
+                  {{session.booker.last_name}}
+                </div>
+                <div class="col s6 m3 l3 right-align black-text">
+        نام خانوادگی
+                </div>
+
+                <div class="col s6 m3 l3 right-align">
+                  {{session.booker.email}}
+                </div>
+                <div class="col s6 m3 l3 right-align black-text">
+        ایمیل
+                </div>
+                <div class="col s6 m3 l3 right-align">
+                  {{session.booker.commonusers.phone_number}}
+                </div>
+                <div class="col s6 m3 l3 right-align black-text">
+        شماره تلفن
+                </div>
+              </div>
+
+    </div>
+    </li>
+    </ul>
+
+    <ul class="collapsible popout gold-text">
+    <li>
+      <div class="collapsible-header grey darken-3 " style="display: block;">
+
+    <h5 class="gold-text" >مشخصات  رزرو</h5>
+    </div>
+      <div class="collapsible-body grey darken-2 white-text">
+
+        <div class="row">
+
+        <div class="col s6 m3 l3 right-align">
+          {{booking.booked_at_date}}
+        </div>
+        <div class="col s6 m3 l3 right-align black-text">
+روز رزرو
+        </div>
+        <div class="col s6 m3 l3 right-align">
+          {{booking.booked_at_time}}
+        </div>
+        <div class="col s6 m3 l3 right-align black-text">
+زمان رزرو
+        </div>
+        <div class="col s6 m3 l3 right-align">
+          {{booking.final_price}}
+        </div>
+        <div class="col s6 m3 l3 right-align black-text">
+مبلغ پرداخت شده
+        </div>
+        <div class="col s6 m3 l3 right-align">
+          {{booking.code}}
+        </div>
+        <div class="col s6 m3 l3 right-align black-text">
+کد رزرو
+        </div>
+        <div class="col s6 m3 l3 right-align">
+          {{booking.pay_back}}
+        </div>
+        <div class="col s6 m3 l3 right-align black-text">
+مبلغی که باید برگردانده شود
+        </div>
+</div>
+
+        </div>
+        </li>
+        </ul>
+
+
+
+</h6>
+  </div>
+{% endfor %}
+</div>
+<br><br>
+
+{% endblock %}
+{% block script_block %}
+<script>
+  $(document).ready(function(){
+    $('.collapsible').collapsible();
+  });
+</script>
+{% endblock %}

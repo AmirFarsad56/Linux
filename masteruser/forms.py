@@ -19,6 +19,9 @@ class EmailForm(forms.Form):
 
 
 class MasterUserUpdateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(MasterUserUpdateForm, self).__init__(*args, **kwargs)
+        self.fields['picture'].required = False
     class Meta():
         model = MasterUserModel
         fields = ('phone_number','picture')
