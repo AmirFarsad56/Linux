@@ -18,7 +18,9 @@ from session.forms import (DaysForm, TimesForm, PriceForm, SessionDeleteForm,
                             StatusForm,)
 from session.models import (SessionModel, LastDataModel, SessionCategoryModel)
 from salon.models import SalonModel
+from masteruser.decorators import masteruser_required
 from sportclub.decorators import sportclub_required
+from commonuser.decorators import commonuser_required
 from session.filters import SessionFilter
 from session.datetimetools import (AllSaturdays, AllSundays, AllMondays,
                                 AllTuesdays, AllWednesdays, AllThursdays,
@@ -82,9 +84,10 @@ def SessionWorkSpaceView(request,pk):
         for i in range(len(days_1)):
             if int((i)/7) == ((i)/7):
                 days_1[i] = days_1[i]+'-br'
+        now = jdatetime.datetime.now().date()
 
         return render(request,'session/workspace.html',
-                          {'salon':salon,'days_1':days_1})
+                          {'salon':salon,'days_1':days_1,'now':now})
     else:
         return HttpResponseRedirect(reverse('login'))
 
@@ -320,7 +323,7 @@ def SetDiscountPercentageView(request,pk):
                                         session.save()
                 #for reverse
                 salon_pk = sessioncategory_instance.salon.pk
-                return HttpResponseRedirect(reverse('session:categories',
+                return HttpResponseRedirect(reverse('session:workspace',
                                                     kwargs={'pk':salon_pk}))
 
         else:
@@ -379,8 +382,10 @@ def StatusChangeView(request,pk):
 
                 #for reverse
                 salon_pk = sessioncategory_instance.salon.pk
-                return HttpResponseRedirect(reverse('session:categories',
+                return HttpResponseRedirect(reverse('session:workspace',
                                                     kwargs={'pk':salon_pk}))
+            else:
+                print(status_form.errors)
 
         else:
             status_form = StatusForm()
@@ -389,6 +394,11 @@ def StatusChangeView(request,pk):
             session_instances = get_list_or_404(SessionModel,day = obj.day,
                                                 session_category = sessioncategory_instance)
         today = jdatetime.datetime.now().date()
+        status_form = StatusForm()
+        list = sessioncategory_instance.sessions.all()
+        obj = list[0]
+        session_instances = get_list_or_404(SessionModel,day = obj.day,
+                                            session_category = sessioncategory_instance)
         return render(request,'session/statuschange.html',{'sessions':session_instances,
                       'session_category':sessioncategory_instance,'form':status_form,
                       'today':today})
@@ -615,7 +625,7 @@ def SessionDeleteView(request,pk):
                 #for reverse
                 salon_pk = sessioncategory_instance.salon.pk
                 sessioncategory_instance.delete()
-                return HttpResponseRedirect(reverse('session:categories',
+                return HttpResponseRedirect(reverse('session:workspace',
                                                     kwargs={'pk':salon_pk}))
             else:
                 print(form.errors)
@@ -667,7 +677,8 @@ def SessionCreateView_2(request,pk):
                 stop_2 = JDATETIMETOOL.strptime(str(duration),'%H:%M') +  timedelta(hours=jstart_time.hour, minutes = jstart_time.minute)
                 if today > first_day or first_day > last_day or last_data_instance.first_day_2 <= last_day or jstop_time < stop_2 :
                     if not str(stop_time) == '00:00:00':
-                        return HttpResponseRedirect(reverse('session:logicalerror'))
+                        if stop_time > duration:
+                            return HttpResponseRedirect(reverse('session:logicalerror'))
 
                 length_2 = last_day - first_day
                 length_2 = length_2.days
@@ -742,10 +753,14 @@ def SessionCreateView_2(request,pk):
 
 
                 #creating sessions
-                if not str(stop_time) == '00:00:00':
+                if not duration >= stop_time:
                     x = int(( TotalMinutes(stop_time) - TotalMinutes(start_time) ) / TotalMinutes(duration))
                 else:
-                    x = int(( 1440 - TotalMinutes(start_time) ) / TotalMinutes(duration))
+                    if not str(stop_time) == '00:00:00':
+                        x = int(( 1440 + TotalMinutes(stop_time) - TotalMinutes(start_time) ) / TotalMinutes(duration))
+                    else:
+                        x = int(( 1440 - TotalMinutes(start_time) ) / TotalMinutes(duration))
+
                 day = first_day
                 while True:
                     if str(day.weekday()) in selected_days:
@@ -769,7 +784,7 @@ def SessionCreateView_2(request,pk):
                 return HttpResponseRedirect(reverse('session:workspace',
                                                 kwargs={'pk':pk}))
         else:
-            days_form_2 = DaysForm_2
+            days_form_2 = DaysForm_2()
             times_form = TimesForm()
             today = jdatetime.datetime.now().date()
             return render(request,'session/sessioncreate_2.html',
@@ -840,7 +855,8 @@ def SessionCreateView(request, pk):
                     stop_2 = JDATETIMETOOL.strptime(str(duration),'%H:%M') +  timedelta(hours=jstart_time.hour, minutes = jstart_time.minute)
                     if first_day > last_day or jstop_time < stop_2:
                         if not str(stop_time) == '00:00:00':
-                            return HttpResponseRedirect(reverse('session:logicalerror'))
+                            if stop_time > duration:
+                                return HttpResponseRedirect(reverse('session:logicalerror'))
                 except:
                     pass
                 #Creating the SessionCategory Instance
@@ -893,11 +909,14 @@ def SessionCreateView(request, pk):
                     session_category.save()
                     return HttpResponseRedirect(reverse('session:workspace',
                                                     kwargs={'pk':pk}))
-
-                if not str(stop_time) == '00:00:00':
+                if not duration >= stop_time:
                     x = int(( TotalMinutes(stop_time) - TotalMinutes(start_time) ) / TotalMinutes(duration))
                 else:
-                    x = int(( 1440 - TotalMinutes(start_time) ) / TotalMinutes(duration))
+                    if not str(stop_time) == '00:00:00':
+                        x = int(( 1440 + TotalMinutes(stop_time) - TotalMinutes(start_time) ) / TotalMinutes(duration))
+                    else:
+                        x = int(( 1440 - TotalMinutes(start_time) ) / TotalMinutes(duration))
+
                 day = first_day
                 while True:
                     if str(day.weekday()) in selected_days:
@@ -921,8 +940,7 @@ def SessionCreateView(request, pk):
             else:
                 print(days_form.errors)
                 print(times_form.errors)
-                return HttpResponseRedirect(reverse('session:workspace',
-                                                kwargs={'pk':pk}))
+
         else:
             days_form = DaysForm()
             times_form = TimesForm()
@@ -957,8 +975,8 @@ def LastDataSetView(request, pk):
                 lastdata_instance.last_friday = False
                 lastdata_instance.save()
                 if request.user.is_masteruser:
-                    return HttpResponseRedirect(reverse('salon:detail',
-                                                    kwargs={'pk':pk}))
+                    return HttpResponseRedirect(reverse('masteruser:workspace',
+                                                    kwargs={'slug':request.user.slug}))
                 return HttpResponseRedirect(reverse('session:workspace',
                                                 kwargs={'pk':pk}))
             else:
@@ -981,30 +999,45 @@ class IsBookedErrorView(TemplateView):
     template_name = 'session/isbooked.html'
 
 
-def AllSessionListView(request):
+def SessionPublicListView(request):
     today = jdatetime.datetime.now().date()
-    now_time = datetime.datetime.now().time()
-    session_list = SessionModel.objects.filter( salon__is_confirmed = True).filter( day__gte = today ).filter(is_ready = True).filter(time__gte = now_time).order_by('day')
+    now = datetime.datetime.now().time()
+    sessions_1 = SessionModel.objects.filter( salon__is_confirmed = True).filter(is_booked = False).filter(is_ready = True).filter( day = today ).order_by('time').exclude(time__lte=now)
+    sessions_2 = SessionModel.objects.filter( salon__is_confirmed = True).filter(is_booked = False).filter(is_ready = True).filter( day__gt = today ).order_by('day','time')
+    session_list = sessions_1 | sessions_2
     session_filter = SessionFilter(request.GET,queryset = session_list)
-    paginator = Paginator(session_filter.qs, 25)
+    paginator = Paginator(session_filter.qs, 15)
     page = request.GET.get('page')
     sessions = paginator.get_page(page)
-    return render(request,'session/allsessionslist.html',{'sessions':sessions,'filter':session_filter})
+    return render(request,'session/publiclist.html',{'sessions':sessions,'filter':session_filter})
 
-'''
-class AllSessionListView(ListView):
-    model = SessionModel
-    template_name = 'session/allsessionslist.html'
-    context_object_name = 'sessions'
 
-    def get_queryset(self):
+def SessionPublicListForSpecificSalonView(request,pk):
+    salon = get_object_or_404(SalonModel,pk = pk)
+    today = jdatetime.datetime.now().date()
+    now = datetime.datetime.now().time()
+    sessions_1 = SessionModel.objects.filter( salon = salon).filter( salon__is_confirmed = True).filter(is_booked = False).filter(is_ready = True).filter( day = today ).order_by('time').exclude(time__lte=now)
+    sessions_2 = SessionModel.objects.filter( salon = salon).filter( salon__is_confirmed = True).filter(is_booked = False).filter(is_ready = True).filter( day__gt = today ).order_by('day','time')
+    session_list = sessions_1 | sessions_2
+    session_filter = SessionFilter(request.GET,queryset = session_list)
+    paginator = Paginator(session_filter.qs, 15)
+    page = request.GET.get('page')
+    sessions = paginator.get_page(page)
+    return render(request,'session/publiclist.html',{'sessions':sessions,'filter':session_filter})
 
-        today = jdatetime.datetime.now().date()
-        now_time = datetime.datetime.now().time()
-        queryset = SessionModel.objects.filter( salon__is_confirmed = True).filter( day__gte = today ).filter(is_ready = True).filter(time__gte = now_time).order_by('day')
 
-        return queryset
-'''
+def TodaySessionPublicListView(request):
+    today = jdatetime.datetime.now().date()
+    now = datetime.datetime.now().time()
+    session_list = SessionModel.objects.filter( salon__is_confirmed = True).filter(is_booked = False).filter(is_ready = True).filter( day = today ).order_by('time').exclude(time__lte=now)
+    session_filter = SessionFilter(request.GET,queryset = session_list)
+    paginator = Paginator(session_filter.qs, 15)
+    page = request.GET.get('page')
+    sessions = paginator.get_page(page)
+    return render(request,'session/todaypubliclist.html',{'sessions':sessions,'filter':session_filter})
+
+
+
 
 @login_required
 def DayListView(request,pk,str):
@@ -1026,3 +1059,81 @@ def SessionDetailView(request,pk):
         price = session.price
         need_to_pay = (((100-session.discount_percentage)/100) * price ) * ((100 - session.salon.company_discount_percentage)/100)
         return render(request,'session/sessiondetail.html',{'session':session,'need_to_pay':need_to_pay})
+
+
+@method_decorator([login_required, sportclub_required], name='dispatch')
+class VirtualBookView(UpdateView):
+    model = SessionModel
+    fields = ['virtual_booker_name','is_ready',]
+    template_name = 'session/virtualbook.html'
+
+    def form_valid(self, form):
+        today = jdatetime.datetime.now().date()
+        if self.object.day < today:
+            return super(VirtualBookView, self).form_invalid(form)
+        if form.cleaned_data['is_ready']:
+            if not self.object.price:
+                 return super(VirtualBookView, self).form_invalid(form)
+        if self.object.is_booked:
+            return super(VirtualBookView, self).form_invalid(form)
+        self.object = form.save()
+        self.object.is_ready = False
+        self.object.save()
+        return super().form_valid(form)
+
+    def get_queryset(self):
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        obj = get_object_or_404(SessionModel,pk = pk)
+        if obj.salon.sportclub.user == self.request.user:
+            return self.model._default_manager.all()
+
+    def get_success_url(self):
+        pk = self.object.session_category.salon.pk
+        return reverse('session:workspace', kwargs={'pk':pk})
+
+
+def VirtualCancelView(request,pk):
+    session = get_object_or_404(SessionModel,pk=pk)
+    if session.salon.sportclub.user == request.user:
+        session.virtual_booker_name = ''
+        session.virtual_booker_name = None
+        session.save()
+        return HttpResponseRedirect(reverse('session:workspace',kwargs={'pk':session.salon.pk}))
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+@login_required
+@commonuser_required
+def SessionDetailBookingView(request, pk):
+    if request.user.is_commonuser:
+        session = get_object_or_404(SessionModel, pk=pk)
+        salon = session.salon
+        today = jdatetime.datetime.now().date()
+        now = datetime.datetime.now().time()
+        if session.is_ready and session.salon.is_confirmed and session.salon.sportclub.user.is_active and not session.is_booked:
+            if session.day > today:
+                return render(request,'session/detailforbooking.html',{'session':session,'salon':salon})
+            elif session.day == today and session.time >= now:
+                return render(request,'session/detailforbooking.html',{'session':session,'salon':salon})
+            else:
+                return HttpResponseRedirect(reverse('session:notready'))
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+def SessionNotReadyErrorView(request):
+    return render(request,'session/notready.html')
+
+@login_required
+@masteruser_required
+def SessionListForSpecificSalonMasterUserView(request,pk):
+    salon = get_object_or_404(SalonModel,pk = pk)
+    today = jdatetime.datetime.now().date()
+    now = datetime.datetime.now().time()
+    session_list = SessionModel.objects.filter( salon = salon)
+    session_filter = SessionFilter(request.GET,queryset = session_list)
+    paginator = Paginator(session_filter.qs, 15)
+    page = request.GET.get('page')
+    sessions = paginator.get_page(page)
+    return render(request,'session/salonlistformasteruser.html',{'sessions':sessions,'filter':session_filter})

@@ -84,8 +84,7 @@ Created Masteruser: {user}
                      messages.error(request, 'فیلد من ربات نیستم را به درستی کامل کنید')
 
         else:
-            # One of the forms was invalid if this else gets called.
-            #redirect to another page or anything else
+
             print(user_form.errors,masteruser_form.errors)
 
 
@@ -165,6 +164,7 @@ Banned Masteruser: {user}
         return HttpResponseRedirect(reverse('masteruser:list'))
     else:
         return HttpResponseRedirect(reverse('login'))
+
 
 @login_required
 @superuser_required
@@ -280,7 +280,7 @@ def MesssageSendingView(request,slug):
             if message_form.is_valid():
                 message_text = message_form.cleaned_data.get('text')
                 params = {
-                'sender': '100065995',
+                'sender': '10008000300010',
                 'receptor': masteruser_instance.phone_number,
                 'message' : message_text
                 }
@@ -302,8 +302,7 @@ Message:\n
                             message = str(message_text),)
                 superuser_instance.user_logs = new_log
                 superuser_instance.save()
-                return HttpResponseRedirect(reverse('masteruser:detail',
-                                            kwargs={'slug':masteruser_instance.user.slug}))
+                return HttpResponseRedirect(reverse('masteruser:list'))
         else:
             message_form = MessageForm()
 
@@ -348,8 +347,7 @@ Email Text:\n
                             text = str(email_text),)
                 superuser_instance.user_logs = new_log
                 superuser_instance.save()
-                return HttpResponseRedirect(reverse('masteruser:detail',
-                                            kwargs={'slug':masteruser_instance.user.slug}))
+                return HttpResponseRedirect(reverse('masteruser:list'))
         else:
             email_form = EmailForm()
 

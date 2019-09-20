@@ -158,12 +158,16 @@
     </div>
     <div class="row">
       <div class="col s6 m6 l6 right-align">{{salon.more_than_twelve_sessions_discount}}</div>
-      <div class="col s6 m6 l6 left-align">درصد تخفیف برای کاربرانی که قراردادی بالای ۱۲ جلسه تنظیم میکنند</div>
+      <div class="col s6 m6 l6 left-align">درصد تخفیف برای کاربرانی که قراردادی بین ۱۲ و ۲۴ جلسه تنظیم میکنند</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align">{{salon.more_than_24_sessions_discount}}</div>
+      <div class="col s6 m6 l6 left-align">درصد تخفیف برای کاربرانی که قراردادی بالای ۲۴ جلسه تنظیم میکنند</div>
     </div>
     <div class="row"></div>
 
 <div class="row">
-      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'salon:confirmmodal_2' pk=salon.pk %}" class="waves-effect waves-light btn modal-trigger modal-close green white-text"><h6>                      <span>تایید کردن سالن</span>                     </h6></a><p></p></div>
+      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="#modal{{salon.pk}}" class="waves-effect waves-light btn modal-trigger modal-close green white-text"><h6>                      <span>تایید کردن سالن</span>                     </h6></a><p></p></div>
       <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'salon:delete' pk=salon.pk %}" class="waves-effect waves-light btn modal-trigger modal-close red white-text"><h6>                     <span>حذف کردن سالن</span>                     </h6></a><p></p></div>
 <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'session:list' pk=salon.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>                   <span>سانس های این سالن</span>                 </h6></a><p></p></div>
 <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'session:lastdataset' pk=salon.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>             <span>تعیین مرزهای ایجاد سانس</span>            </h6></a><p></p></div>
@@ -188,6 +192,10 @@
     <div class="row">
       <div class="col s6 m6 l6 right-align white-text">{{salon.sportclub.sportclub_name}}</div>
       <div class="col s6 m6 l6 left-align">نام مجموعه ورزشی</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align white-text">{{salon.sportclub.serial_number}}</div>
+      <div class="col s6 m6 l6 left-align">شماره سریال مجموعه ورزشی</div>
     </div>
     <div class="row">
       <div class="col s6 m6 l6 right-align white-text">{{salon.sportclub.user.first_name}}</div>
@@ -261,18 +269,12 @@
         <div class="col s12 m12 l12 center-align">کاربر هنوز هیچ قانون خاصی برای مجموعه ورزشی خود وارد نکرده است</div><br>
         {% endif %}
         <div class="row">
-          {% if salon.sportclub.user.is_active %}
-          <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'sportclub:banmodal3' slug=salon.sportclub.user.slug %}" class="waves-effect waves-light btn modal-trigger modal-close red white-text"><h6><span>            </span>بلاک کردن<span>            </span></h6></a><p></p>
-    </div>
-    {% else %}
-    <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'sportclub:unbanmodal3' slug=salon.sportclub.user.slug %}" class="waves-effect waves-light btn modal-trigger modal-close red white-text"><h6><span>            </span>فعال کردن<span>            </span></h6></a><p></p>
-</div>
-    {% endif %}
+
           <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'sportclub:detail' slug=salon.sportclub.user.slug %}" class="hoverable waves-effect waves-light btn gold white-text"><h6><span>         </span>لیست سالن ها<span>        </span></h6></a><p></p>
     </div>
           <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'sportclub:sendemail' slug=salon.sportclub.user.slug %}" class="hoverable waves-effect waves-light btn gold white-text"><h6><span>           </span>ارسال ایمیل<span>           </span></h6></a><p></p>
     </div>
-          <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'sportclub:sendsms' slug=salon.sportclub.user.slug %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>             <span>ارسال پیام</span>            </h6></a><p></p>
+          <div class="col s12 m12 l12 center-align"><a style="white-space:pre" href="{% url 'sportclub:sendsms' slug=salon.sportclub.user.slug %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>             <span>ارسال پیام</span>            </h6></a><p></p>
     </div>
 
         </div>
@@ -293,7 +295,16 @@
 
 
 
-
+  <div id="modal{{salon.pk}}" class="modal right-align">
+    <div class="modal-content fMarkazi grey darken-3">
+      <h4 class="gold-text">آیا مطمئن هستید میخواهید این سالن را تایید کنید؟</h4>
+      <p>در صورت تایید شدن سانس های این سالن قابل رزرو خواهند بود</p>
+    </div>
+    <div class="modal-footer grey darken-3">
+      <a href="{% url 'salon:confirm_2' pk=salon.pk %}" class="modal-close waves-effect waves-green btn-flat fMarkazi green-text"><h6>تایید</h6></a>
+      <a class="modal-close waves-effect waves-green btn-flat fMarkazi blue-text"><h6>بستن</h6></a>
+    </div>
+  </div>
   {% endif %}
   {% endfor %}
 

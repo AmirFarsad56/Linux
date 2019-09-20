@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView, UpdateView, ListView
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
+from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
 import jdatetime
 import datetime
@@ -39,6 +40,7 @@ class UpdateTermsView(UpdateView):
 
 def AccountingDetailView(request):
     if request.user.is_superuser :
+        today = jdatetime.datetime.now().date()
         need_to_pay = 0
         paid = 0
         total_pure_profit = 0
@@ -46,12 +48,13 @@ def AccountingDetailView(request):
         for salon in SalonModel.objects.all():
 
             for booking_instance in salon.bookings.all():
-                if not booking_instance.transfered_to_sportclub:
-                    need_to_pay += booking_instance.sportclub_portion
-                    pure_profit_this_round += booking_instance.company_portion
-                else:
-                    paid += booking_instance.sportclub_portion
-                    total_pure_profit += booking_instance.company_portion
+                if booking_instance.session.day < today:
+                    if not booking_instance.transfered_to_sportclub:
+                        need_to_pay += booking_instance.sportclub_portion
+                        pure_profit_this_round += booking_instance.company_portion
+                    else:
+                        paid += booking_instance.sportclub_portion
+                        total_pure_profit += booking_instance.company_portion
         try:
             return render(request,'company/accountingdetails.html',{'need_to_pay':need_to_pay,
                                                                 'total_pure_profit':total_pure_profit,
@@ -68,7 +71,7 @@ def ReckoninglistView(request):
     if request.user.is_superuser:
         reckoning_list = ReckoningModel.objects.order_by('-transfered_at_date','-transfered_at_time')
         reckoning_filter = ReckoningFilter(request.GET,queryset = reckoning_list)
-        paginator = Paginator(reckoning_filter.qs, 20)
+        paginator = Paginator(reckoning_filter.qs, 15)
         page = request.GET.get('page')
         reckonings = paginator.get_page(page)
         return render(request,'company/reckoninglist.html',{'reckonings':reckonings,'filter':reckoning_filter})
@@ -98,3 +101,20 @@ def SalonAdvertisementDeleteView(request,pk):
     object = get_object_or_404(SalonAdvertisementModel,pk = pk)
     object.delete()
     return HttpResponseRedirect(reverse('company:salonadvertisementlist'))
+
+
+def TermsDetailView(request):
+    terms = TermsModel.objects.all()
+    return render(request,'company/termsdetail.html',{'terms':terms})
+
+
+def FAQsView(request):
+    return render(request,'company/faqs.html')
+
+
+def AboutUsView(request):
+    return render(request,'company/aboutus.html')
+
+
+def ContactUsView(request):
+    return render(request,'company/contactus.html')

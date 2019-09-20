@@ -1,3 +1,81 @@
+{% extends "base_templates/base1.html" %}
+
+{% block head_block %}
+<title>
+    پروفایل | سامانه ورزش کن
+</title>
+{% endblock %}
+
+{% block body_block %}
+
+{% if commonuser_detail.picture %}
+<div class="parallax-container">
+      <div class="parallax"><img src="{{commonuser_detail.picture.url}}"></div>
+    </div>
+{% endif %}
+<div class="section">
+
+  <div class="container"><br>
+<span class="center-align"><h3 class="fMarkazi gold-text";> {{commonuser_detail.user.last_name}} {{commonuser_detail.user.first_name}} خوش آمدید</h3><br><br></span>
+
+
+  <div class="row center">
+  <div class="card-panel hoverable pink accent-3 z-depth-5 fMarkazi">
+    <h3 class=" fMarkazi gold-text">اطلاعات شخصی</h3>
+<h6>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align">{{commonuser_detail.user.username}}</div>
+      <div class="col s6 m6 l6 left-align">نام کاربری</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align">{{commonuser_detail.user.first_name}}</div>
+      <div class="col s6 m6 l6 left-align">نام</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align">{{commonuser_detail.user.last_name}}</div>
+      <div class="col s6 m6 l6 left-align">نام خانوادگی</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align">{{commonuser_detail.user.email}}</div>
+      <div class="col s6 m6 l6 left-align">ایمیل</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align">{{commonuser_detail.phone_number}}</div>
+      <div class="col s6 m6 l6 left-align">شماره همراه</div>
+    </div>
+    </h6>
+    <div class="row">
+      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'commonuser:update' commonuser_detail.user.slug %}" class="waves-effect waves-light btn modal-trigger modal-close gold white-text"><h6>               <span>ویرایش مشخصات</span>               </h6></a><p></p></div>
+      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'accounts:passwordchange' slug=user.slug %}" class="waves-effect waves-light btn modal-trigger modal-close gold white-text"><h6>                       <span>تغییر رمز</span>                       </h6></a><p></p></div>
+    </div>
+  </div>
+<br><br>
+</div>
+</div>
+</div>
+{% endblock %}
+{% block script_block %}
+<script>
+  $(document).ready(function(){
+    $('.parallax').parallax();
+  });
+</script>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>

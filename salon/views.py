@@ -16,7 +16,7 @@ from accounts.models import UserModel
 from salon.filters import SalonFilter
 from company.filters import ReckoningFilter
 from sportclub.models import SportClubModel
-from salon.forms import SalonForm, SalonPictureForm, SalonProfitForm, SalonPictureUpdateForm
+from salon.forms import SalonForm, SalonPictureForm, SalonProfitDiscountForm, SalonPictureUpdateForm
 from salon.models import SalonModel, SalonPictureModel
 from sportclub.decorators import sportclub_required
 from accounts.decorators import superuser_required
@@ -80,7 +80,7 @@ def SalonCreateView(request,slug):
 def SalonSetProfitPercentage(request,pk):
     salon = get_object_or_404(SalonModel, pk = pk)
     if request.user.is_superuser:
-        set_profit_form = SalonProfitForm(request.POST or None, instance = salon)
+        set_profit_form = SalonProfitDiscountForm(request.POST or None, instance = salon)
         if set_profit_form.is_valid():
             set_profit_form.save()
             salon.save()
@@ -164,7 +164,6 @@ def SalonDeleteView(request,pk):
         salon = get_object_or_404(SalonModel,pk = pk)
         sessions = get_list_or_404(SessionModel, salon = salon)
         today = jdatetime.datetime.now().date()
-        print(today,';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;')
 
         for session in sessions:
             print(session.day , session.day > today)
@@ -198,7 +197,7 @@ def SalonConfirmView(request,pk):
         salon = get_object_or_404(SalonModel,pk = pk)
         related_user = salon.sportclub.user
         if salon.sportclub.user.is_active:
-            if salon.sportclub.bankaccount_bankname and salon.sportclub.bankaccount_ownername and salon.sportclub.bankaccount_cardnumber and salon.sportclub.bankaccount_accountnumber:
+            if True:
                 salon.confirm()
                 masteruser_instance = get_object_or_404(UserModel, slug = request.user.slug)
                 masteruser_instance_logs = masteruser_instance.user_logs
@@ -324,50 +323,6 @@ def SalonDetailViewMasterUser(request,pk):
     else:
         return HttpResponseRedirect(reverse('login'))
 
-
-@login_required
-@masteruser_required
-def BanModalView(request,pk):
-    if request.user.is_masteruser:
-        salon = get_object_or_404(SalonModel,pk = pk)
-        return render(request,'salon/banmodal.html',
-                          {'salon':salon})
-    else:
-        return HttpResponseRedirect(reverse('login'))
-
-
-@login_required
-@masteruser_required
-def BanModalView_2(request,pk):
-    if request.user.is_masteruser:
-        salon = get_object_or_404(SalonModel,pk = pk)
-        return render(request,'salon/banmodal2.html',
-                          {'salon':salon})
-    else:
-        return HttpResponseRedirect(reverse('login'))
-
-
-@login_required
-@masteruser_required
-def ConfirmModalView(request,pk):
-    if request.user.is_masteruser:
-        salon = get_object_or_404(SalonModel,pk = pk)
-        return render(request,'salon/confirmmodal.html',
-                          {'salon':salon})
-    else:
-        return HttpResponseRedirect(reverse('login'))
-
-@login_required
-@masteruser_required
-def ConfirmModalView_2(request,pk):
-    if request.user.is_masteruser:
-        salon = get_object_or_404(SalonModel,pk = pk)
-        return render(request,'salon/confirmmodal2.html',
-                          {'salon':salon})
-    else:
-        return HttpResponseRedirect(reverse('login'))
-
-
 def SalonPictureUpdateView(request, pk):
     pic = SalonPictureModel.objects.get(pk=pk) # or with get_object_or_404
     if request.user == pic.salon.sportclub.user:
@@ -386,7 +341,6 @@ def SalonPictureUpdateView(request, pk):
         return render(request, 'salon/salonpictureupdate.html', {'form':form})
     else:
         return HttpResponseRedirect(reverse('login'))
-
 
 
 def SalonPictureAddView(request, pk):
@@ -424,6 +378,31 @@ def SalonAccountingDetailView(request,pk):
             else:
                 paid += booking_instance.sportclub_portion
                 total_pure_profit += booking_instance.company_portion
+
+
+        for booking_instance in salon.bookings.all():
+            if not booking_instance.transfered_to_sportclub:
+                if not booking_instance.is_contract:
+                    if booking_instance.session.day < today:
+                        need_to_pay += booking_instance.sportclub_portion
+                        pure_profit_this_round += booking_instance.company_portion
+
+                else:
+                    if booking_instance.cancelled and booking_instance.session.day < today:
+                        paid_1 = booking_instance.final_price * (100-booking_instance.profit_percentage)/100
+                        difference = booking_instance.pay_back + booking_instance.sportclub_portion - (paid_1)
+                        need_to_pay += difference
+                        pure_profit_this_round += booking_instance.company_portion - (booking_instance.final_price * (booking_instance.profit_percentage)/100)
+
+            else:
+                paid += booking_instance.sportclub_portion
+                total_pure_profit += booking_instance.company_portion
+
+        for contract_instance in salon.contracts.all():
+            if not contract_instance.transfered_to_sportclub:
+                if contract_instance.created_at_date < today:
+                    need_to_pay += contract_instance.sportclub_portion
+                    pure_profit_this_round += contract_instance.company_portion
         return render(request,'salon/accountingdetail.html',{'need_to_pay':need_to_pay,
                                                             'total_pure_profit':total_pure_profit,
                                                             'paid':paid, 'pk':salon.pk,
@@ -432,25 +411,51 @@ def SalonAccountingDetailView(request,pk):
         return HttpResponseRedirect(reverse('login'))
 
 
-def SalonReconingView(request,pk):
+def SalonReckoningView(request,pk):
     if request.user.is_superuser:
         import jdatetime
         import datetime
         salon = get_object_or_404(SalonModel,pk = pk)
         need_to_pay = 0
-        for booking_instance in salon.bookings.all():
-            if not booking_instance.transfered_to_sportclub:
-                need_to_pay += booking_instance.sportclub_portion #reckoning field and set transfered_to_sportclub and other ones
         today = jdatetime.datetime.now().date()
         time = datetime.datetime.now().time()
-        reckoning_object = ReckoningModel.objects.create(money_transfered = need_to_pay,transfered_at_date = today,
+        reckoning_object = ReckoningModel.objects.create(money_transfered = 0,transfered_at_date = today,
                                                         transfered_at_time = time, salon = salon)
-        reckoning_object.save()
         for booking_instance in salon.bookings.all():
             if not booking_instance.transfered_to_sportclub:
-                booking_instance.reckoning = reckoning_object #reckoning field and set transfered_to_sportclub and other ones
-                booking_instance.transfer_to_sportclub()
-                booking_instance.save()
+                if not booking_instance.is_contract:
+                    if booking_instance.session.day < today:
+                        need_to_pay += booking_instance.sportclub_portion
+                        booking_instance.reckoning = reckoning_object
+                        booking_instance.transfer_to_sportclub()
+                        booking_instance.save()
+                else:
+                    if booking_instance.cancelled and booking_instance.session.day < today:
+                        paid_1 = booking_instance.final_price * (100-booking_instance.profit_percentage)/100
+                        difference = booking_instance.pay_back + booking_instance.sportclub_portion - (paid_1)
+                        need_to_pay += difference
+                        booking_instance.reckoning = reckoning_object
+                        booking_instance.transfer_to_sportclub()
+                        booking_instance.save()
+
+        for contract_instance in salon.contracts.all():
+            if not contract_instance.transfered_to_sportclub:
+                if contract_instance.created_at_date < today:
+                    need_to_pay += contract_instance.sportclub_portion
+                    contract_instance.reckoning = reckoning_object
+                    contract_instance.transfer_to_sportclub()
+                    contract_instance.save()
+                    for booking_instance_2 in contract_instance.bookings.all():
+                        booking_instance.reckoning = reckoning_object
+                        booking_instance.transfer_to_sportclub()
+                        booking_instance.save()
+
+
+
+
+
+        reckoning_object.money_transfered = need_to_pay
+        reckoning_object.save()
 
         return HttpResponseRedirect(reverse('salon:accountingdetail',kwargs={'pk':salon.pk}))
     else:
@@ -467,3 +472,31 @@ def SalonReckoninglistView(request,pk):
         page = request.GET.get('page')
         reckonings = paginator.get_page(page)
         return render(request,'salon/reckoninglist.html',{'reckonings':reckonings, 'filter':reckoning_filter})
+
+
+def SalonPublicListView(request):
+    salon_list = SalonModel.objects.filter(is_confirmed = True)
+    salon_filter = SalonFilter(request.GET,queryset = salon_list)
+    paginator = Paginator(salon_filter.qs, 10)
+    page = request.GET.get('page')
+    salons = paginator.get_page(page)
+    return render(request,'salon/publiclist.html',{'salons':salons,'filter':salon_filter})
+
+
+def SalonPublicListForSpecificSportClubView(request,pk):
+    sportclub = get_object_or_404(SportClubModel,pk = pk)
+    if sportclub.user.is_active:
+        try:
+            salon_list = SalonModel.objects.filter(is_confirmed = True, sportclub = sportclub)
+            salon_filter = SalonFilter(request.GET,queryset = salon_list)
+            paginator = Paginator(salon_filter.qs, 10)
+            page = request.GET.get('page')
+            salons = paginator.get_page(page)
+            filter_off = False
+            if len(salon_list) == 1:
+                filter_off = True
+            return render(request,'salon/publiclistforsportclub.html',{'filter_off':filter_off,'salons':salons,'filter':salon_filter})
+        except:
+            return render(request,'salon/publiclistforsportclub.html')
+    else:
+        return HttpResponseRedirect(reverse('sportclub:publicdetail',kwargs={'pk':sportclub.pk}))

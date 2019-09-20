@@ -1,6 +1,6 @@
 {% extends "base_templates/base1.html" %}
 {% load static %}
-{% load customtags %}
+{% load customtags_session %}
 
 {% block head_block %}
 <link type="text/css" rel="stylesheet" href="http://4xmen.ir/cdn/VazirCodeX.css" />
@@ -20,6 +20,8 @@
   <div class="card-panel hoverable pink accent-3 z-depth-5 fMarkazi">
 
     <form id='days_form' method="POST">
+      {{days_form.Hfield}}
+      {{times_form.Hfield}}
       {% csrf_token %}
       <h5>
       <div class="row">

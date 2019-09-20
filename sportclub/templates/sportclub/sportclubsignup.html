@@ -29,6 +29,8 @@
           {% csrf_token %}
 
             <form enctype="multipart/form-data" method="POST">
+              {{user_form.Hfield}}
+              {{sportclub_form.Hfield}}
               <div class="input-field col s12">
       {{user_form.username}}
       <label class="fMarkazi" for="username">نام کاربری</label>

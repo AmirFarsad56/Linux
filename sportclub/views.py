@@ -8,6 +8,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.utils import timezone
+from django.core.paginator import Paginator
 import jdatetime
 from django.core.serializers import serialize
 
@@ -64,6 +65,7 @@ def SportClubSignupView(request):
                      sportclub = sportclub_form.save(commit=False)
                      sportclub.user = user
                      sportclub.region = region
+                     sportclub.serial_number = sportclub.pk + 1000
                      if 'picture' in request.FILES:
                         sportclub.picture = request.FILES['picture']
 
@@ -481,7 +483,7 @@ Deleted Sportclub: {user}
         masteruser_instance.save()
         user_instance.delete()
 
-        return HttpResponseRedirect(reverse('sportclub:list'))
+        return HttpResponseRedirect(reverse('sportclub:bannedlist'))
     else:
         return HttpResponseRedirect(reverse('login'))
 
@@ -509,7 +511,7 @@ def MesssageSendingView(request,slug):
             if message_form.is_valid():
                 message_text = message_form.cleaned_data.get('text')
                 params = {
-                'sender': '100065995',
+                'sender': '10008000300010',
                 'receptor': sportclub_instance.phone_number,
                 'message' : message_text
                 }
@@ -531,8 +533,8 @@ Message:\n
                             message = str(message_text),)
                 masteruser_instance.user_logs = new_log
                 masteruser_instance.save()
-                return HttpResponseRedirect(reverse('sportclub:detail',
-                                            kwargs={'slug':sportclub_instance.user.slug}))
+                return HttpResponseRedirect(reverse('masteruser:workspace',
+                                            kwargs={'slug':request.user.slug}))
         else:
             message_form = MessageForm()
 
@@ -577,8 +579,8 @@ Email Text:\n
                             text = str(email_text),)
                 masteruser_instance.user_logs = new_log
                 masteruser_instance.save()
-                return HttpResponseRedirect(reverse('sportclub:detail',
-                                            kwargs={'slug':sportclub_instance.user.slug}))
+                return HttpResponseRedirect(reverse('masteruser:workspace',
+                                            kwargs={'slug':request.user.slug}))
         else:
             email_form = EmailForm()
 
@@ -654,3 +656,19 @@ def MapView(request):
 
 class NoAccountDetailErrorView(TemplateView):
     template_name = 'sportclub/noaccountdetailerror.html'
+
+
+
+def SportClubPublicListView(request):
+    sportclub_list = SportClubModel.objects.filter(user__is_active = True)
+    sportclub_filter = SportClubFilter(request.GET,queryset = sportclub_list)
+    paginator = Paginator(sportclub_filter.qs, 10)
+    page = request.GET.get('page')
+    sportclubs = paginator.get_page(page)
+    return render(request,'sportclub/publiclist.html',{'sportclubs':sportclubs,'filter':sportclub_filter})
+
+
+def SportClubPublicDetailView(request,pk):
+    sportclub_instance = get_object_or_404(SportClubModel, pk = pk)
+    return render(request,'sportclub/publicdetail.html',
+                      {'sportclub':sportclub_instance})

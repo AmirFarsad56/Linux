@@ -1,10 +1,11 @@
 from django.urls import include, path
 from commonuser.views import (CommonUserSignupView, CommonUserProfileView,
                               CommonUserListView, CommonUserBanView,
-                              CommonUserUnBanView, CommonUserDetailView,
+                              CommonUserUnBanView,
                               CommonUserDeleteView, BannedCommonUserListView,
                               MesssageSendingView, EmailSendingView,
-                              CommonUserUpdateView)
+                              CommonUserUpdateView, UserConfirmView, TwoMinWaitView,
+                              CommonUserDashboardView,)
 
 app_name ='commonuser'
 urlpatterns = [
@@ -12,8 +13,10 @@ urlpatterns = [
     path('profile/<slug:slug>/',CommonUserProfileView,
          name = 'profile'),
     path('list/', CommonUserListView.as_view(), name='list'),
+    path('confirm/', UserConfirmView, name='confirmation'),
+    path('two-min-wait/', TwoMinWaitView, name='twominwait'),
     path('bannedlist/', BannedCommonUserListView.as_view(), name='bannedlist'),
-    path('list/<slug:slug>/', CommonUserDetailView, name='detail'),
+    path('<slug:slug>/dashboard/', CommonUserDashboardView, name='dashboard'),
     path('ban/<slug:slug>/', CommonUserBanView, name='ban'),
     path('unban/<slug:slug>/', CommonUserUnBanView, name='unban'),
     path('delete/<slug:slug>/', CommonUserDeleteView, name='delete'),

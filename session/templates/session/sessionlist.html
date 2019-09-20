@@ -1,5 +1,5 @@
 {% extends "base_templates/base1.html" %}
-{% load customtags %}
+{% load customtags_session %}
 {% block head_block %}
 <title>
     پروفایل | سامانه ورزش کن
@@ -15,9 +15,17 @@
 
 
 <div class="container">
-  <div class="row center">
+  <div class="row center-align">
     <span class="center-align gold-text fMarkazi">درصورت وجود سانس با کلیک بر روی هر یک از روزها میتوانید به سانس های آن روز دسترسی داشته باشید</span>
-  </div>
+    </div>
+    <div class="row center">
+
+
+  {% if request.user.is_masteruser %}
+  <a href="{% url 'session:masteruser_listforsalon' pk=salon.pk %}" class="center-align hoverable btn waves-effect waves-dark gold white-text z-depth-3 fLalezar" >لیست کلی با امکان جستجو
+  </a>
+    </div>
+  {% endif %}
   {% for key, month in data %}
 
  <table class="grey darken-4 white-text fMarkazi">

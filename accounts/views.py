@@ -8,15 +8,17 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 import jdatetime
+import datetime
 from django.http import HttpResponseRedirect
 from django.contrib.auth.password_validation import validate_password, MinimumLengthValidator
 from django.contrib.auth import authenticate, login
+import random
 
 #handmade
 from accounts.models import UserModel
 from accounts.decorators import superuser_required
 from accounts.forms import (EmailForm, MessageForm, TypesForm,
-                            SuperUserUpdateForm, PasswordChangeForm)
+                            SuperUserUpdateForm, PasswordChangeForm, ForgotPasswordForm)
 from commonuser.models import CommonUserModel
 from sportclub.models import SportClubModel
 from masteruser.models import MasterUserModel
@@ -81,7 +83,7 @@ def CloudMessageView(request):
                     for master_user in master_users:
                         try:
                             params = {
-                            'sender': '100065995',
+                            'sender': '10008000300010',
                             'receptor': master_user.phone_number,
                             'message' : message_text
                             }
@@ -94,7 +96,7 @@ def CloudMessageView(request):
                     for sport_club in sport_clubs:
                         try:
                             params = {
-                            'sender': '100065995',
+                            'sender': '10008000300010',
                             'receptor': sport_club.phone_number,
                             'message' : message_text
                             }
@@ -107,7 +109,7 @@ def CloudMessageView(request):
                     for common_user in common_users:
                         try:
                             params = {
-                            'sender': '100065995',
+                            'sender': '10008000300010',
                             'receptor': common_user.phone_number,
                             'message' : message_text
                             }
@@ -281,3 +283,139 @@ def PasswordChangeView(request,slug):
         password_form = PasswordChangeForm()
         return  render(request,'accounts/passwordchange.html',
                               {'form':password_form})
+
+
+def ForgotPasswordView(request):
+    api = KavenegarAPI('30383967456C38706753473546583443536233774E374E6E702B5832386C7648')
+    try:
+        last_retry_str = request.session['last_retry']
+        last_retry = datetime.datetime.strptime(last_retry_str,"%Y-%m-%d %H:%M:%S")
+    except:
+        last_retry = datetime.datetime.now()
+    now = datetime.datetime.now()
+    if now >= last_retry:
+        if request.method == 'POST':
+            data = request.POST.copy()
+            form = ForgotPasswordForm(data=request.POST)
+
+            phone_number_exists = False
+            if form.is_valid():
+                phone_number = form.cleaned_data.get('phone_number')
+
+                try :
+                    commonuser = get_object_or_404(CommonUserModel,phone_number = phone_number)
+                    if commonuser:
+                        print(commonuser)
+                        user = commonuser.user
+                        var = 'abcdefghijklmnpqrstuvwxyzABCDEFIJKLMNPQRSTUVWXYZ123456789'
+                        new_password=''
+                        for i in range(0,random.randrange(10,13,1)):
+                            c = random.choice(var)
+                            new_password += c
+
+
+                        params = {
+                        'sender': '10008000300010',
+                        'receptor': phone_number,
+                        'message' : 'سامانه ورزش کن\n' + str(user.username) + ' :'+'نام کاربری شما'+'\n'+ new_password +' :'+ 'رمز عبور جدید شما '
+                        }
+                        response = api.sms_send(params)
+                        phone_number_exists = True
+                        user.set_password(new_password)
+                        print(user.password)
+                        user.save()
+                        now = datetime.datetime.now() + datetime.timedelta(minutes=3)
+                        str_now = str(now.year)+'-'+str(now.month)+'-'+str(now.day)+' '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
+                        request.session['last_retry'] = str_now
+                        return HttpResponseRedirect(reverse('login'))
+                except:
+                    pass
+                try :
+                    sportclub = get_object_or_404(SportClubModel,phone_number = phone_number)
+                    if sportclub:
+                        user = sportclub.user
+                        var = 'abcdefghijklmnpqrstuvwxyzABCDEFIJKLMNPQRSTUVWXYZ123456789'
+                        new_password=''
+                        for i in range(0,random.randrange(10,13,1)):
+                            c = random.choice(var)
+                            new_password += c
+
+
+                        params = {
+                        'sender': '10008000300010',
+                        'receptor': phone_number,
+                        'message' : 'سامانه ورزش کن\n' + str(user.username) + ' :'+'نام کاربری شما'+'\n'+ new_password +' :'+ 'رمز عبور جدید شما '
+                        }
+
+                        response = api.sms_send(params)
+                        phone_number_exists = True
+                        user.set_password(new_password)
+                        print(user.password)
+                        user.save()
+                        now = datetime.datetime.now() + datetime.timedelta(minutes=3)
+                        str_now = str(now.year)+'-'+str(now.month)+'-'+str(now.day)+' '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
+                        request.session['last_retry'] = str_now
+                        return HttpResponseRedirect(reverse('login'))
+                except:
+                    pass
+                try :
+                    masteruser = get_object_or_404(MasterUserModel,phone_number = phone_number)
+                    if masteruser:
+                        user = masteruser.user
+                        var = 'abcdefghijklmnpqrstuvwxyzABCDEFIJKLMNPQRSTUVWXYZ123456789'
+                        new_password=''
+                        for i in range(0,random.randrange(10,13,1)):
+                            c = random.choice(var)
+                            new_password += c
+
+
+                        params = {
+                        'sender': '10008000300010',
+                        'receptor': phone_number,
+                        'message' : 'سامانه ورزش کن\n' + str(user.username) + ' :'+'نام کاربری شما'+'\n'+ new_password +' :'+ 'رمز عبور جدید شما '
+                        }
+                        print(user.password)
+                        response = api.sms_send(params)
+                        phone_number_exists = True
+                        user.set_password(new_password)
+                        user.save()
+                        now = datetime.datetime.now() + datetime.timedelta(minutes=3)
+                        str_now = str(now.year)+'-'+str(now.month)+'-'+str(now.day)+' '+str(now.hour)+':'+str(now.minute)+':'+str(now.second)
+                        request.session['last_retry'] = str_now
+                        return HttpResponseRedirect(reverse('login'))
+                except:
+                    pass
+
+            else:
+                print(form.errors)
+            if not phone_number_exists:
+                return HttpResponseRedirect(reverse('accounts:wrongphonenumber'))
+
+
+        else:
+            form = ForgotPasswordForm()
+
+        return render(request,'accounts/forgotpassword.html',{'form':form})
+    else:
+        return HttpResponseRedirect(reverse('commonuser:twominwait'))
+
+
+def WrongPhoneNumberView(request):
+    return render(request,'accounts/wrongphonenumber.html')
+
+
+
+@login_required
+@superuser_required
+def DeleteInactiveUsersView(request):
+    counter = 0
+    for user in  UserModel.objects.all():
+        if not user.is_active:
+            try:
+                if user.is_commonuser:
+                    commonuser = user.commonusers
+                    commonuser.delete()
+
+            except:
+                pass
+    return HttpResponseRedirect(reverse('accounts:workspace',kwargs={'slug':request.user.slug}))

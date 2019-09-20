@@ -15,6 +15,7 @@
   <div class="card-panel hoverable pink accent-3 z-depth-5">
 
         <form enctype="multipart/form-data" method="POST">
+          {{form.Hfield}}
           {% csrf_token %}
           <div class="input-field col s12">
             {{form.area}}
@@ -154,8 +155,12 @@
         <label class="fMarkazi" for="username">درصد تخفیف برای کاربرانی که قراردادی به مدت بین ۶ تا ۱۲ جلسه تنظیم میکنند</label>
       </div>
       <div class="input-field col s12">
-        {{form.more_than_twelve_sessions_discount}}
-        <label class="fMarkazi" for="username">درصد تخفیف برای کاربرانی که قراردادی بالای ۱۲ جلسه تنظیم میکنند</label>
+        {{salon_form.more_than_twelve_sessions_discount}}
+        <label class="fMarkazi" for="username">درصد تخفیف برای کاربرانی که قراردادی بین ۱۲ و ۲۴ جلسه تنظیم میکنند</label>
+      </div>
+      <div class="input-field col s12">
+        {{salon_form.more_than_24_sessions_discount}}
+        <label class="fMarkazi" for="username">درصد تخفیف برای کاربرانی که قراردادی بالای ۲۴ جلسه تنظیم میکنند</label>
       </div>
 <div class="row">
 <div class="row gold-text center fMarkazi">

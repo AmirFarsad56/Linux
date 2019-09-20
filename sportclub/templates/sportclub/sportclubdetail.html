@@ -106,7 +106,11 @@
       </div>
       <div class="row">
         <div class="col s6 m6 l6 right-align">{{salon.more_than_twelve_sessions_discount}}</div>
-        <div class="col s6 m6 l6 left-align">درصد تخفیف برای کاربرانی که قراردادی بالای ۱۲ جلسه تنظیم میکنند</div>
+        <div class="col s6 m6 l6 left-align">درصد تخفیف برای کاربرانی که قراردادی بین ۱۲ و ۲۴ جلسه تنظیم میکنند</div>
+      </div>
+      <div class="row">
+        <div class="col s6 m6 l6 right-align">{{salon.more_than_24_sessions_discount}}</div>
+        <div class="col s6 m6 l6 left-align">درصد تخفیف برای کاربرانی که قراردادی بالای ۲۴ جلسه تنظیم میکنند</div>
       </div>
     </div>
     <div class="row">
@@ -118,20 +122,20 @@
 {% if request.user.is_masteruser or request.user.is_superuser %}
     {% if salon.is_confirmed %}
     <div class="row">
-<div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'salon:banmodal' pk=salon.pk %}" class="waves-effect waves-light btn modal-trigger modal-close red white-text"><h6>                   <span>مسدود کردن سالن</span>                   </h6></a><p></p></div>
+<div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="#banmodal{{salon.pk}}" class="waves-effect waves-light btn modal-trigger modal-close red white-text"><h6>                   <span>مسدود کردن سالن</span>                   </h6></a><p></p></div>
 <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'session:list' pk=salon.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>                   <span>سانس های این سالن</span>                 </h6></a><p></p></div>
 <div class="col s12 m12 l12 center-align"><a style="white-space:pre" href="{% url 'session:lastdataset' pk=salon.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>             <span>تعیین مرزهای ایجاد سانس</span>            </h6></a><p></p></div>
 </div>
     {% else %}
 <div class="row">
-      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'salon:confirmmodal' pk=salon.pk %}" class="waves-effect waves-light btn modal-trigger modal-close green white-text"><h6>                      <span>تایید کردن سالن</span>                     </h6></a><p></p></div>
+      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="#confirmmodal{{salon.pk}}" class="waves-effect waves-light btn modal-trigger modal-close green white-text"><h6>                      <span>تایید کردن سالن</span>                     </h6></a><p></p></div>
 <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'session:list' pk=salon.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>                   <span>سانس های این سالن</span>                 </h6></a><p></p></div>
 <div class="col s12 m12 l12 center-align"><a style="white-space:pre" href="{% url 'session:lastdataset' pk=salon.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>             <span>تعیین مرزهای ایجاد سانس</span>            </h6></a><p></p></div>
 </div>
     {% endif %}
 {% else %}
 <div class="row">
-  
+
 <div class="col s12 m12 l12 center-align"><a style="white-space:pre" href="{% url 'booking:signcontract' pk=salon.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>             <span>تنظیم قرارداد</span>            </h6></a><p></p></div>
 </div>
 </div>
@@ -147,7 +151,28 @@
 
 
 
+  <div id="banmodal{{salon.pk}}" class="modal right-align">
+    <div class="modal-content fMarkazi grey darken-3">
+      <h4 class="gold-text">آیا مطمئن هستید میخواهید این سالن را مسدود کنید؟</h4>
+      <p>در صورت مسدود شدن سالن دیگر سانس ها قابل رزرو نخواهند بود</p>
+    </div>
+    <div class="modal-footer grey darken-3">
+      <a href="{% url 'salon:ban' pk=salon.pk %}" class="modal-close waves-effect waves-green btn-flat fMarkazi red-text"><h6>مسدود کردن</h6></a>
+      <a class="modal-close waves-effect waves-green btn-flat fMarkazi blue-text"><h6>بستن</h6></a>
+    </div>
+  </div>
 
+
+  <div id="confirmmodal{{salon.pk}}" class="modal right-align">
+    <div class="modal-content fMarkazi grey darken-3">
+      <h4 class="gold-text">آیا مطمئن هستید میخواهید این سالن را تایید کنید؟</h4>
+      <p>در صورت تایید شدن سانس های این سالن قابل رزرو خواهند بود</p>
+    </div>
+    <div class="modal-footer grey darken-3">
+      <a href="{% url 'salon:confirm' pk=salon.pk %}" class="modal-close waves-effect waves-green btn-flat fMarkazi green-text"><h6>تایید</h6></a>
+      <a class="modal-close waves-effect waves-green btn-flat fMarkazi blue-text"><h6>بستن</h6></a>
+    </div>
+  </div>
 
 
   {% endfor %}
@@ -173,5 +198,17 @@
   $(document).ready(function(){
     $('.slider').slider();
   });
+  $(document).ready(function(){
+     $('#modal').modal();
+  });
+
 </script>
+{% for salon in salons %}
+<script>
+  $(document).ready(function(){
+     $('#banmodal{{salon.pk}}').modal();
+     $('#confirmmodal{{salon.pk}}').modal();
+  });
+</script>
+{% endfor %}
 {% endblock %}

@@ -43,17 +43,25 @@ class SessionModel(models.Model):
     session_category = models.ForeignKey(SessionCategoryModel, on_delete = models.CASCADE,
                                   related_name = 'sessions',blank = False,
                                   null = False)
+    virtual_booker_name = models.CharField(max_length = 264, null = True)
     day = jmodels.jDateField(null = True)
     day_str = models.CharField(max_length = 264, null = False)
     time = models.TimeField(null = True)
     duration = models.CharField(max_length = 264, blank = False , null = False)
-    price = models.IntegerField(blank = True, null = True)
-    discount_percentage = models.IntegerField(null = False, default = 0)
+    price = models.FloatField(blank = True, null = True)
+    discount_percentage = models.FloatField(null = False, default = 0)
     is_booked = models.BooleanField(blank = False, default = False)
     is_ready = models.BooleanField(blank = False, default = False)
 
     def save(self, *args, **kwargs):
         self.day_str = str(self.day)
+        try:
+            if len(self.virtual_booker_name) != 0:
+                self.is_ready = False
+        except:
+            pass
+        if self.is_booked:
+            self.is_ready = False    
         super(SessionModel, self).save(*args, **kwargs)
 
 

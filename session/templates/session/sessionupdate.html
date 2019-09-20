@@ -18,11 +18,12 @@
   <div class="card-panel hoverable pink accent-3 z-depth-5 fMarkazi">
 
     <form id='days_form' method="POST">
+      {{form.Hfield}}
       {% csrf_token %}
 
       <div class="input-field col s12">
         {{form.price}}
-        <label class="fMarkazi" for="username">فیمت بر حسب تومان</label>
+        <label class="fMarkazi" for="username">قیمت بر حسب تومان</label>
       </div>
       <div class="input-field col s12">
         {{form.discount_percentage}}

@@ -1,8 +1,8 @@
 {% extends "base_templates/base1.html" %}
-{% load customtags %}
+{% load customtags_session %}
 {% block head_block %}
 <title>
-    پروفایل | سامانه ورزش کن
+    میزکار | سامانه ورزش کن
 </title>
 {% endblock %}
 
@@ -69,7 +69,8 @@
     <div class="container">
       <div class="center card-panel hoverable gold z-depth-5 fMarkazi">
       <a href="{% url 'session:create' pk=salon.pk %}" style="white-space:pre" class=" waves-effect waves-dark btn-flat btn-large gold white-text"><h5><span class="black-text">          </span>ایجاد سانس در روز جدید<span class="black-text">          </span></h5></a><br>
-    <a href="{% url 'session:create_2' pk=salon.pk %}" style="white-space:pre" class="waves-effect waves-dark btn-flat btn-large gold white-text"><h5><span class="black-text"></span>اضافه کردن سانس به روز دارای سانس<span class="black-text"></span></h5></a><br>
+{% if salon.lastdatas.all %}    <a href="{% url 'session:create_2' pk=salon.pk %}" style="white-space:pre" class="waves-effect waves-dark btn-flat btn-large gold white-text"><h5><span class="black-text"></span>اضافه کردن سانس به روز دارای سانس<span class="black-text"></span></h5></a><br>
+{% endif %}
 {% if salon.sessions.all %}    <a href="{% url 'session:list' pk=salon.pk %}" style="white-space:pre" class="waves-effect waves-dark btn-flat btn-large gold white-text"><h5><span class="black-text">         </span>لیست سانس ها<span class="black-text">         </span></h5></a><br>
 {% endif %}
 {% if salon.bookings.all %}    <a href="{% url 'booking:bookedsessionlist' pk=salon.pk %}" style="white-space:pre" class="waves-effect waves-dark btn-flat btn-large gold white-text"><h5><span class="black-text">         </span>لیست سانس های رزرو شده<span class="black-text">         </span></h5></a><br>
@@ -177,7 +178,9 @@
     این کار بدان منظور است تا کاربران را از امضای قرارداد و بهره بردن از تخفیف رزرو های طولانی و سپس کنسل کردن بقیه ی سانس ها منع کند
   </div>
   <div class="row">
-    اگر سانسی خارج از سامانه ورزش کن رزرو شد حتما آن سانس را غیرقابل رزرو کنید تا از مشکل رزرو شدن یک سانس توسط دو نفر جلوگیری شود
+    اگر سانسی خارح از سامانه آنلاین ورزش کن رزرو شد حتما سانس مربوطه را غیرقابل رزرو کنید و از طریق کلیک بر روی لینک
+    رزرو مجازی سانس اسم فرد رزرو کننده را وارد کنید تا از رزرو شدن سانس توسط دو فرد جلوگیری شود درغیر اینصورت
+    سامانه ورزش کن هیچ مسئولیتی درقبال تداخل به وجود آمده نخواهد داشت
   </div>
   <div class="row">
 درنظر داشته باشد اگر میخواهید در ایجاد سانس ساعت ۱۲ شب را انتخاب کنید در صفحه ی موردنظر ساعت 00:00 را انتخاب کنید
@@ -202,6 +205,17 @@
     </div>
     {% if category.is_closed %}
     <div class="row">
+      <div class="col s6 m6 l6 right-align white-text">
+        {% if category.saturdays %}شنبه ها {% endif %}
+        {% if category.sundays %} یکشنبه ها{% endif %}
+        {% if category.mondays %} دوشنبه ها{% endif %}
+        {% if category.tuesdays %} سه شنبه ها{% endif %}
+        {% if category.wednesdays %} چهارشنبه ها{% endif %}
+        {% if category.thursdays %} پنج شنبه ها{% endif %}
+        {% if category.fridays %} جمعه ها {% endif %}
+      </div>
+      <div class="col s6 m6 l6 left-align">روز های هفته</div>
+    </div>
       <div class="col s6 m6 l6 right-align white-text">تعطیل</div>
       <div class="col s6 m6 l6 left-align">وضعیت سالن</div>
     </div>
@@ -219,19 +233,20 @@
       <div class="col s6 m6 l6 left-align">روز های هفته</div>
     </div>
     <div class="row">
-      <div class="col s6 m6 l6 right-align white-text">{{floor|time:"G:i"}}</div>
+      <div class="col s6 m6 l6 right-align white-text">{{floor}}</div>
       <div class="col s6 m6 l6 left-align">شروع اولین سانس</div>
     </div>
     <div class="row">
-      <div class="col s6 m6 l6 right-align white-text">{{ceil|time:"G:i"}}</div>
+      <div class="col s6 m6 l6 right-align white-text">{{ceil}}</div>
       <div class="col s6 m6 l6 left-align">پایان آخرین سانس</div>
     </div>
     <div class="row">
-      <div class="col s6 m6 l6 right-align white-text">{{duration|time:"G:i"}}</div>
+      <div class="col s6 m6 l6 right-align white-text">{{duration}}</div>
       <div class="col s6 m6 l6 left-align">مدت زمان هر سانس</div>
     </div>
 
     </h6>
+    {% if not now > category.range_end_day %}
     <div class="row">
       <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'session:setprice' pk=category.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6><span>        </span>قیمت گذاری سانس ها<span>        </span></h6></a><p></p>
 </div>
@@ -240,16 +255,26 @@
 
       <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'session:setdiscountpercentage' pk=category.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6><span>      </span>تعیین تخفیف سانس ها<span>      </span></h6></a><p></p>
 </div>
+
       <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'session:categorizedsessions' pk=category.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>لیست سانس های این مجموعه</h6></a><p></p>
 </div>
 <div class="col s12 m12 l12 center-align"><a style="white-space:pre" href="{% url 'session:statuschange' pk=category.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>تعیین قابل یا غیرقابل رزرو بودن سانس ها</h6></a><p></p>
 </div>
+
     </div>
+    {% else %}
+    <div class="row">
+      <div class="col s12 m12 l12 center-align"><a style="white-space:pre" href="{% url 'session:categorizedsessions' pk=category.pk %}" class="hoverable waves-effect waves-light btn gold white-text"><h6>لیست سانس های این مجموعه</h6></a><p></p>
+</div>
+
+    </div>
+    {% endif %}
+
     {% endif %}
 </div>
 <br><br>
 {% endfor %}
-
+</div>
 {% endblock %}
 {% block script_block %}
 <script>

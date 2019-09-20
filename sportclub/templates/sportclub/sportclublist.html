@@ -71,11 +71,15 @@
       <div class="col s6 m6 l6 right-align black-text black-text">{{sportclub.user.username}}</div>
       <div class="col s6 m6 l6 left-align">نام کاربری</div>
     </div>
-  </div>
+
 
     <div class="row">
       <div class="col s6 m6 l6 right-align black-text">{{sportclub.sportclub_name}}</div>
       <div class="col s6 m6 l6 left-align">نام مجموعه ورزشی</div>
+    </div>
+    <div class="row">
+      <div class="col s6 m6 l6 right-align white-text">{{sportclub.serial_number}}</div>
+      <div class="col s6 m6 l6 left-align">شماره سریال مجموعه ورزشی</div>
     </div>
     <div class="row">
       <div class="col s6 m6 l6 right-align black-text">{{sportclub.user.first_name}}</div>
@@ -153,7 +157,7 @@
     <br>
 
     <div class="row">
-      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'sportclub:banmodal' slug=sportclub.user.slug %}" class="waves-effect waves-light btn modal-trigger modal-close red white-text"><h6><span>            </span>بلاک کردن<span>            </span></h6></a><p></p>
+      <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="#modal{{sportclub.pk}}" class="waves-effect waves-light btn modal-trigger modal-close red white-text"><h6><span>            </span>بلاک کردن<span>            </span></h6></a><p></p>
 </div>
       <div class="col s12 m6 l6 center-align"><a style="white-space:pre" href="{% url 'sportclub:detail' slug=sportclub.user.slug %}" class="hoverable waves-effect waves-light btn gold white-text"><h6><span>         </span>لیست سالن ها<span>        </span></h6></a><p></p>
 </div>
@@ -168,10 +172,22 @@
 
 
 
-</h6>
-  </div>
 
+  </div>
+  </div>
   <br><br>
+
+
+  <div id="modal{{sportclub.pk}}" class="modal right-align right-align">
+    <div class="modal-content fMarkazi grey darken-3">
+      <h4 class="gold-text">آیا مطمئن هستید میخواهید این کاربر را بلاک کنید؟</h4>
+      <p>در صورت بلاک شدن کاربر قادر به ورود به حساب کاربری خود نخواهد بود و سانس ها غیرفعال خواهند شد</p>
+    </div>
+    <div class="modal-footer grey darken-3">
+      <a href="{% url 'sportclub:ban' slug=sportclub.user.slug %}" class="modal-close waves-effect waves-green btn-flat fMarkazi red-text"><h6>بلاک کردن</h6></a>
+      <a class="modal-close waves-effect waves-green btn-flat fMarkazi blue-text"><h6>بستن</h6></a>
+    </div>
+  </div>
   {% endif %}
   {% endfor %}
 </div>
@@ -222,6 +238,7 @@
   $(document).ready(function() {
   M.updateTextFields();
 });
+
 $(document).ready(function(){
   $('.collapsible').collapsible();
 });
@@ -229,4 +246,11 @@ $(document).ready(function(){
   $('select').formSelect();
 });
 </script>
+{% for sportclub in sportclubs %}
+<script>
+  $(document).ready(function(){
+     $('#modal{{sportclub.pk}}').modal();
+  });
+</script>
+{% endfor %}
 {% endblock %}
